@@ -1,0 +1,25 @@
+<h1>What's new</h1>
+
+<a href="/courses/create">
+            Create new
+        </a>
+
+{% for course in courses %}
+    <div>
+        <img
+            src="{{ course.ImagePath }}"
+            alt=""
+        />
+        <h2>
+            {{ course.name }}
+        </h2>
+
+        <p>
+            {{ course.Description }}
+        </p>
+
+        <a href="/courses/show/{{ course.id }}">
+            Show me
+        </a>
+    </div>
+{% endfor %}

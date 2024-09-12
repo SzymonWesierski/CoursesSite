@@ -1,0 +1,26 @@
+<h1>Course by id</h1>
+
+ <div>
+        <h1>
+            {{ course.name }}
+        </h1>
+        <img
+            src="{{ course.ImagePath }}"
+        />
+
+        <p>
+            {{ course.Description }}
+        </p>
+
+        {% if true %}
+            <a 
+                href="/courses/edit/{{ course.id }}">
+                Edit course
+            </a>
+
+            <a 
+                href="/courses/delete/{{ course.id }}">
+                Delete course
+            </a>
+        {% endif %}
+    </div>
