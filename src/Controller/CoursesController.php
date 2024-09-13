@@ -24,7 +24,7 @@ class CoursesController extends AbstractController
     }
 
 
-    #[Route('/courses', name: 'courses', methods:['GET'])]
+    #[Route('/', name: 'courses', methods:['GET'])]
     public function index(): Response
     {
         $courses = $this->courseRepository->findAll();
@@ -64,6 +64,7 @@ class CoursesController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $newCourse = $form->getData();
+            $newCourse->setUser($this->getUser());
             $imagePath = $form->get('ImagePath')->getData();
             
             if ($imagePath) {

@@ -1,5 +1,3 @@
-<h1>Course by id</h1>
-
  <div>
         <h1>
             {{ course.name }}
@@ -12,15 +10,37 @@
             {{ course.Description }}
         </p>
 
-        {% if true %}
+        <p><h3>Content</h3>
+
+            {% for chapter in course.chapters %}       
+                <h4>{{ chapter.name }}</h4>
+                <ul>
+                {% for episode in chapter.episodes %}
+                    <li>{{episode.name}}:<br>
+                     - {{episode.description}}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endfor %}
+        
+    </p>
+
+        {% if app.user == course.user %}
+        <p> 
             <a 
                 href="/courses/edit/{{ course.id }}">
-                Edit course
+                Edit course   
             </a>
-
+        </p>
+           
+        <p>
             <a 
                 href="/courses/delete/{{ course.id }}">
                 Delete course
             </a>
+        </p>
+            
         {% endif %}
     </div>
+
+<h4>Course created by {{course.user.username}}</h1>

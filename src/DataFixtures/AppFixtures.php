@@ -5,18 +5,34 @@ namespace App\DataFixtures;
 use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Episode;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager): void
+    private UserPasswordHasherInterface $userPasswordHasher;
+
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {
-        $this->loadCourses($manager); 
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
-    private function loadCourses(ObjectManager $manager): void
+    public function load(ObjectManager $manager): void
     {
+        $this->loadCoursesWithUser($manager); 
+    }
+
+    private function loadCoursesWithUser(ObjectManager $manager): void
+    {
+        $user = new User();
+        $user->setUsername("testUser");
+        $user->setRoles(['ROLE_USER']);
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, "test123"));
+        $user->setEmail("test@wp.pl");
+        $user->setVerified(true);
+
         $chapter1 = new Chapter();
         $chapter1->setName("Theory - Symfony 4 & 5 core features");
 
@@ -58,6 +74,9 @@ class AppFixtures extends Fixture
         $course1->addChapter($chapter2);
 
         $manager->persist($course1);
+
+        $user->addCourse($course1);
+        $manager->persist($user);
 
         $manager->flush();
     }
