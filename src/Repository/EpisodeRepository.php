@@ -40,4 +40,16 @@ class EpisodeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findAllUserEpisodes($user_id): array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.chapter', 'ch')
+            ->innerJoin('ch.courses', 'c')
+            ->innerJoin('c.user', 'u')
+            ->andWhere('u.id = :user_id')
+            ->setParameter('user_id', $user_id)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -34,11 +34,17 @@ class Course
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'courses')]
+    #[ORM\JoinTable(name: 'course_category')]
+    private Collection $categories;
+
     public function __construct()
     {
         $this->chapters = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
+    // Gettery i settery dla pól
     public function getId(): ?int
     {
         return $this->id;
@@ -52,7 +58,6 @@ class Course
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -64,7 +69,6 @@ class Course
     public function setDescription(string $Description): static
     {
         $this->Description = $Description;
-
         return $this;
     }
 
@@ -76,13 +80,9 @@ class Course
     public function setImagePath(?string $ImagePath): static
     {
         $this->ImagePath = $ImagePath;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Chapter>
-     */
     public function getChapters(): Collection
     {
         return $this->chapters;
@@ -101,7 +101,6 @@ class Course
     public function removeChapter(Chapter $chapter): static
     {
         if ($this->chapters->removeElement($chapter)) {
-            // set the owning side to null (unless already changed)
             if ($chapter->getCourses() === $this) {
                 $chapter->setCourses(null);
             }
@@ -118,6 +117,26 @@ class Course
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }

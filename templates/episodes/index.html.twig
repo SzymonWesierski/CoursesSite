@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}episodes{% endblock %}
+
+{% block body %}
+
+    <a href="{{ path('create_episode') }}">
+                Create new episode
+            </a>
+
+    <h1>Your episodes list</h1>
+
+    {% for episode in episodes %}
+
+        <div>
+            <p>name: {{episode.name}}</p>
+            <p><img src={{episode.imagePath ? episode.imagePath : "https://cdn.pixabay.com/photo/2016/09/20/03/56/ban-1681759_1280.png"}} alt=""></p>
+        </div>
+
+    {% endfor %}
+
+{% endblock %}

@@ -3,36 +3,68 @@
 namespace App\Controller;
 
 use App\Entity\Course;
-use App\Form\CourseType;
+use App\Form\CourseFormType;
 use App\Repository\CourseRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use App\Form\CategoryFilterType;
 
 class CoursesController extends AbstractController
 {
     private $em;
     private $courseRepository;
+    private $categoryRepository;
 
-    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository) 
+    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, CategoryRepository $categoryRepository)
     {
         $this->em = $em;
         $this->courseRepository = $courseRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
-
-    #[Route('/', name: 'courses', methods:['GET'])]
-    public function index(): Response
+    #[Route('/', name: 'app_home_redirect')]
+    public function redirectToHomepage(): Response
     {
-        $courses = $this->courseRepository->findAll();
+        return $this->redirectToRoute('courses');
+    }
+
+    #[Route('/courses/{categoryId}', name: 'courses', requirements: ['categoryId' => '\d+'])]
+    public function index(Request $request, EntityManagerInterface $em, $categoryId = null): Response
+    {
+        $form = $this->createForm(CategoryFilterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $categoryId = $form->get('category')->getData();
+            return $this->redirectToRoute('courses', ['categoryId' => $categoryId ]);
+        }
+
+        if ($categoryId) {
+            $category = $this->categoryRepository->find($categoryId);
+
+            if ($category) {
+                $categories = $this->categoryRepository->findAllChildren($category);
+                $categories[] = $category;
+
+                $courses = $this->courseRepository->findCoursesByCategoryAndHerChildren($categories);
+            }
+        }
+        else{
+            $courses = $this->courseRepository->findAll();
+        }
 
         return $this->render('courses/index.html.twig', [
-            'courses' => $courses
+            'courses' => $courses,
+            'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/courses/show/{id}', methods: ['GET'], name: 'show_course')]
     public function show($id): Response
@@ -58,14 +90,14 @@ class CoursesController extends AbstractController
     public function create(Request $request): Response
     {
         $course = new Course();
-        $form = $this->createForm(CourseType::class, $course);
+        $form = $this->createForm(CourseFormType::class, $course);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $newCourse = $form->getData();
             $newCourse->setUser($this->getUser());
-            $imagePath = $form->get('ImagePath')->getData();
+            $imagePath = $form->get('ImagePath')->getData(); 
             
             if ($imagePath) {
                 $newFileName = uniqid() . '.' . $imagePath->guessExtension();
@@ -97,7 +129,7 @@ class CoursesController extends AbstractController
     {
         $course = $this->courseRepository->find($id);
 
-        $form = $this->createForm(CourseType::class, $course);
+        $form = $this->createForm(CourseFormType::class, $course);
 
         $form->handleRequest($request);
 

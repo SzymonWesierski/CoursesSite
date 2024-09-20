@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Episode;
@@ -9,74 +10,115 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ObjectManager;
+use App\Repository\CategoryRepository;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordHasher;
+    private CategoryRepository $categoryRepository;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, CategoryRepository $categoryRepository)
     {
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function load(ObjectManager $manager): void
     {
-        $this->loadCoursesWithUser($manager); 
+        $faker = Factory::create();
+
+
+        $this->loadUsers($manager, $faker);
+
+        $this->loadCategories($manager, $faker);
+
+        $this->loadCoursesWithChapters($manager, $faker);
     }
 
-    private function loadCoursesWithUser(ObjectManager $manager): void
+    private function loadUsers(ObjectManager $manager, $faker): void
     {
-        $user = new User();
-        $user->setUsername("testUser");
-        $user->setRoles(['ROLE_USER']);
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, "test123"));
-        $user->setEmail("test@wp.pl");
-        $user->setVerified(true);
+        for ($i = 0; $i < 20; $i++) {
+            $user = new User();
+            $user->setUsername($faker->userName);
+            $user->setRoles(['ROLE_USER']);
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, 'test123'));
+            $user->setEmail($faker->email);
+            $user->setVerified(true);
+            $manager->persist($user);
+        }
 
-        $chapter1 = new Chapter();
-        $chapter1->setName("Theory - Symfony 4 & 5 core features");
+        $manager->flush();
+    }
 
-        $episode1 = new Episode();
-        $episode1->setName("Routes");
-        $episode1->setDescription("You will know two ways of creating routes in Symfony");
+    private function loadCategories(ObjectManager $manager, $faker): void
+    {
+        $categories = [];
 
-        $episode2 = new Episode();
-        $episode2->setName("Controllers");
-        $episode2->setDescription("Basics about Symfony controllers");
-        
+        // Create top-level categories
+        for ($i = 0; $i < 5; $i++) {
+            $parentCategory = new Category();
+            $parentCategory->setName($faker->word);
+            $manager->persist($parentCategory);
+            $categories[] = $parentCategory;
 
-        $chapter1->addEpisode($episode1);
-        $chapter1->addEpisode($episode2);
+            // Create second-level categories
+            for ($j = 0; $j < 3; $j++) {
+                $subCategory1 = new Category();
+                $subCategory1->setName($faker->word);
+                $subCategory1->setParent($parentCategory);
+                $manager->persist($subCategory1);
+                $categories[] = $subCategory1;
+
+                // Create third-level categories
+                for ($k = 0; $k < 2; $k++) {
+                    $subCategory2 = new Category();
+                    $subCategory2->setName($faker->word);
+                    $subCategory2->setParent($subCategory1);
+                    $manager->persist($subCategory2);
+                    $categories[] = $subCategory2;
+                }
+            }
+        }
 
 
-        $manager->persist($episode1);
-        $manager->persist($episode2);
-        $manager->persist($chapter1);
+        $manager->flush();
+    }
 
-        $chapter2 = new Chapter();
-        $chapter2->setName("Paginate, sort and search - videos on the website and test it");
 
-        $episode3 = new Episode();
-        $episode3->setName("Search results");
-        $episode3->setDescription("Search videos by title in the database and display them");
-        
+    private function loadCoursesWithChapters(ObjectManager $manager, $faker): void
+    {
+         $categories = $this->categoryRepository->findAll();
 
-        $chapter2->addEpisode($episode3);
-        
-        $manager->persist($episode3);
-        $manager->persist($chapter2);
+        for ($i = 0; $i < 20; $i++) {
+            $course = new Course();
+            $course->setName('Course ' . ($i + 1));
+            $course->setDescription($faker->sentences(10, true));
+            $course->setImagePath($faker->imageUrl());
 
-        $course1 = new Course();
-        $course1->setName("Symfony Web Development Complete Guide: Beginner To Advanced");
-        $course1->setDescription("You will learn Symfony 4 & 5 from theory to advanced level by creating real life projects");
-        $course1->setImagePath("/uploads/66e31ed8d3b64.jpg");
-        $course1->addChapter($chapter1);
-        $course1->addChapter($chapter2);
+            $chapter = new Chapter();
+            $chapter->setName('Chapter 1 of Course ' . ($i + 1));
+            
+            $episode = new Episode();
+            $episode->setName('Episode 1 of Course ' . ($i + 1));
+            $episode->setDescription($faker->sentences(3, true));
 
-        $manager->persist($course1);
+            $chapter->addEpisode($episode);
+            $course->addChapter($chapter);
 
-        $user->addCourse($course1);
-        $manager->persist($user);
+            $randomCategory1 = $categories[array_rand($categories, 1)];
+            $randomCategory2 = $categories[array_rand($categories, 1)];
+            $course->addCategory($randomCategory1);
+            $course->addCategory($randomCategory2);
+
+            $userRepo = $manager->getRepository(User::class);
+            $randomUser = $userRepo->findOneBy([], ['id' => 'ASC'], rand(0, 19), 1);
+            $randomUser->addCourse($course);
+
+            $manager->persist($chapter);
+            $manager->persist($episode);
+            $manager->persist($course);
+        }
 
         $manager->flush();
     }

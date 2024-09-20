@@ -40,4 +40,13 @@ class CourseRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findCoursesByCategoryAndHerChildren($categoryWithCihildrenCategory): array{
+        return $this->createQueryBuilder('c')
+            ->join('c.categories', 'cat')
+            ->andWhere('cat IN (:categories)')
+            ->setParameter('categories', $categoryWithCihildrenCategory)
+            ->getQuery()
+            ->getResult();
+    }
 }
