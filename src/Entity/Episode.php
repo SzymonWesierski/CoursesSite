@@ -26,7 +26,7 @@ class Episode
     #[ORM\JoinColumn(nullable: false)]
     private ?Chapter $chapter = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $imagePath = null;
 
     public function getId(): ?int
@@ -87,7 +87,7 @@ class Episode
         return $this->imagePath;
     }
 
-    public function setImagePath(string $imagePath): static
+    public function setImagePath(?string $imagePath): static
     {
         $this->imagePath = $imagePath;
 

@@ -38,10 +38,6 @@ class CourseFormType extends AbstractType
                 'required' => false,
                 'mapped' => false
             ))
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
             ->add('categories', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'id',

@@ -7,6 +7,7 @@ use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Episode;
 use App\Entity\User;
+use App\Enum\CourseStatus;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -95,6 +96,7 @@ class AppFixtures extends Fixture
             $course->setName('Course ' . ($i + 1));
             $course->setDescription($faker->sentences(10, true));
             $course->setImagePath($faker->imageUrl());
+            $course->setStatus(CourseStatus::APPROVED);
 
             $chapter = new Chapter();
             $chapter->setName('Chapter 1 of Course ' . ($i + 1));

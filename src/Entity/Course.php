@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\CourseStatus;
 use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -37,6 +38,9 @@ class Course
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'courses')]
     #[ORM\JoinTable(name: 'course_category')]
     private Collection $categories;
+
+    #[ORM\Column(type: 'string', length: 64, enumType: CourseStatus::class)]
+    private CourseStatus $status;
 
     public function __construct()
     {
@@ -138,6 +142,17 @@ class Course
     {
         $this->categories->removeElement($category);
 
+        return $this;
+    }
+
+    public function getStatus(): CourseStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(CourseStatus $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 }

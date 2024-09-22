@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+    
+
+    {% if app.user %}
+    <p>
+    <a href="{{ path('create_course') }}">
+                Create new course
+            </a>
+    {% endif %}
+
+    <h1>Kategorie</h1>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button    
+            type="submit">
+            Filtr
+        </button>
+        {{ form_end(form) }}
+
+    
+    <h1>Your courses</h1>
+
+    {% if courses %}
+        {% for course in courses %}
+            <div>
+                <img
+                    width = 200px
+                    src="{{ course.ImagePath }}"
+                    alt=""
+                />
+                <h2>
+                    {{ course.name }}
+                </h2>
+
+                <p>
+                    {{ course.Description }}
+                </p>
+                {% if statusValues['NOT_DONE_YET'] == course.status.value %}
+                <p>
+                    Course is not finished yet
+                    <a href="/courses/edit/{{ course.id }}">
+                        Edit
+                    </a>
+                </p>
+                {% endif %}
+                <a href="/courses/show/{{ course.id }}">
+                    Preview
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+
+        <h1>No courses yet</h1>
+        <h4><a href="{{ path('create_course') }}">
+                Create new course
+            </a></h4>
+
+    {% endif %}
+
+{% endblock %}

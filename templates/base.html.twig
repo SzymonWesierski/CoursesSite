@@ -12,6 +12,30 @@
         {% endblock %}
     </head>
     <body>
+        <a href="{{ path('courses') }}">
+                Home Page
+            </a>
+
+        {% if app.user %}
+        
+        <a href="{{ path('userCoursesPanel') }}">
+                My courses
+            </a>
+        
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% else %}
+            <div class="mb-3">
+            Login to get access to many features, <a href="{{ path('app_login') }}">Login</a> | <a href="{{ path('app_register') }}">Register</a>
+            </div>
+        {% endif %}
+
+    <br>
+    <hr>
+    <br>
+
         {% block body %}{% endblock %}
+
     </body>
 </html>

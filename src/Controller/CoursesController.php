@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Enum\CourseStatus;
 use App\Form\CourseFormType;
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
@@ -52,11 +53,11 @@ class CoursesController extends AbstractController
                 $categories = $this->categoryRepository->findAllChildren($category);
                 $categories[] = $category;
 
-                $courses = $this->courseRepository->findCoursesByCategoryAndHerChildren($categories);
+                $courses = $this->courseRepository->findAllAprovedByCategoryAndHerChildren($categories);
             }
         }
         else{
-            $courses = $this->courseRepository->findAll();
+            $courses = $this->courseRepository->findAllApproved();
         }
 
         return $this->render('courses/index.html.twig', [
@@ -97,7 +98,8 @@ class CoursesController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $newCourse = $form->getData();
             $newCourse->setUser($this->getUser());
-            $imagePath = $form->get('ImagePath')->getData(); 
+            $newCourse->setStatus(CourseStatus::NOT_DONE_YET);
+            $imagePath = $form->get('ImagePath')->getData();
             
             if ($imagePath) {
                 $newFileName = uniqid() . '.' . $imagePath->guessExtension();
@@ -116,7 +118,7 @@ class CoursesController extends AbstractController
             $this->em->persist($newCourse);
             $this->em->flush();
 
-            return $this->redirectToRoute('courses');
+            return $this->redirectToRoute('userCoursesPanel');
         }
 
         return $this->render('courses/create.html.twig', [
