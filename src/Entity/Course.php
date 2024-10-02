@@ -42,6 +42,12 @@ class Course
     #[ORM\Column(type: 'string', length: 64, enumType: CourseStatus::class)]
     private CourseStatus $status;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $publicImageId = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->chapters = new ArrayCollection();
@@ -153,6 +159,30 @@ class Course
     public function setStatus(CourseStatus $status): self
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getPublicImageId(): ?string
+    {
+        return $this->publicImageId;
+    }
+
+    public function setPublicImageId(?string $publicImageId): static
+    {
+        $this->publicImageId = $publicImageId;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
+
         return $this;
     }
 }

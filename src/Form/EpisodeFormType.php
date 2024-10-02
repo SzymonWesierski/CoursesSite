@@ -15,8 +15,11 @@ class EpisodeFormType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('videoPath')
-            ->add('imagePath', FileType::class, array(
+            ->add('video', FileType::class, array(
+                'required' => false,
+                'mapped' => false
+            ))
+            ->add('image', FileType::class, array(
                 'required' => false,
                 'mapped' => false
             ))

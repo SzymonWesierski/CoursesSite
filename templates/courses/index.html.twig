@@ -3,37 +3,47 @@
 {% block title %}Courses{% endblock %}
 
 {% block body %}
+    
+    <div class="courses-container">
 
-    <h1>Kategorie</h1>
-
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button    
-            type="submit">
-            Filtr
-        </button>
-        {{ form_end(form) }}
-
-    <h1>What's new</h1>
-    {% for course in courses %}
-        <div>
-            <img
-                width = 200px
-                src="{{ course.ImagePath }}"
-                alt=""
-            />
-            <h2>
-                {{ course.name }}
-            </h2>
-
-            <p>
-                {{ course.Description }}
-            </p>
-
-            <a href="/courses/show/{{ course.id }}">
-                Show me
-            </a>
+        <div class="course-list-title">
+            <h1>All {{categoryName}} courses</h1>
         </div>
-    {% endfor %}
+        <div class="courses-list-container">
+            <div class="courses-list">
+                {% for course in paginator.results %}
+                    <div class="courses-list-element">
+                        <img
+                            width = 200px
+                            src="{{ course.ImagePath }}"
+                            alt=""
+                        />
+                        <h2>
+                            {{ course.name }}
+                        </h2>
+
+                        <p>
+                            {{ course.Description }}
+                        </p>
+
+                        <a href="/courses/show/{{ course.id }}">
+                            Show me
+                        </a>
+                    </div>
+                {% else %}
+                    <div >No course found</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    
+
+    {% if paginator.hasToPaginate %}
+
+        {% include 'partials/pagination/_course_pagination.html.twig' with { path: "courses"} %}
+        
+    {% endif %}
 
 {% endblock %}
+

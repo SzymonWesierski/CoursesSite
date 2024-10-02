@@ -1,0 +1,42 @@
+<div class="pagination-container">
+    <div class="pagination modal-1">
+        <ul >
+            {% if paginator.hasPreviousPage %}
+                <li>
+                    <a class="prev" href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.previousPage} : { page: paginator.previousPage }) }}" rel="previous">
+                        &laquo; Prev
+                    </a>
+                </li>
+            {% endif %}
+
+        {% set lastPage = paginator.getLastPage %}
+
+            {% if paginator.currentPage + 2 < paginator.getLastPage %}
+                {% set lastPage = paginator.currentPage + 2 %}
+            {% endif %}
+
+
+            {% for i in (paginator.currentPage - 2)..lastPage %}
+                {% if i > 0 %}
+                    {% if i == paginator.currentPage %}
+                        <li>
+                            <a class="active" >{{ i }}</a>
+                        </li>
+                    {% else %}
+                    <li>
+                        <a href="{{ path(path, categoryId ? { categoryId: categoryId, page: i } : { page: i }) }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if paginator.hasNextPage %}
+                <li class="next">
+                    <a  href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.nextPage} : { page: paginator.nextPage }) }}">
+                    Next &raquo;
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

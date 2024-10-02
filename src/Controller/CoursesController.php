@@ -3,29 +3,35 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Entity\Chapter;
+use App\Entity\Episode;
 use App\Enum\CourseStatus;
 use App\Form\CourseFormType;
+use App\Form\ChapterFormType;
+use App\Service\CloudinaryService;
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use App\Form\CategoryFilterType;
 
 class CoursesController extends AbstractController
 {
     private $em;
     private $courseRepository;
     private $categoryRepository;
+    private $cloudinaryService;
 
-    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, CategoryRepository $categoryRepository)
+    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, 
+        CategoryRepository $categoryRepository, CloudinaryService $cloudinaryService)
     {
         $this->em = $em;
         $this->courseRepository = $courseRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->cloudinaryService = $cloudinaryService;
     }
 
     #[Route('/', name: 'app_home_redirect')]
@@ -34,57 +40,86 @@ class CoursesController extends AbstractController
         return $this->redirectToRoute('courses');
     }
 
-    #[Route('/courses/{categoryId}', name: 'courses', requirements: ['categoryId' => '\d+'])]
-    public function index(Request $request, EntityManagerInterface $em, $categoryId = null): Response
-    {
-        $form = $this->createForm(CategoryFilterType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            $categoryId = $form->get('category')->getData();
-            return $this->redirectToRoute('courses', ['categoryId' => $categoryId ]);
-        }
+    #[Route('/courses/{page?}/{categoryId?}', name: 'courses', defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
+    public function index($categoryId = null, int $page = 1): Response
+    {   
+        $navBarCategories = $this->categoryRepository->findRootCategories();
+        $categoryName = "";
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
+            $categoryName = $category->getName();
 
             if ($category) {
                 $categories = $this->categoryRepository->findAllChildren($category);
                 $categories[] = $category;
 
-                $courses = $this->courseRepository->findAllAprovedByCategoryAndHerChildren($categories);
+                $courses = $this->courseRepository->findAllAprovedByCategoryAndHerChildren( $categories, $page);
             }
         }
         else{
-            $courses = $this->courseRepository->findAllApproved();
+            $courses = $this->courseRepository->findAllApproved($page);
         }
 
         return $this->render('courses/index.html.twig', [
-            'courses' => $courses,
-            'form' => $form->createView(),
+            'paginator' => $courses,
+            'categoryId' => $categoryId,
+            'categoryName' => $categoryName,
+            'navBarCategories' => $navBarCategories
         ]);
     }
 
 
-    #[Route('/courses/show/{id}', methods: ['GET'], name: 'show_course')]
-    public function show($id): Response
+    #[Route('/courses/show/{courseId}/{episodeId}', methods: ['GET'], name: 'show_course')]
+    public function show(int $courseId, int $episodeId = 0): Response
     {
-        $course = $this->courseRepository->find($id);
+        $course = $this->courseRepository->find($courseId);
+
+        if (!$course) {
+            throw $this->createNotFoundException('Episode not found.');
+        }
+
+        $episode = new Episode();
+
+        if ($episodeId > 0){
+            $episodeRepo = $this->em->getRepository(Episode::class);
+
+            if (!$episodeId || !is_numeric($episodeId)) {
+                throw $this->createNotFoundException('Episode ID is missing or invalid.');
+            }
+
+            $episode = $episodeRepo->find($episodeId);
+
+            if (!$episode) {
+                throw $this->createNotFoundException('Episode not found.');
+            }
+        }
         
+
         return $this->render('courses/show.html.twig', [
-            'course' => $course
+            'course' => $course,
+            'episode' => $episode,
+            'episodeId' => $episodeId
         ]);
     }
 
-    #[Route('/courses/delete/{id}', methods: ['GET', 'DELETE'], name: 'delete_course')]
+    #[Route('/courses/delete/{id}', methods: ['GET','DELETE'], name: 'delete_course')]
     public function delete($id): Response
     {
         $course = $this->courseRepository->find($id);
+
+        if (!$course) {
+            throw $this->createNotFoundException('Episode not found.');
+        }
+
+        $currentPublicImageId = $course->getPublicImageId();
+        if($currentPublicImageId){
+            $this->cloudinaryService->deleteImage($currentPublicImageId);
+        }
         $this->em->remove($course);
         $this->em->flush();
 
-        return $this->redirectToRoute('courses');
+        return $this->redirectToRoute('userCoursesPanel');
     }
 
     #[Route('/courses/create', name: 'create_course')]
@@ -99,20 +134,12 @@ class CoursesController extends AbstractController
             $newCourse = $form->getData();
             $newCourse->setUser($this->getUser());
             $newCourse->setStatus(CourseStatus::NOT_DONE_YET);
-            $imagePath = $form->get('ImagePath')->getData();
-            
-            if ($imagePath) {
-                $newFileName = uniqid() . '.' . $imagePath->guessExtension();
-
-                try {
-                    $imagePath->move(
-                        $this->getParameter('kernel.project_dir') . '/public/uploads',
-                        $newFileName
-                    );
-                } catch (FileException $e) {
-                    return new Response($e->getMessage());
-                }
-                $newCourse->setImagePath('/uploads/' . $newFileName);
+            $image = $form->get('image')->getData();
+            if ($image) {
+                $localImagePath = $image->getRealPath();
+                $result = $this->cloudinaryService->uploadImage($localImagePath, "CourseSite/Course");
+                $newCourse->setPublicImageId($result['public_id']);
+                $newCourse->setImagePath($_ENV['CLOUDINARY_IMAGE_URL'] . $result['public_id']);
             }
             
             $this->em->persist($newCourse);
@@ -131,48 +158,40 @@ class CoursesController extends AbstractController
     {
         $course = $this->courseRepository->find($id);
 
-        $form = $this->createForm(CourseFormType::class, $course);
+        if (!$course) {
+            throw $this->createNotFoundException('Episode not found.');
+        }
 
-        $form->handleRequest($request);
+        $course_form = $this->createForm(CourseFormType::class, $course);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $chapter = new Chapter();
+        $chapter_form = $this->createForm(ChapterFormType::class, $chapter);
 
-            $imagePath = $form->get('ImagePath')->getData();
+        $course_form->handleRequest($request);
 
-            if ($imagePath) {
-                if ($course->getImagePath() !== null) {
-                    if (file_exists(
-                        $this->getParameter('kernel.project_dir') . $course->getImagePath()
-                        )) {
-                            $this->GetParameter('kernel.project_dir') . $course->getImagePath();
-                    }
-                    $newFileName = uniqid() . '.' . $imagePath->guessExtension();
+        if ($course_form->isSubmitted() && $course_form->isValid()) {
 
-                    try {
-                        $imagePath->move(
-                            $this->getParameter('kernel.project_dir') . '/public/uploads',
-                            $newFileName
-                        );
-                    } catch (FileException $e) {
-                        return new Response($e->getMessage());
-                    }
-
-                    $course->setImagePath('/uploads/' . $newFileName);
-                    $this->em->flush();
-
-                    return $this->redirectToRoute('courses');
+            $image = $course_form->get('image')->getData();
+            if ($image) {
+                $currentPublicImageId = $course->getPublicImageId();
+                if($currentPublicImageId){
+                    $this->cloudinaryService->deleteImage($currentPublicImageId);
                 }
-            } else {
-                $course->setName($form->get('name')->getData());
-                $course->setDescription($form->get('Description')->getData());
+                $localImagePath = $image->getRealPath();
+                $result = $this->cloudinaryService->uploadImage($localImagePath, "CourseSite/Course");
+                $course->setPublicImageId($result['public_id']);
+                $course->setImagePath($_ENV['CLOUDINARY_IMAGE_URL'] . $result['public_id']);
+                
+            } 
 
-                $this->em->flush();
-                return $this->redirectToRoute('courses');
-            }
+            $this->em->flush();
+            return $this->redirectToRoute('userCoursesPanel');
         }
 
         return $this->render('courses/edit.html.twig', [
-            'form' => $form->createView()
+            'course_form' => $course_form->createView(),
+            'chapter_form' => $chapter_form->createView(),
+            'course' => $course
         ]);
     }
 }

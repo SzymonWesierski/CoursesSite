@@ -29,6 +29,12 @@ class Episode
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imagePath = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $publicImageId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $publicVideoId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +96,30 @@ class Episode
     public function setImagePath(?string $imagePath): static
     {
         $this->imagePath = $imagePath;
+
+        return $this;
+    }
+
+    public function getPublicImageId(): ?string
+    {
+        return $this->publicImageId;
+    }
+
+    public function setPublicImageId(?string $publicImageId): static
+    {
+        $this->publicImageId = $publicImageId;
+
+        return $this;
+    }
+
+    public function getPublicVideoId(): ?string
+    {
+        return $this->publicVideoId;
+    }
+
+    public function setPublicVideoId(?string $publicVideoId): static
+    {
+        $this->publicVideoId = $publicVideoId;
 
         return $this;
     }

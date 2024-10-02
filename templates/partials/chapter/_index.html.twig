@@ -1,0 +1,7 @@
+{% if chapter.episodes is not empty %}
+    {% for episode in chapter.episodes %}
+        <p> - - {{ episode.name }}</p>
+    {% endfor %}
+{% else %}
+    <p> - - No episodes yet</p>
+{% endif %}

@@ -5,7 +5,6 @@
 namespace App\Repository;
 
 use App\Entity\Category;
-use App\Entity\CategoryClosure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,11 +20,19 @@ class CategoryRepository extends ServiceEntityRepository
         return $this->findBy(['parent' => $parent]);
     }
 
-    public function findCategoriesWithChildren(): array
+    public function findLeafCategories(): array
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.children', 'children')
             ->addSelect('children')
+            ->where('children.id IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findRootCategories(): array
+    {
+        return $this->createQueryBuilder('c')
             ->where('c.parent IS NULL')
             ->getQuery()
             ->getResult();

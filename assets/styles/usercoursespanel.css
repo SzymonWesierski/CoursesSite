@@ -1,0 +1,24 @@
+.course-list-title-divided{
+    display: flex;
+    justify-content:space-between;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.course-list-title-left-side{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.course-list-title-right-side{
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.courses-list-element-query{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

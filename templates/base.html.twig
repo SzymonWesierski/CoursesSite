@@ -5,35 +5,108 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
-        <a href="{{ path('courses') }}">
-                Home Page
-            </a>
+        <nav class="navbar">
 
-        {% if app.user %}
-        
-        <a href="{{ path('userCoursesPanel') }}">
-                My courses
-            </a>
-        
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% else %}
-            <div class="mb-3">
-            Login to get access to many features, <a href="{{ path('app_login') }}">Login</a> | <a href="{{ path('app_register') }}">Register</a>
-            </div>
-        {% endif %}
+                <div class="navbar-container-left">
+                    <div class="navbar-item">
+                        <a href="{{ path('courses') }}" class="navbar-item"><img height=100 src="/images/logo.png" alt="logo"></a>
+                    </div>
+                    {% if app.request.getPathInfo() matches '(^/courses(?!/show).*)' %}
+                        <div class="navbar-item">
+                            <div class="category-dropdown">
+                            <button class="navbar-item dropdown-button">Categories <img src="/icons/arrow-down.svg" alt="arrow-down"></button>
+                                <div class="dropdown-content">
+                                    <ul class="categories">
+                                        {% for parent in navBarCategories %}
+                                        <li class="category-item">
+                                            <a href="{{ path('courses', {categoryId: parent.id}) }}" class="category-link"><span>{{ parent.name }}</span> <img src="/icons/arrow-right.svg" alt="arrow-right"></a>
+                                            <ul class="subcategory">
+                                                {% for child in parent.getChildren %}
+                                                <li>
+                                                    <a href="{{ path('courses', {categoryId: child.id}) }}" class="subcategory-link">{{ child.name }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-    <br>
-    <hr>
-    <br>
+                        <div class="navbar-item">
+                            <form action="">
+                                <input class="search-input" placeholder="Searth for course" type="text" name="text" class="input">
+                            </form>
+                        </div>
+                       
+                    {% endif %}
+                    
+                </div>
+                
+
+
+                <div class="navbar-container-right">
+                    {% if app.user %}
+                        <div class="navbar-item">
+                            <a href="{{ path('userCoursesPanel') }}" class="navbar-item">
+                            <button class="sliding-button">
+                                    <div class="sliding-button-sign"><img class="icon" src="/icons/instructor.svg" alt="instructor"></div>
+                                    <div class="sliding-button-text">Instructor</div>
+                            </button>
+                            </a>
+                        </div>
+
+                        <div class="navbar-item">
+                            <button class="sliding-button">
+                                    <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
+                                    <div class="sliding-button-text">My&nbsp;learning</div>
+                            </button>
+                            </a>
+                        </div>
+
+                        <div class="navbar-item">
+                            <a href="#">
+                            <button class="sliding-button">
+                                    <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="cart"></div>
+                                    <div class="sliding-button-text">Cart</div>
+                            </button>
+                            </a>
+                        </div>
+
+                        <div class="navbar-item">
+                            <a href="#">
+                            <button class="sliding-button">
+                                    <div class="sliding-button-sign"><img src="/icons/user.svg" alt="edit-profile"></div>
+                                    <div class="sliding-button-text">Edit&nbsp;profile</div>
+                            </button>
+                            </a>
+                        </div>
+
+                        <div class="navbar-item">
+                            <a href="{{ path('app_logout') }}">
+                                <button class="sliding-button">
+                                    <div class="sliding-button-sign"><img src="/icons/logout.svg" alt="logout"></div>
+                                    <div class="sliding-button-text">Logout</div>
+                                </button>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="navbar-item">
+                            <a href="{{ path('app_login') }}" class="navbar-item">Login</a> | <a href="{{ path('app_register') }}" class="navbar-item">Register</a>
+                        </div>
+                    {% endif %} 
+                </div>
+        </nav>
+
 
         {% block body %}{% endblock %}
 

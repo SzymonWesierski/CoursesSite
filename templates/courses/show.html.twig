@@ -1,24 +1,43 @@
- <div>
-        <h1>
-            {{ course.name }}
-        </h1>
-        <img
-            src="{{ course.ImagePath }}"
-        />
+{% extends 'base.html.twig' %}
 
-        <p>
-            {{ course.Description }}
-        </p>
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+ <div>
+        {% if episodeId > 0 %}
+            {% include 'partials/episode/_show.html.twig' with { episode: episode } %}
+        {% else %}
+            <h1>
+                {{ course.name }}
+            </h1>
+            <img
+                width = 200px
+                src="{{ course.ImagePath }}"
+            />
+            <p>
+                {{ course.Description }}
+            </p>
+        {% endif %}
 
         <p><h3>Content</h3>
-
             {% for chapter in course.chapters %}       
-                <h4>{{ chapter.name }}</h4>
+                <h4>CHAPTER: {{ chapter.name }}</h4>
                 <ul>
                 {% for episode in chapter.episodes %}
-                    <li>{{episode.name}}:<br>
-                     - {{episode.description}}
-                    </li>
+                    <div>
+                        <li>
+                            {{episode.name}}:
+                            <br>
+                            <img
+                                width = 100px
+                                src="{{ episode.ImagePath ? episode.ImagePath : "https://w7.pngwing.com/pngs/361/973/png-transparent-no-symbol-sign-scalable-graphics-hitting-others-s-angle-text-sticker.png" }}"
+                                alt=""
+                            />
+                            <p><a href="/courses/show/{{course.id}}/{{episode.id}}">watch</a></p>
+                            - {{episode.description}}
+                        </li>
+                    </div>
                 {% endfor %}
                 </ul>
             {% endfor %}
@@ -51,3 +70,5 @@
     </div>
 
 <h4>Course created by {{course.user.username}}</h1>
+
+{% endblock %}

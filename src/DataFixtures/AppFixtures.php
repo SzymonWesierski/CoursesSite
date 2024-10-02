@@ -55,48 +55,117 @@ class AppFixtures extends Fixture
     private function loadCategories(ObjectManager $manager, $faker): void
     {
         $categories = [];
+        
+        $categoriesNames = [
+            "Development" => [
+                "Web Development",
+                "Mobile Development",
+                "Game Development",
+                "Data Science"
+            ],
+            "Business" => [
+                "Entrepreneurship",
+                "Management",
+                "Business Strategy",
+                "E-commerce"
+            ],
+            "Finance & Accounting" => [
+                "Personal Finance",
+                "Investing",
+                "Accounting Basics",
+                "Taxation"
+            ],
+            "IT & Software" => [
+                "Software Engineering",
+                "Cloud Computing",
+                "Cybersecurity",
+                "Networking"
+            ],
+            "Office Productivity" => [
+                "Microsoft Office",
+                "Google Workspace",
+                "Project Management",
+                "Time Management"
+            ],
+            "Personal Development" => [
+                "Self-Help",
+                "Motivation",
+                "Career Development",
+                "Public Speaking"
+            ],
+            "Design" => [
+                "Graphic Design",
+                "UX/UI Design",
+                "Web Design",
+                "3D Design"
+            ],
+            "Marketing" => [
+                "Digital Marketing",
+                "Content Marketing",
+                "Social Media Marketing",
+                "SEO"
+            ],
+            "Lifestyle" => [
+                "Travel",
+                "Cooking",
+                "Fashion",
+                "Personal Finance"
+            ],
+            "Photography & Video" => [
+                "Photography Basics",
+                "Video Editing",
+                "Lighting Techniques",
+                "Creative Photography"
+            ],
+            "Health & Fitness" => [
+                "Nutrition",
+                "Yoga",
+                "Fitness Training",
+                "Mental Health"
+            ],
+            "Music" => [
+                "Music Theory",
+                "Instrument Lessons",
+                "Music Production",
+                "Composition"
+            ],
+            "Teaching & Academics" => [
+                "Teaching Strategies",
+                "Educational Psychology",
+                "Curriculum Development",
+                "Online Teaching"
+            ]
+        ];
+        
 
-        // Create top-level categories
-        for ($i = 0; $i < 5; $i++) {
+        foreach ($categoriesNames as $parentName => $subcategories) {
             $parentCategory = new Category();
-            $parentCategory->setName($faker->word);
+            $parentCategory->setName($parentName); 
             $manager->persist($parentCategory);
             $categories[] = $parentCategory;
-
-            // Create second-level categories
-            for ($j = 0; $j < 3; $j++) {
-                $subCategory1 = new Category();
-                $subCategory1->setName($faker->word);
-                $subCategory1->setParent($parentCategory);
-                $manager->persist($subCategory1);
-                $categories[] = $subCategory1;
-
-                // Create third-level categories
-                for ($k = 0; $k < 2; $k++) {
-                    $subCategory2 = new Category();
-                    $subCategory2->setName($faker->word);
-                    $subCategory2->setParent($subCategory1);
-                    $manager->persist($subCategory2);
-                    $categories[] = $subCategory2;
-                }
+    
+            foreach ($subcategories as $subcategoryName) {
+                $subcategory = new Category(); 
+                $subcategory->setName($subcategoryName); 
+                $subcategory->setParent($parentCategory); 
+                $manager->persist($subcategory);
             }
         }
-
-
         $manager->flush();
     }
 
 
     private function loadCoursesWithChapters(ObjectManager $manager, $faker): void
     {
-         $categories = $this->categoryRepository->findAll();
+         $categories = $this->categoryRepository->findLeafCategories();
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $course = new Course();
             $course->setName('Course ' . ($i + 1));
             $course->setDescription($faker->sentences(10, true));
             $course->setImagePath($faker->imageUrl());
             $course->setStatus(CourseStatus::APPROVED);
+            $course->setPrice(49.99);
 
             $chapter = new Chapter();
             $chapter->setName('Chapter 1 of Course ' . ($i + 1));
@@ -109,9 +178,8 @@ class AppFixtures extends Fixture
             $course->addChapter($chapter);
 
             $randomCategory1 = $categories[array_rand($categories, 1)];
-            $randomCategory2 = $categories[array_rand($categories, 1)];
+
             $course->addCategory($randomCategory1);
-            $course->addCategory($randomCategory2);
 
             $userRepo = $manager->getRepository(User::class);
             $randomUser = $userRepo->findOneBy([], ['id' => 'ASC'], rand(0, 19), 1);

@@ -4,63 +4,95 @@
 
 {% block body %}
 
-    
+    <div class="courses-container">
 
-    {% if app.user %}
-    <p>
-    <a href="{{ path('create_course') }}">
-                Create new course
-            </a>
-    {% endif %}
-
-    <h1>Kategorie</h1>
-
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button    
-            type="submit">
-            Filtr
-        </button>
-        {{ form_end(form) }}
-
-    
-    <h1>Your courses</h1>
-
-    {% if courses %}
-        {% for course in courses %}
-            <div>
-                <img
-                    width = 200px
-                    src="{{ course.ImagePath }}"
-                    alt=""
-                />
-                <h2>
-                    {{ course.name }}
-                </h2>
-
-                <p>
-                    {{ course.Description }}
-                </p>
-                {% if statusValues['NOT_DONE_YET'] == course.status.value %}
-                <p>
-                    Course is not finished yet
-                    <a href="/courses/edit/{{ course.id }}">
-                        Edit
-                    </a>
-                </p>
-                {% endif %}
-                <a href="/courses/show/{{ course.id }}">
-                    Preview
+        <div class="course-list-title-divided">
+            <div class="course-list-title-left-side">
+                <h1>All your {{categoryName}} courses</h1>
+            </div>
+            <div class="course-list-title-right-side">
+                <a href="{{ path('create_course') }}">
+                    Create new course
                 </a>
             </div>
-        {% endfor %}
-    {% else %}
+        </div>
 
-        <h1>No courses yet</h1>
-        <h4><a href="{{ path('create_course') }}">
-                Create new course
-            </a></h4>
+        <div class="courses-list-container">
+            <div class="courses-list">
+                <div class="courses-list-element-query">
+                    <div class="navbar-item">
+                            <div class="category-dropdown">
+                            <button class="navbar-item dropdown-button">Categories <img src="/icons/arrow-down.svg" alt="arrow-down"></button>
+                                <div class="dropdown-content">
+                                    <ul class="categories">
+                                        {% for parent in navBarCategories %}
+                                        <li class="category-item">
+                                            <a href="{{ path('userCoursesPanel', {categoryId: parent.id}) }}" class="category-link"><span>{{ parent.name }}</span> <img src="/icons/arrow-right.svg" alt="arrow-right"></a>
+                                            <ul class="subcategory">
+                                                {% for child in parent.getChildren %}
+                                                <li>
+                                                    <a href="{{ path('userCoursesPanel', {categoryId: child.id}) }}" class="subcategory-link">{{ child.name }}</a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-    {% endif %}
+                        <div class="navbar-item">
+                            <form action="">
+                                <input class="search-input" placeholder="Searth for course" type="text" name="text" class="input">
+                            </form>
+                        </div>
+                </div>
+                {% if paginator.results | length > 0 %}
+                    {% for course in paginator.results %}
+                        <div class="courses-list-element">
+                            <img
+                                width = 200px
+                                src="{{ course.ImagePath }}"
+                                alt=""
+                            />
+                            <h2>
+                                {{ course.name }}
+                            </h2>
+
+                            <p>
+                                {{ course.Description }}
+                            </p>
+                            {% if statusValues['NOT_DONE_YET'] == course.status.value %}
+                            <p>
+                                Course is not finished yet
+                                <a href="/courses/edit/{{ course.id }}">
+                                    Manage/Edit
+                                </a>
+                            </p>
+                            {% endif %}
+                            <a href="/courses/show/{{ course.id }}">
+                                Preview
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+
+                    <h1>No courses yet</h1>
+                    <h4><a href="{{ path('create_course') }}">
+                            Create new course
+                        </a></h4>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+    
+   {% if paginator.hasToPaginate %}
+        {% include 'partials/pagination/_course_pagination.html.twig' with { path: "userCoursesPanel"} %}
+    {% endif %} 
+
 
 {% endblock %}

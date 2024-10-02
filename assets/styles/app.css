@@ -1,3 +1,332 @@
+:root {
+    --lightblue: #E9F1FA;
+    --brightblue: #00ABE4;
+    --navy: #05235f;
+    --white: #FFFFFF;
+}
+
+
 body {
-    background-color: skyblue;
+    margin: 0;
+    padding: 0;
+    width: 100%; 
+    background-color: var(--white);
+}
+
+.icon{
+    height: 30px;
+    margin-right: 10px;
+}
+
+.navbar {
+    width: 100%;
+    height: 6em;
+    background-color: var(--lightblue);
+    color: var(--navy);
+    margin: 0px;
+    display: flex;
+    justify-content:space-between;
+    border-bottom: var(--brightblue);
+    border-bottom-style: solid;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.199);
+}
+
+.navbar-container-left {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding-left: 1em;
+}
+
+.navbar-container-right {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 1em;
+}
+
+.navbar-item {
+    display: flex;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    height: 100%;
+    transition: color 0.3s;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.navbar-item:hover {
+    color: #007bff;
+}
+
+.navbar-item:visited {
+    color: var(--navy);
+}
+
+
+.category-dropdown {
+    position: relative;
+}
+
+.dropdown-button {
+    background-color: var(--lightblue);
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.dropdown-button img{
+    height: 10px;
+    margin-left: 10px;
+}
+
+.dropdown-button:hover {
+    color: #007bff;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--lightblue);
+    min-width: 12em;
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 5px;
+    border-bottom: var(--brightblue);
+    border-bottom-style: solid;
+    border-left: var(--brightblue);
+    border-left-style: solid;
+}
+
+.category-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.categories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-item {
+    position: relative;
+    width: 100%;
+    margin: 0.5em 0em;
+}
+
+.category-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--brightblue);
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.category-link span{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.category-link img{
+    display: flex;
+    align-items: center;
+    height: 10px;
+    margin-right: 0.5em;
+    justify-content: right;
+}
+
+.category-link:hover {
+    color: #007bff;
+    border-bottom: var(--brightblue);
+    border-bottom-style: solid;
+}
+
+.subcategory {
+    display: none;
+    position: absolute;
+    background-color: var(--lightblue);
+    padding: 10px;
+    min-width: 250px;
+    list-style: none;
+    border-radius: 5px;
+    z-index: 1000;
+    left: 100%;
+    top: 0;
+    border-bottom: var(--brightblue);
+    border-bottom-style: solid;
+    border-left: var(--brightblue);
+    border-left-style: solid;
+}
+
+.category-item:hover .subcategory {
+    display: block;
+}
+
+.subcategory-link {
+    color: var(--brightblue);
+    text-decoration: none;
+    display: block;
+    padding: 5px 10px;
+}
+
+.subcategory-link:hover {
+    color: #007bff;
+    border-bottom: var(--brightblue);
+    border-bottom-style: solid;
+}
+
+.sliding-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 70px;
+    height: 45px;
+    border: none;
+    border-radius: 10%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition-duration: .3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+    background-color: var(--lightblue)
+}
+
+.sliding-button-sign {
+    width: 100%;
+    transition-duration: .3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sliding-button-sign img{
+    width: 30px;
+}
+
+.sliding-button-text {
+    position: absolute;
+    right: 0%;
+    width: 0%;
+    opacity: 0;
+    color: var(--brightblue);
+    font-size: 1.2em;
+    font-weight: 600;
+    transition-duration: .3s;
+}
+/* hover effect on button width */
+.sliding-button:hover {
+    width: 200px;
+    border-radius: 40px;
+    transition-duration: .3s;
+}
+
+.sliding-button:hover .sliding-button-sign {
+    width: 30%;
+    transition-duration: .3s;
+    padding-left: 20px;
+}
+/* hover effect button's text */
+.sliding-button:hover .sliding-button-text {
+    opacity: 1;
+    width: 70%;
+    transition-duration: .3s;
+    padding-right: 10px;
+}
+/* button click effect*/
+.sliding-button:active {
+    transform: translate(2px ,2px);
+}
+
+.search-input{
+    width: 100%;
+    width: 400px;
+    height: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1.5px solid lightgrey;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0px 0px 20px -18px;
+}
+
+.search-input:hover {
+    border: 2px solid lightgrey;
+    box-shadow: 0px 0px 20px -17px;
+}
+
+.search-input:active {
+    transform: scale(0.95);
+}
+
+.search-input:focus {
+    border: 2px solid grey;
+}
+
+.pagination {
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-bottom: 40px;
+}
+
+.pagination li {
+    display: inline;
+    text-align: center;
+}
+
+.pagination a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #fff;
+    margin-left: -1px;
+    border: 1px solid transparent;
+    line-height: 1.5;
+}
+
+.pagination a.active {
+    cursor: default;
+}
+
+.pagination a:active {
+    outline: none;
+}
+
+.modal-1 li:first-child a {
+    -moz-border-radius: 6px 0 0 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px 0 0 6px;
+}
+
+.modal-1 li:last-child a {
+    -moz-border-radius: 0 6px 6px 0;
+    -webkit-border-radius: 0;
+    border-radius: 0 6px 6px 0;
+}
+
+.modal-1 a {
+    border-color: #ddd;
+    color: #4285F4;
+    background: #fff;
+}
+
+.modal-1 a:hover {
+    background: #eee;
+}
+
+.modal-1 a.active, .modal-1 a:active {
+    border-color: #4285F4;
+    background: #4285F4;
+    color: #fff;
+}
+
+.pagination-container{
+    display: flex;
+    justify-content: center;
 }

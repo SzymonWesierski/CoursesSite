@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -28,18 +29,11 @@ class UserCoursesPanelController extends AbstractController
     }
 
 
-    #[Route('/MyCoursesPanel/{categoryId}', name: 'userCoursesPanel', requirements: ['categoryId' => '\d+'])]
-    public function index(Request $request, EntityManagerInterface $em, $categoryId = null): Response
+    #[Route('/MyCoursesPanel/{page?}/{categoryId?}', name: 'userCoursesPanel',defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
+    public function index(Request $request,  $categoryId = null, int $page = 1): Response
     {
-        $form = $this->createForm(CategoryFilterType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            $categoryId = $form->get('category')->getData();
-            return $this->redirectToRoute('userCoursesPanel', ['categoryId' => $categoryId ]);
-        }
-
+        $navBarCategories = $this->categoryRepository->findRootCategories();
+        $categoryName = "";
         $user = $this->getUser();
 
         if (!$user) {
@@ -53,21 +47,24 @@ class UserCoursesPanelController extends AbstractController
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
-
+            $categoryName = $category->getName();
+            
             if ($category) {
                 $categories = $this->categoryRepository->findAllChildren($category);
                 $categories[] = $category;
 
-                $courses = $this->courseRepository->findUserCoursesByCategoryAndHerChildren($categories, $user);
+                $courses = $this->courseRepository->findUserCoursesByCategoryAndHerChildren($user, $categories ,$page);
             }
         }
         else{
-            $courses = $this->courseRepository->findUserAll($user);
+            $courses = $this->courseRepository->findUserAll($user, $page);
         }
 
         return $this->render('user_courses_panel/index.html.twig', [
-            'courses' => $courses,
-            'form' => $form->createView(),
+            'paginator' => $courses,
+            'navBarCategories' => $navBarCategories,
+            'categoryName' => $categoryName,
+            'categoryId' => $categoryId,
             'statusValues' => [
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,
