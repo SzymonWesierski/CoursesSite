@@ -1,14 +1,15 @@
 .course-list-title-divided{
     display: flex;
     justify-content:space-between;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
 .course-list-title-left-side{
     display: flex;
     align-items: center;
     justify-content: left;
+    text-shadow: -9px 3px 35px rgba(66, 68, 90, 1);
 }
 
 .course-list-title-right-side{

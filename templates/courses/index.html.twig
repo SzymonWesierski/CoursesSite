@@ -10,40 +10,67 @@
             <h1>All {{categoryName}} courses</h1>
         </div>
         <div class="courses-list-container">
-            <div class="courses-list">
-                {% for course in paginator.results %}
-                    <div class="courses-list-element">
-                        <img
-                            width = 200px
-                            src="{{ course.ImagePath }}"
-                            alt=""
-                        />
-                        <h2>
-                            {{ course.name }}
-                        </h2>
+                <div class="courses-list">
+                    {% for course in paginator.results %}
+                        
+                        <div class="courses-list-element-container">
+                            <div class="courses-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
+                                <div class="courses-list-element-image-section">
+                                    <img
+                                        src="{{ course.ImagePath }}"
+                                        alt=""
+                                    />
+                                </div>
+                                <div class="courses-list-element-details-section">
+                                    <h2>
+                                        {{ course.name }}
+                                    </h2>
+                                    <p class="courses-list-element-details-section-p">
+                                        {{ course.Description }}
+                                    </p>
+                                    {% set courserating = 3.34 %} <!-- Zastąp to zmienną z backendu, jeśli to konieczne -->
+                                    <div class="courses-list-element-details-section-rating">
+                                        <div class="star-container">
+                                            {% for i in range(0, 4, 1) %}
+                                                <span class="star {% if courserating >= i %} filled {% endif %}">★</span>
+                                            {% endfor %}
+                                        </div>
+                                        <div>
+                                            {{courserating}}
+                                        </div>
+                                    </div>
+                                    <div class="courses-list-element-details-section-createdby">
+                                        Created by {{course.user.username}}
+                                    </div>
+                                </div>
+                                <div class="courses-list-element-price-section">
+                                    <div class="courses-list-element-price-section-price">
+                                        {{course.price}} $
+                                    </div>
+                                    <div>
+                                        <a href="#">
+                                            <button class="sliding-button">
+                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    {% else %}
+                        <div >No course found</div>
+                    {% endfor %}
 
-                        <p>
-                            {{ course.Description }}
-                        </p>
+                    {% if paginator.hasToPaginate %}
 
-                        <a href="/courses/show/{{ course.id }}">
-                            Show me
-                        </a>
-                    </div>
-                {% else %}
-                    <div >No course found</div>
-                {% endfor %}
-            </div>
+                        {% include 'partials/pagination/_course_pagination.html.twig' with { path: "courses"} %}
+                        
+                    {% endif %}
+                </div>
         </div>
 
     </div>
     
-
-    {% if paginator.hasToPaginate %}
-
-        {% include 'partials/pagination/_course_pagination.html.twig' with { path: "courses"} %}
-        
-    {% endif %}
-
 {% endblock %}
-

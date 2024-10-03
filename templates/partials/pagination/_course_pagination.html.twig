@@ -4,7 +4,7 @@
             {% if paginator.hasPreviousPage %}
                 <li>
                     <a class="prev" href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.previousPage} : { page: paginator.previousPage }) }}" rel="previous">
-                        &laquo; Prev
+                        <img src="/icons/arrow-left.svg" alt="arrow-left">
                     </a>
                 </li>
             {% endif %}
@@ -33,7 +33,7 @@
             {% if paginator.hasNextPage %}
                 <li class="next">
                     <a  href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.nextPage} : { page: paginator.nextPage }) }}">
-                    Next &raquo;
+                    <img src="/icons/arrow-right.svg" alt="arrow-right">
                     </a>
                 </li>
             {% endif %}
