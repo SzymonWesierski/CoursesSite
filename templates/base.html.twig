@@ -75,10 +75,19 @@
 
                         <div class="navbar-item">
                             <a href="#">
-                            <button class="sliding-button">
-                                    <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="cart"></div>
+                                <button class="sliding-button">
+                                    <div class="sliding-button-sign">
+                                        <img src="/icons/cart.svg" alt="cart">
+                                    </div>
                                     <div class="sliding-button-text">Cart</div>
-                            </button>
+                                    <div class="cart-counter">
+                                        <turbo-frame id="cart">
+                                            <div id="cart-counter">
+                                                {{ productsInCartIds|length }}
+                                            </div>
+                                        </turbo-frame>
+                                    </div>
+                                </button>
                             </a>
                         </div>
 
@@ -106,7 +115,6 @@
                     {% endif %} 
                 </div>
         </nav>
-
 
         {% block body %}{% endblock %}
 

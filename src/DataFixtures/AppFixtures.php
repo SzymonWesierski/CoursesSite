@@ -7,6 +7,7 @@ use App\Entity\Chapter;
 use App\Entity\Course;
 use App\Entity\Episode;
 use App\Entity\User;
+use App\Entity\Cart;
 use App\Enum\CourseStatus;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -46,7 +47,15 @@ class AppFixtures extends Fixture
             $user->setPassword($this->userPasswordHasher->hashPassword($user, 'test123'));
             $user->setEmail($faker->email);
             $user->setVerified(true);
+
             $manager->persist($user);
+
+            $cart = new Cart();
+            $cart->setUser($user);
+
+            $manager->persist($cart);
+
+            
         }
 
         $manager->flush();
@@ -163,7 +172,7 @@ class AppFixtures extends Fixture
             $course = new Course();
             $course->setName('Course ' . ($i + 1));
             $course->setDescription($faker->sentences(10, true));
-            $course->setImagePath($faker->imageUrl());
+            $course->setImagePath("/images/course_example_image.png");
             $course->setStatus(CourseStatus::APPROVED);
             $course->setPrice(49.99);
 

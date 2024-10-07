@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Cart;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -38,7 +39,14 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setRoles(['ROLE_USER']);
 
+            $cart = new Cart();
+            $cart->setAmountOfProducts(0);
+            $cart->setPurchased(false);
+            $cart->setUser($user);
+
             $entityManager->persist($user);
+            $entityManager->persist($cart);
+
             $entityManager->flush();
 
             // generate a signed url and email it to the user

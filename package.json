@@ -6,11 +6,20 @@
     "build": "encore production --progress"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@symfony/stimulus-bridge": "^3.2.2",
     "core-js": "^3.38.1",
     "jquery": "^3.7.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.7",
+    "@babel/preset-env": "^7.25.7",
     "@symfony/webpack-encore": "^5.0.0",
+    "@symfony/ux-dropzone": "file:vendor/symfony/ux-dropzone/assets",
+    "@symfony/ux-toggle-password": "file:vendor/symfony/ux-toggle-password/assets",
+    "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
     "webpack-notifier": "^1.15.0"
   }
 }

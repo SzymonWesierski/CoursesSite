@@ -48,10 +48,17 @@ class Course
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 
+    /**
+     * @var Collection<int, Cart>
+     */
+    #[ORM\ManyToMany(targetEntity: Cart::class, mappedBy: 'courses')]
+    private Collection $carts;
+
     public function __construct()
     {
         $this->chapters = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     // Gettery i settery dla pól
@@ -182,6 +189,33 @@ class Course
     public function setPrice(?float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): static
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts->add($cart);
+            $cart->addCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): static
+    {
+        if ($this->carts->removeElement($cart)) {
+            $cart->removeCourse($this);
+        }
 
         return $this;
     }

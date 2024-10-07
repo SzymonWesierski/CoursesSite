@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Course;
+use App\Entity\Cart;
 use App\Entity\Chapter;
 use App\Entity\Episode;
+use App\Entity\User;
 use App\Enum\CourseStatus;
 use App\Form\CourseFormType;
 use App\Form\ChapterFormType;
@@ -46,8 +48,27 @@ class CoursesController extends AbstractController
         $navBarCategories = $this->categoryRepository->findRootCategories();
         $categoryName = "";
 
+        $amountOfProducts = 0;
+
+        $user = $this->getUser();
+
+        if ($user instanceof User) {
+            $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
+
+            if (!$cart) {
+                throw $this->createNotFoundException('Cart not found');
+            }
+
+            $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+        }
+
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
+
+            if (!$category) {
+                throw $this->createNotFoundException('Course not found');
+            }
+
             $categoryName = $category->getName();
 
             if ($category) {
@@ -65,7 +86,8 @@ class CoursesController extends AbstractController
             'paginator' => $courses,
             'categoryId' => $categoryId,
             'categoryName' => $categoryName,
-            'navBarCategories' => $navBarCategories
+            'navBarCategories' => $navBarCategories,
+            'productsInCartIds' => $productsInCartIds
         ]);
     }
 
@@ -77,6 +99,20 @@ class CoursesController extends AbstractController
 
         if (!$course) {
             throw $this->createNotFoundException('Episode not found.');
+        }
+
+        $amountOfProducts = 0;
+
+        $user = $this->getUser();
+
+        if ($user instanceof User) {
+            $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
+
+            if (!$cart) {
+                throw $this->createNotFoundException('Cart not found');
+            }
+
+            $amountOfProducts = $cart->getAmountOfProducts();
         }
 
         $episode = new Episode();
@@ -99,7 +135,8 @@ class CoursesController extends AbstractController
         return $this->render('courses/show.html.twig', [
             'course' => $course,
             'episode' => $episode,
-            'episodeId' => $episodeId
+            'episodeId' => $episodeId,
+            'amountOfProducts' => $amountOfProducts
         ]);
     }
 

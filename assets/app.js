@@ -2,6 +2,8 @@ import './bootstrap.js';
 
 import $ from 'jquery'; 
 
+import { Turbo } from '@hotwired/turbo';
+
 import 'core-js/stable';
 
 import 'regenerator-runtime/runtime';

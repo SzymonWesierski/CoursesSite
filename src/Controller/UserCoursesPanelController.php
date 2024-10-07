@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Cart;
 use App\Enum\CourseStatus;
 use App\Form\CategoryFilterType;
 use App\Repository\CategoryRepository;
@@ -44,6 +45,13 @@ class UserCoursesPanelController extends AbstractController
             throw new \LogicException('Zalogowany użytkownik nie jest instancją encji User.');
         }
 
+        $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
+
+        if (!$cart) {
+            throw $this->createNotFoundException('Cart not found');
+        }
+
+        $amountOfProducts = $cart->getAmountOfProducts();
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
@@ -65,6 +73,7 @@ class UserCoursesPanelController extends AbstractController
             'navBarCategories' => $navBarCategories,
             'categoryName' => $categoryName,
             'categoryId' => $categoryId,
+            'amountOfProducts' => $amountOfProducts,
             'statusValues' => [
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,

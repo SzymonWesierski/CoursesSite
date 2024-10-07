@@ -28,7 +28,7 @@
                                     <p class="courses-list-element-details-section-p">
                                         {{ course.Description }}
                                     </p>
-                                    {% set courserating = 3.34 %} <!-- Zastąp to zmienną z backendu, jeśli to konieczne -->
+                                    {% set courserating = 3.34 %}
                                     <div class="courses-list-element-details-section-rating">
                                         <div class="star-container">
                                             {% for i in range(0, 4, 1) %}
@@ -48,13 +48,21 @@
                                         {{course.price}} $
                                     </div>
                                     <div>
-                                        <a href="#">
-                                            <button class="sliding-button">
-                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
-                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                        <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST" data-turbo-frame="cart">
+                                            <button type="submit"
+                                                    class="add-to-cart sliding-button"
+                                                    onclick="event.stopPropagation();" 
+                                                    data-product-id="{{ course.id }}"
+                                                    {% if productsInCartIds and course.id in productsInCartIds %} disabled{% endif %}>
+                                                {% if productsInCartIds and course.id in productsInCartIds %}
+                                                    In cart
+                                                {% else %}
+                                                    <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                    <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                                {% endif %}
                                             </button>
-                                        </a>
-                                    </div>
+                                        </form>
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -73,4 +81,31 @@
 
     </div>
     
+<script>
+
+    document.addEventListener("turbo:submit-end", (event) => {
+        if (event.detail.success) {
+            fetch('/cart/counter')
+                .then(response => response.json())
+                .then(data => {
+                    const counter = document.getElementById('cart-counter');
+                    counter.innerText = `${data.AmountOfProducts}`;
+                });
+
+            const form = event.target;
+            const productId = form.querySelector('.add-to-cart').dataset.productId;
+
+            const button = document.querySelector(`button[data-product-id="${productId}"]`);
+
+            if (button) {
+                button.disabled = true;
+                button.innerText = 'In cart';
+            }
+        }
+    });
+
+
+</script>
+
+
 {% endblock %}
