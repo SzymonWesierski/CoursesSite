@@ -51,7 +51,7 @@ class UserCoursesPanelController extends AbstractController
             throw $this->createNotFoundException('Cart not found');
         }
 
-        $amountOfProducts = $cart->getAmountOfProducts();
+        $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
@@ -73,7 +73,7 @@ class UserCoursesPanelController extends AbstractController
             'navBarCategories' => $navBarCategories,
             'categoryName' => $categoryName,
             'categoryId' => $categoryId,
-            'amountOfProducts' => $amountOfProducts,
+            'productsInCartIds' => $productsInCartIds,
             'statusValues' => [
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,

@@ -56,6 +56,9 @@ body {
     margin-right: 0.5em;
 }
 
+.navbar-item a {
+    text-decoration: none;
+}
 .navbar-item:hover {
     color: #007bff;
 }
@@ -64,6 +67,25 @@ body {
     color: var(--navy);
 }
 
+#cart-counter {
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    position: absolute;
+    top: 0px;
+    right: 6px;
+}
+
+.cart-counter-container {
+    position: relative;
+    display: inline-block;
+}
 
 .category-dropdown {
     position: relative;
@@ -192,6 +214,10 @@ body {
     transition-duration: .3s;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
     background-color: var(--lightblue)
+}
+
+.incart {
+    cursor: default;
 }
 
 .sliding-button-sign {

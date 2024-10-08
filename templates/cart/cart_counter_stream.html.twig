@@ -3,3 +3,14 @@
         {{ AmountOfProducts }}
     </template>
 </turbo-stream>
+
+<turbo-stream target="button-content-{{ productId }}" action="update">
+    <template>
+        <button 
+            class="sliding-button incart"
+            disabled>
+            <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+            <div class="sliding-button-text">In cart</div>
+        </button>
+    </template>
+</turbo-stream>

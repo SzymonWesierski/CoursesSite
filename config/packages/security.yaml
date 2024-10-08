@@ -42,6 +42,7 @@ security:
          - { path: '^/episodes', roles: ROLE_USER }
          - { path: '^/categories', roles: ROLE_USER } #   <- HAVE TO BE CHANGE TO ROLE_ADMIN LATER
          - { path: '^/MyCoursesPanel', roles: ROLE_USER }
+         - { path: '^/cart', roles: ROLE_USER }
 
 when@test:
     security:

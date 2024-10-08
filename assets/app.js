@@ -20,6 +20,8 @@ import './styles/homepage.css'
 
 import './styles/usercoursespanel.css'
 
+import './styles/cart.css';
+
 //console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
 
 // Dodanie jQuery do obiektu globalnego "window"

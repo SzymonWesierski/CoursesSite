@@ -48,7 +48,7 @@ class CoursesController extends AbstractController
         $navBarCategories = $this->categoryRepository->findRootCategories();
         $categoryName = "";
 
-        $amountOfProducts = 0;
+        $productsInCartIds = [];
 
         $user = $this->getUser();
 
@@ -101,7 +101,7 @@ class CoursesController extends AbstractController
             throw $this->createNotFoundException('Episode not found.');
         }
 
-        $amountOfProducts = 0;
+        $productsInCartIds = [];
 
         $user = $this->getUser();
 
@@ -112,7 +112,7 @@ class CoursesController extends AbstractController
                 throw $this->createNotFoundException('Cart not found');
             }
 
-            $amountOfProducts = $cart->getAmountOfProducts();
+            $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
         }
 
         $episode = new Episode();
@@ -136,7 +136,7 @@ class CoursesController extends AbstractController
             'course' => $course,
             'episode' => $episode,
             'episodeId' => $episodeId,
-            'amountOfProducts' => $amountOfProducts
+            'productsInCartIds' => $productsInCartIds
         ]);
     }
 
@@ -146,7 +146,7 @@ class CoursesController extends AbstractController
         $course = $this->courseRepository->find($id);
 
         if (!$course) {
-            throw $this->createNotFoundException('Episode not found.');
+            throw $this->createNotFoundException('Course not found.');
         }
 
         $currentPublicImageId = $course->getPublicImageId();

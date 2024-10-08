@@ -15,8 +15,8 @@
 .course-list-title{
     margin-top: 3em;
     margin-left: 5%;
-    padding-left: 10%;
-    text-shadow: -9px 3px 35px rgba(66, 68, 90, 1);
+    padding-left: 12%;
+    /* text-shadow: -9px 3px 35px rgba(66, 68, 90, 1); */
 }
 
 .courses-list{

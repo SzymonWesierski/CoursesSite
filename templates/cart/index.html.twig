@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+<div class="cart-title"><h1>Shopping Cart</h1></div>
+
+<div class="cart-container">
+
+    <div class="cart-container-left">
+        <div class="cart-list-container">
+            {% if cart.courses|length %}
+                {% for course in cart.courses %}
+                <div class="cart-list-element">
+                    <div class="courses-list-element-container">
+                        <div class="courses-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
+                            <div class="courses-list-element-image-section">
+                                <img
+                                    src="{{ course.ImagePath }}"
+                                    alt=""
+                                />
+                            </div>
+                            <div class="courses-list-element-details-section">
+                                <h2>
+                                    {{ course.name }}
+                                </h2>
+                                {% set courserating = 3.34 %}
+                                <div class="courses-list-element-details-section-rating">
+                                    <div class="star-container">
+                                        {% for i in range(0, 4, 1) %}
+                                            <span class="star {% if courserating >= i %} filled {% endif %}">★</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        {{courserating}}
+                                    </div>
+                                </div>
+                                <div class="courses-list-element-details-section-createdby">
+                                    Created by {{course.user.username}}
+                                </div>
+                            </div>
+                            <div class="courses-list-element-price-section">
+                                <div class="courses-list-element-price-section-price">
+                                    {{course.price}} $
+                                </div>
+                                <div>
+                                    <form action="{{path('delete_product', {courseId: course.id, cartId: cart.id})}}">
+                                        <button type="submit"
+                                                onclick="event.stopPropagation();" 
+                                                >
+                                            <img src="/icons/remove.svg" class="icon" alt="remove-from-cart">    
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            {% endfor %}
+            {% else %}
+                <p>Cart is empty</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="cart-container-right">
+        <div class="cart-summary-container">
+        <h1>Total:</h1>
+
+        <p>2261.65$</p>
+        
+        <button>
+        Checkout
+        </button>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}
