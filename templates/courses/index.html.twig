@@ -81,32 +81,5 @@
         </div>
 
     </div>
-{#     
-<script>
-
-    document.addEventListener("turbo:submit-end", (event) => {
-        if (event.detail.success) {
-            fetch('/cart/counter')
-                .then(response => response.json())
-                .then(data => {
-                    const counter = document.getElementById('cart-counter');
-                    counter.innerText = `${data.AmountOfProducts}`;
-                });
-
-            const form = event.target;
-            const productId = form.querySelector('.add-to-cart').dataset.productId;
-
-            const button = document.querySelector(`button[data-product-id="${productId}"]`);
-
-            if (button) {
-                button.disabled = true;
-                button.innerText = 'In cart';
-            }
-        }
-    });
-
-
-</script> #}
-
 
 {% endblock %}

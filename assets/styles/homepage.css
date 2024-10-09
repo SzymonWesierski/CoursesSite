@@ -70,8 +70,8 @@
 }
 
 .courses-list-element-details-section p { 
-    overflow: hidden; /* Ukrywa tekst, który nie mieści się w kontenerze */
-    text-overflow: ellipsis; /* Dodaje wielokropek na końcu */
+    overflow: hidden;
+    text-overflow: ellipsis;
     max-height: 50px;
 }
 

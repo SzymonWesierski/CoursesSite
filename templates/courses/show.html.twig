@@ -4,71 +4,103 @@
 
 {% block body %}
 
- <div>
-        {% if episodeId > 0 %}
-            {% include 'partials/episode/_show.html.twig' with { episode: episode } %}
-        {% else %}
-            <h1>
-                {{ course.name }}
-            </h1>
-            <img
-                width = 200px
-                src="{{ course.ImagePath }}"
-            />
-            <p>
-                {{ course.Description }}
-            </p>
-        {% endif %}
-
-        <p><h3>Content</h3>
-            {% for chapter in course.chapters %}       
-                <h4>CHAPTER: {{ chapter.name }}</h4>
-                <ul>
-                {% for episode in chapter.episodes %}
-                    <div>
-                        <li>
-                            {{episode.name}}:
-                            <br>
-                            <img
-                                width = 100px
-                                src="{{ episode.ImagePath ? episode.ImagePath : "https://w7.pngwing.com/pngs/361/973/png-transparent-no-symbol-sign-scalable-graphics-hitting-others-s-angle-text-sticker.png" }}"
-                                alt=""
-                            />
-                            <p><a href="/courses/show/{{course.id}}/{{episode.id}}">watch</a></p>
-                            - {{episode.description}}
-                        </li>
+    <div class="cshow-container">
+        <div class="cshow-container-left">
+            {% if episodeId > 0 %}
+                <div class"cshow-watch-container">
+                    <div class="cshow-videoplayer-container">
+                        <video controls>
+                            <source src="{{episode.videoPath}}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
-                {% endfor %}
-                </ul>
-            {% endfor %}
-        
-    </p>
+                    
 
-    <p>
-    Categories:
-    {% for category in course.categories %}
-    {{category.name}}
-    {% endfor %}
-    </p>
+                    <h1>
+                    {{ episode.name }}
+                    </h1>
 
-        {% if app.user == course.user %}
-        <p> 
-            <a 
-                href="/courses/edit/{{ course.id }}">
-                Edit course   
-            </a>
-        </p>
-           
-        <p>
-            <a 
-                href="/courses/delete/{{ course.id }}">
-                Delete course
-            </a>
-        </p>
+                    <p class="cshow-text-block">
+                        {{ episode.Description }}
+                    </p>
+                </div>
+            {% else %}
+                <div class="cshow-details-container">
+                    <div class="cshow-course-img">
+                        <img
+                        src="{{ course.ImagePath }}"
+                        />
+                    </div>
+                    
+                    <h1>
+                    {{ course.name }}
+                    </h1>
+
+                    <p class="cshow-text-block">
+                        {{ course.Description }}
+                    </p>
+
+                    <p>
+                        Categories:
+                        {% for category in course.categories %}
+                        {{category.name}}
+                        {% endfor %}
+
+                        <h4>Course created by {{course.user.username}}</h4>
+
+                        {% if app.user == course.user %}
+                            <p> 
+                                <a 
+                                    href="/courses/edit/{{ course.id }}">
+                                    Edit course   
+                                </a>
+                            </p>
+                            
+                            <p>
+                                <a 
+                                    href="/courses/delete/{{ course.id }}">
+                                    Delete course
+                                </a>
+                            </p>
+                                
+                        {% endif %}
+
+                    </p>
+
+                </div>
+                
+                    
+            {% endif %}
+        </div>
+
             
-        {% endif %}
-    </div>
+        <div class="cshow-container-right">
 
-<h4>Course created by {{course.user.username}}</h1>
+            <div class="cshow-chapters">
+                <h3>Content</h3>
+                {% for chapter in course.chapters %}       
+                    <h4>CHAPTER: {{ chapter.name }}</h4>
+                    <ul>
+                    {% for episode in chapter.episodes %}
+                        <div>
+                            <li>
+                                {{episode.name}}:
+                                <br>
+                                <img
+                                    width = 100px
+                                    src="{{ episode.ImagePath ? episode.ImagePath : "https://w7.pngwing.com/pngs/361/973/png-transparent-no-symbol-sign-scalable-graphics-hitting-others-s-angle-text-sticker.png" }}"
+                                    alt=""
+                                />
+                                <p><a href="/courses/show/{{course.id}}/{{episode.id}}">watch</a></p>
+                            </li>
+                        </div>
+                    {% endfor %}
+                    </ul>
+                {% endfor %}
+            </div>
+
+        </div>
+        
+    </div>
 
 {% endblock %}

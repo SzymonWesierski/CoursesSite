@@ -1,0 +1,61 @@
+.cshow-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+    border-bottom: 1px solid var(--navy);
+    margin-bottom: 10em;
+}
+
+.cshow-text-block{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%;
+}
+
+.cshow-container-right{
+    width: 20%;
+    border-left: 1px solid var(--navy);
+    padding: 2em;
+}
+
+.cshow-container-left{
+    width: 80%;
+}
+
+.cshow-course-img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    max-width: 100%;
+    background-color: var(--lightblue);
+    border-bottom: 1px solid var(--navy);
+}
+
+.cshow-course-img img{
+    height: 60vh;
+    max-width: 100%;
+}
+
+
+.cshow-videoplayer-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    max-width: 100%;
+    background-color: var(--lightblue);
+    border-bottom: 1px solid var(--navy);
+}
+
+.cshow-videoplayer-container video{
+    height: 60vh;
+    max-width: 100%;
+}
+
+.cshow-watch-container{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}

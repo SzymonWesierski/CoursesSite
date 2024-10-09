@@ -57,56 +57,49 @@
                 <div class="navbar-container-right">
                     {% if app.user %}
                         <div class="navbar-item">
-                            <a href="{{ path('userCoursesPanel') }}" class="navbar-item">
-                            <button class="sliding-button">
+                            <button class="sliding-button" onclick="window.location.href='{{ path('userCoursesPanel') }}'">
                                     <div class="sliding-button-sign"><img class="icon" src="/icons/instructor.svg" alt="instructor"></div>
                                     <div class="sliding-button-text">Instructor</div>
                             </button>
-                            </a>
                         </div>
 
                         <div class="navbar-item">
-                            <button class="sliding-button">
+                            <button class="sliding-button" onclick="">
                                     <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
                                     <div class="sliding-button-text">My&nbsp;learning</div>
                             </button>
-                            </a>
                         </div>
 
                         <div class="navbar-item">
-                            <a href="{{path('cart_show')}}">
-                                <button class="sliding-button">
-                                    <div class="sliding-button-sign">
-                                        <img src="/icons/cart.svg" alt="cart">
-                                    </div>
-                                    <div class="sliding-button-text">Cart</div>
-                                    <div class="cart-counter-container">
-                                        <turbo-frame id="cart">
-                                            <div id="cart-counter">
-                                                {{ productsInCartIds|length }}
-                                            </div>
-                                        </turbo-frame>
-                                    </div>
-                                </button>
-                            </a>
+                            <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
+                                <div class="sliding-button-sign">
+                                    <img src="/icons/cart.svg" alt="cart">
+                                </div>
+                                <div class="sliding-button-text">Cart</div>
+                                <div class="cart-counter-container">
+                                    <turbo-frame id="cart">
+                                        <div id="cart-counter">
+                                            {{ productsInCartIds|length }}
+                                        </div>
+                                    </turbo-frame>
+                                </div>
+                            </button>
                         </div>
 
                         <div class="navbar-item">
-                            <a href="#">
-                            <button class="sliding-button">
+                            <button class="sliding-button" onclick="">
                                     <div class="sliding-button-sign"><img src="/icons/user.svg" alt="edit-profile"></div>
                                     <div class="sliding-button-text">Edit&nbsp;profile</div>
                             </button>
-                            </a>
                         </div>
 
                         <div class="navbar-item">
-                            <a href="{{ path('app_logout') }}">
-                                <button class="sliding-button">
-                                    <div class="sliding-button-sign"><img src="/icons/logout.svg" alt="logout"></div>
-                                    <div class="sliding-button-text">Logout</div>
-                                </button>
-                            </a>
+                            <button class="sliding-button" onclick="window.location.href='{{ path('app_logout') }}'">
+                                <div class="sliding-button-sign">
+                                    <img src="/icons/logout.svg" alt="logout">
+                                </div>
+                                <div class="sliding-button-text">Logout</div>
+                            </button>
                         </div>
                     {% else %}
                         <div class="navbar-item">
