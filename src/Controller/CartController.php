@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\CartRepository;
 use App\Repository\CourseRepository;
+use Doctrine\Common\Collections\Expr\Value;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Constraints\Length;
 
 class CartController extends AbstractController
 {
@@ -51,10 +53,21 @@ class CartController extends AbstractController
             $cart->setAmountOfProducts(0);
         }
 
+        $priceArray = $this->cartRepository->findCoursesValue($cart->getId());
+        $totalValue = 0.0;
+
+        foreach ($priceArray as $price){
+            $totalValue += $price;
+        }
+        
         $cart->addCourse($course);
+
+        $cart->setTotalValue($totalValue + $course->getPrice());
+
         $cart->setAmountOfProducts(count($cart->getCourses()));
 
         $this->em->persist($cart);
+
         $this->em->flush();
 
         return $this->render('cart/cart_counter_stream.html.twig', [
@@ -124,8 +137,16 @@ class CartController extends AbstractController
             throw $this->createNotFoundException('Course not found.');
         }
 
+        $priceArray = $this->cartRepository->findCoursesValue($cart->getId());
+        $totalValue = 0.0;
+
+        foreach ($priceArray as $price){
+            $totalValue += $price;
+        }
+        
         $cart->removeCourse($course);
 
+        $cart->setTotalValue($totalValue - $course->getPrice());
 
         $this->em->persist($cart);
         $this->em->flush();

@@ -28,15 +28,14 @@
                                     <p class="courses-list-element-details-section-p">
                                         {{ course.Description }}
                                     </p>
-                                    {% set courserating = 3.34 %}
                                     <div class="courses-list-element-details-section-rating">
                                         <div class="star-container">
                                             {% for i in range(0, 4, 1) %}
-                                                <span class="star {% if courserating >= i %} filled {% endif %}">★</span>
+                                                <span class="star {% if course.ratingAverage >= i %} filled {% endif %}">★</span>
                                             {% endfor %}
                                         </div>
                                         <div>
-                                            {{courserating}}
+                                            {{course.ratingAverage}}
                                         </div>
                                     </div>
                                     <div class="courses-list-element-details-section-createdby">

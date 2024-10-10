@@ -54,11 +54,22 @@ class Course
     #[ORM\ManyToMany(targetEntity: Cart::class, mappedBy: 'courses')]
     private Collection $carts;
 
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'course', orphanRemoval: true)]
+    private Collection $ratings;
+
+    #[ORM\Column]
+    private ?float $ratingAverage = null;
+
+
     public function __construct()
     {
         $this->chapters = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     // Gettery i settery dla pól
@@ -188,7 +199,7 @@ class Course
 
     public function setPrice(?float $price): static
     {
-        $this->price = $price;
+        $this->price = round($price, 2);
 
         return $this;
     }
@@ -219,4 +230,47 @@ class Course
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getCourse() === $this) {
+                $rating->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRatingAverage(): ?float
+    {
+        return $this->ratingAverage;
+    }
+
+    public function setRatingAverage(float $ratingAverage): static
+    {
+        $this->ratingAverage = round($ratingAverage, 2);;
+
+        return $this;
+    }
+
 }

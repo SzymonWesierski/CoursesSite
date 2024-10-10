@@ -51,4 +51,17 @@ class CartRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getOneOrNullResult();
         }   
+
+        public function findCoursesValue(int $cartId): array
+        {
+            $prices = $this->createQueryBuilder('c') 
+                ->innerJoin('c.courses', 'co') 
+                ->select('co.price') 
+                ->where('c.id = :cartId') 
+                ->setParameter('cartId', $cartId) 
+                ->getQuery() 
+                ->getResult(); 
+
+            return array_column($prices, 'price');
+        }
 }

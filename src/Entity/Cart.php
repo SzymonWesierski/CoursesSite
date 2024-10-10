@@ -34,6 +34,9 @@ class Cart
     #[ORM\JoinColumn(nullable: false)]
     private ?user $user = null;
 
+    #[ORM\Column]
+    private ?float $totalValue = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -112,6 +115,18 @@ class Cart
     public function setUser(?user $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTotalValue(): ?float
+    {
+        return $this->totalValue;
+    }
+
+    public function setTotalValue(float $totalValue): static
+    {
+        $this->totalValue = $totalValue;
 
         return $this;
     }

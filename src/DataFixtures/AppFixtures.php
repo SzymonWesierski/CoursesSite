@@ -51,6 +51,9 @@ class AppFixtures extends Fixture
             $manager->persist($user);
 
             $cart = new Cart();
+            $cart->setAmountOfProducts(0);
+            $cart->setPurchased(false);
+            $cart->setTotalValue(0);
             $cart->setUser($user);
 
             $manager->persist($cart);
@@ -174,7 +177,8 @@ class AppFixtures extends Fixture
             $course->setDescription($faker->sentences(10, true));
             $course->setImagePath("/images/course_example_image.png");
             $course->setStatus(CourseStatus::APPROVED);
-            $course->setPrice(49.99);
+            $course->setPrice($this->randomFloat(49.99, 99.99));
+            $course->setRatingAverage($this->randomFloat(3.0, 5.0));
 
             $chapter = new Chapter();
             $chapter->setName('Chapter 1 of Course ' . ($i + 1));
@@ -200,5 +204,9 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    private function randomFloat(float $min, float $max): float {
+        return $min + mt_rand() / mt_getrandmax() * ($max - $min);
     }
 }

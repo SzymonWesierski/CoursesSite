@@ -42,6 +42,7 @@ class RegistrationController extends AbstractController
             $cart = new Cart();
             $cart->setAmountOfProducts(0);
             $cart->setPurchased(false);
+            $cart->setTotalValue(0);
             $cart->setUser($user);
 
             $entityManager->persist($user);
@@ -60,7 +61,7 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('courses');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
