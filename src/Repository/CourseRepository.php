@@ -96,4 +96,12 @@ class CourseRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findWithTheBestRating(): array{
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.ratingAverage', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

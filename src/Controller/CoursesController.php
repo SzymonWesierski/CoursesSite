@@ -49,6 +49,7 @@ class CoursesController extends AbstractController
         $categoryName = "";
 
         $productsInCartIds = [];
+        $coursesTheBestByRating = [];
 
         $user = $this->getUser();
 
@@ -80,6 +81,7 @@ class CoursesController extends AbstractController
         }
         else{
             $courses = $this->courseRepository->findAllApproved($page);
+            $coursesTheBestByRating = $this->courseRepository->findWithTheBestRating();
         }
 
         return $this->render('courses/index.html.twig', [
@@ -87,7 +89,8 @@ class CoursesController extends AbstractController
             'categoryId' => $categoryId,
             'categoryName' => $categoryName,
             'navBarCategories' => $navBarCategories,
-            'productsInCartIds' => $productsInCartIds
+            'productsInCartIds' => $productsInCartIds,
+            'coursesTheBestByRating' => $coursesTheBestByRating
         ]);
     }
 
@@ -170,6 +173,7 @@ class CoursesController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $newCourse = $form->getData();
             $newCourse->setUser($this->getUser());
+            $newCourse->setRatingAverage(0.0);
             $newCourse->setStatus(CourseStatus::NOT_DONE_YET);
             $image = $form->get('image')->getData();
             if ($image) {

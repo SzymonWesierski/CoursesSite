@@ -11,6 +11,7 @@ body {
     padding: 0;
     width: 100%; 
     background-color: var(--white);
+    font-family:Georgia, 'Times New Roman', Times, serif
 }
 
 .icon{

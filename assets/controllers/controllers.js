@@ -1,8 +1,12 @@
 import { Application } from '@hotwired/stimulus';
-import ExampleController from './example_controller';
+import OwlCarouselController from './owl_carousel_controller';
 
-// Tworzymy instancję aplikacji
 const application = Application.start();
+application.register('owl-carousel', OwlCarouselController);
 
-// Rejestrujemy kontroler
-application.register('example', ExampleController);
+// Opcjonalnie: rejestracja innych kontrolerów z folderu
+const context = require.context('./', true, /\.js$/);
+application.load(definitionsFromContext(context));
+
+
+
