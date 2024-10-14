@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+    <div class="courses-container">
+                {% if courses | length > 0 %}
+                    {% for course in courses %}
+                        <div class="courses-list-element">
+                            <img
+                                width = 200px
+                                src="{{ course.ImagePath }}"
+                                alt=""
+                            />
+                            <h2>
+                                {{ course.name }}
+                            </h2>
+
+                            <p>
+                                {{ course.Description }}
+                            </p>
+                            
+                            <a href="/courses/show/{{ course.id }}">
+                                Preview
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+
+                    <h1>No courses yet</h1>
+                    <h4><a href="{{ path('create_course') }}">
+                            Create new course
+                        </a></h4>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}

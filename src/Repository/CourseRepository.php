@@ -104,4 +104,16 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findPurchasedCourses(int $userId): array
+    {
+        return $this->createQueryBuilder('course')              // Alias dla encji Course
+            ->innerJoin('course.carts', 'cart')                // Dołączenie koszyków
+            ->innerJoin('cart.user', 'user')                   // Dołączenie użytkownika
+            ->andWhere('user.id = :userId')                    // Filtr dla użytkownika
+            ->andWhere('cart.purchased = true')                // Filtr dla kupionych koszyków
+            ->setParameter('userId', $userId)
+            ->select('DISTINCT course')                        // Wybranie unikalnych kursów
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -14,7 +14,7 @@ export default class extends Controller {
                 600: { items: 2 },
                 900: { items: 3 }
             },
-            navText: ["<img src=\"/icons/bg-transparent-left-arrow.svg\" alt=\"arrow-left\">", "<img src=\"/icons/bg-transparent-right-arrow.svg\" alt=\"arrow-right\">"]
+            navText: ["<img src=\"/icons/bg-white-left-arrow.svg\" alt=\"arrow-left\">", "<img src=\"/icons/bg-white-right-arrow.svg\" alt=\"arrow-right\">"]
         });
     }
 

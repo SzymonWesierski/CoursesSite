@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Cart;
 use App\Repository\CartRepository;
 use App\Repository\CourseRepository;
-use Doctrine\Common\Collections\Expr\Value;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,13 +28,61 @@ class CartController extends AbstractController
     }
 
 
+    #[Route('/checkout/{cartId}', name: 'checkout')]
+    public function checkout(int $cartId): Response
+    {
+        $cart = $this->cartRepository->find($cartId);
+
+        if (!$cart) {
+            throw $this->createNotFoundException('Cart not found');
+        }
+
+        $amountOfProducts = $cart->getAmountOfProducts(); 
+
+        return $this->render('cart/checkout.html.twig',[
+            'cart' => $cart,
+            'amountOfProducts' => $amountOfProducts
+        ]);
+    }
+
+    #[Route('/buy/{cartId}', name: 'buy_cart')]
+    public function buy(int $cartId): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw new \LogicException('The logged in user is not an instance of the User entity.');
+        }
+
+        $newCart = new Cart();
+        $newCart->setAmountOfProducts(0);
+        $newCart->setPurchased(false);
+        $newCart->setTotalValue(0);
+        $newCart->setUser($user);
+        $this->em->persist($newCart);
+
+        $cart = $this->cartRepository->find($cartId);
+
+        if (!$cart) {
+            throw $this->createNotFoundException('Cart not found');
+        }
+
+        $cart->setPurchased(true);
+
+        $this->em->persist($cart);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('cart_show');
+    }
+
     #[Route('/cart/add/{courseId}', name: 'add_to_cart')]
     public function addToCart(int $courseId): Response
     {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
-            throw new \LogicException('Zalogowany użytkownik nie jest instancją encji User.');
+            throw new \LogicException('The logged in user is not an instance of the User entity.');
         }
 
         $course = $this->courseRepository->find($courseId);
@@ -114,11 +162,11 @@ class CartController extends AbstractController
             throw $this->createNotFoundException('Cart not found');
         }
 
-        $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+        $amountOfProducts = $cart->getAmountOfProducts(); 
 
         return $this->render('cart/index.html.twig',[
             'cart' => $cart,
-            'productsInCartIds' => $productsInCartIds
+            'amountOfProducts' => $amountOfProducts
         ]);
     }
 
@@ -146,12 +194,14 @@ class CartController extends AbstractController
         
         $cart->removeCourse($course);
 
+        $cart->setAmountOfProducts(count($cart->getCourses()));
+
         $cart->setTotalValue($totalValue - $course->getPrice());
 
         $this->em->persist($cart);
         $this->em->flush();
 
-        return $this->redirectToRoute('cart_show');
+        return $this->redirectToRoute('myLearning');
     }
 
 }

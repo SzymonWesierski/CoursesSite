@@ -50,6 +50,7 @@ class CoursesController extends AbstractController
 
         $productsInCartIds = [];
         $coursesTheBestByRating = [];
+        $amountOfProducts = 0;
 
         $user = $this->getUser();
 
@@ -59,7 +60,7 @@ class CoursesController extends AbstractController
             if (!$cart) {
                 throw $this->createNotFoundException('Cart not found');
             }
-
+            $amountOfProducts = $cart->getAmountOfProducts(); 
             $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
         }
 
@@ -90,7 +91,8 @@ class CoursesController extends AbstractController
             'categoryName' => $categoryName,
             'navBarCategories' => $navBarCategories,
             'productsInCartIds' => $productsInCartIds,
-            'coursesTheBestByRating' => $coursesTheBestByRating
+            'coursesTheBestByRating' => $coursesTheBestByRating,
+            'amountOfProducts' => $amountOfProducts
         ]);
     }
 
@@ -105,6 +107,7 @@ class CoursesController extends AbstractController
         }
 
         $productsInCartIds = [];
+        $amountOfProducts = 0;
 
         $user = $this->getUser();
 
@@ -114,7 +117,7 @@ class CoursesController extends AbstractController
             if (!$cart) {
                 throw $this->createNotFoundException('Cart not found');
             }
-
+            $amountOfProducts = $cart->getAmountOfProducts(); 
             $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
         }
 
@@ -139,7 +142,8 @@ class CoursesController extends AbstractController
             'course' => $course,
             'episode' => $episode,
             'episodeId' => $episodeId,
-            'productsInCartIds' => $productsInCartIds
+            'productsInCartIds' => $productsInCartIds,
+            'amountOfProducts' => $amountOfProducts
         ]);
     }
 

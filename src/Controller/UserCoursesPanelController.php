@@ -36,6 +36,7 @@ class UserCoursesPanelController extends AbstractController
         $navBarCategories = $this->categoryRepository->findRootCategories();
         $categoryName = "";
         $user = $this->getUser();
+        $amountOfProducts = 0;
 
         if (!$user) {
             return $this->redirectToRoute("/login");
@@ -51,7 +52,7 @@ class UserCoursesPanelController extends AbstractController
             throw $this->createNotFoundException('Cart not found');
         }
 
-        $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+        $amountOfProducts = $cart->getAmountOfProducts(); 
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
@@ -68,17 +69,45 @@ class UserCoursesPanelController extends AbstractController
             $courses = $this->courseRepository->findUserAll($user, $page);
         }
 
-        return $this->render('user_courses_panel/index.html.twig', [
+        return $this->render('user_courses_panel/instructor.html.twig', [
             'paginator' => $courses,
             'navBarCategories' => $navBarCategories,
             'categoryName' => $categoryName,
             'categoryId' => $categoryId,
-            'productsInCartIds' => $productsInCartIds,
+            'amountOfProducts' => $amountOfProducts,
             'statusValues' => [
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,
                 'APPROVED' => CourseStatus::APPROVED->value,
             ],
+        ]);
+    }
+
+    #[Route('/myLearning', name: 'myLearning')]
+    public function myLearning(): Response
+    {
+        $amountOfProducts = 0;
+        $courses = array();
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute("/login");
+        }
+
+        if (!$user instanceof User) {
+            throw new \LogicException('Zalogowany użytkownik nie jest instancją encji User.');
+        }
+
+        $courses = $this->courseRepository->findPurchasedCourses($user->getId());
+
+        if (!$courses) {
+            throw $this->createNotFoundException('Courses not found');
+        }
+
+
+        return $this->render('user_courses_panel/myLearning.html.twig', [
+            'courses' => $courses,
+            'amountOfProducts' => $amountOfProducts
         ]);
     }
 }

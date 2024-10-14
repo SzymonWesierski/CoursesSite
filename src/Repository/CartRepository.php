@@ -64,4 +64,5 @@ class CartRepository extends ServiceEntityRepository
 
             return array_column($prices, 'price');
         }
+
 }

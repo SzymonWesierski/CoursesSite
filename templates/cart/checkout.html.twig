@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+<div>
+    <h2 style="text-align: center;">Checkout</h2>
+</div>
+
+<div class="cart-container">
+
+    <div class="cart-container-left">
+
+        <div>
+            <h2>Payment method</h2>
+        </div>
+
+        <div>
+            <h2>Order details</h2>
+            
+            {% for course in cart.courses %}
+
+                {{course.name}}
+
+            {% endfor %}
+        </div>
+        
+        </div>
+
+    <div>
+
+    <div class="cart-container-right">
+        <div class="cart-summary-container">
+            <h2>Summary:</h2>
+
+            <h1>{{cart.totalValue}} $</h1>
+            
+            <button class="c-button c-button--gooey" 
+                onclick="window.location.href='{{ path('buy_cart', {cartId: cart.id}) }}'"> 
+                    Proceed
+                <div class="c-button__blobs">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            </button>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0;">
+                <defs>
+                    <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"></feColorMatrix>
+                    <feBlend in="SourceGraphic" in2="goo"></feBlend>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+    </div>
+</div>
+
+
+   
+
+
+{% endblock %}

@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="">
+                            <button class="sliding-button" onclick="window.location.href='{{path('myLearning')}}'">
                                     <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
                                     <div class="sliding-button-text">My&nbsp;learning</div>
                             </button>
@@ -79,7 +79,7 @@
                                 <div class="cart-counter-container">
                                     <turbo-frame id="cart">
                                         <div id="cart-counter">
-                                            {{ productsInCartIds|length }}
+                                            {{ amountOfProducts }}
                                         </div>
                                     </turbo-frame>
                                 </div>
