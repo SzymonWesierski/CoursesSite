@@ -151,3 +151,19 @@
   .c-button--gooey:hover .c-button__blobs div {
     transform: scale(1.4) translateY(0) translateZ(0);
   }
+
+  .cart-empty{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cart-empty img{
+    width: 200px;
+    height: 200px;
+  }
+
+  .cart-empty h2{
+    text-align: center;
+  }

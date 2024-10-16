@@ -73,7 +73,7 @@ class CartController extends AbstractController
 
         $this->em->flush();
 
-        return $this->redirectToRoute('cart_show');
+        return $this->redirectToRoute('myLearning');
     }
 
     #[Route('/cart/add/{courseId}', name: 'add_to_cart')]
@@ -201,7 +201,7 @@ class CartController extends AbstractController
         $this->em->persist($cart);
         $this->em->flush();
 
-        return $this->redirectToRoute('myLearning');
+        return $this->redirectToRoute('cart_show');
     }
 
 }

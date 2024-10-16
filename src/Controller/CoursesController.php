@@ -14,6 +14,7 @@ use App\Service\CloudinaryService;
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -45,24 +46,27 @@ class CoursesController extends AbstractController
     #[Route('/courses/{page?}/{categoryId?}', name: 'courses', defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
     public function index($categoryId = null, int $page = 1): Response
     {   
+        $user = $this->getUser();
         $navBarCategories = $this->categoryRepository->findRootCategories();
         $categoryName = "";
-
         $productsInCartIds = [];
         $coursesTheBestByRating = [];
+        $purchasedCoursesIds = [];
         $amountOfProducts = 0;
-
-        $user = $this->getUser();
+        $cart = new Cart();
 
         if ($user instanceof User) {
             $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
-
-            if (!$cart) {
-                throw $this->createNotFoundException('Cart not found');
-            }
-            $amountOfProducts = $cart->getAmountOfProducts(); 
-            $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+            $purchasedCoursesIds = $this->courseRepository->findPurchasedCoursesIds($user->getId());
         }
+
+        if (!$cart) {
+            throw $this->createNotFoundException('Cart not found');
+        }
+
+        $amountOfProducts = $cart->getAmountOfProducts(); 
+        $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+        
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
@@ -92,7 +96,8 @@ class CoursesController extends AbstractController
             'navBarCategories' => $navBarCategories,
             'productsInCartIds' => $productsInCartIds,
             'coursesTheBestByRating' => $coursesTheBestByRating,
-            'amountOfProducts' => $amountOfProducts
+            'amountOfProducts' => $amountOfProducts,
+            'purchasedCoursesIds' => $purchasedCoursesIds
         ]);
     }
 

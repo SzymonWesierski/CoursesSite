@@ -89,6 +89,7 @@ class UserCoursesPanelController extends AbstractController
         $amountOfProducts = 0;
         $courses = array();
         $user = $this->getUser();
+        $courses = [];
 
         if (!$user) {
             return $this->redirectToRoute("/login");
@@ -99,11 +100,6 @@ class UserCoursesPanelController extends AbstractController
         }
 
         $courses = $this->courseRepository->findPurchasedCourses($user->getId());
-
-        if (!$courses) {
-            throw $this->createNotFoundException('Courses not found');
-        }
-
 
         return $this->render('user_courses_panel/myLearning.html.twig', [
             'courses' => $courses,

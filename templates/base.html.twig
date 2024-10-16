@@ -73,7 +73,11 @@
                         <div class="navbar-item">
                             <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
                                 <div class="sliding-button-sign">
+                                {% if amountOfProducts > 0 %}
+                                    <img src="/icons/cart-full-2.svg" alt="cart">
+                                {% else %}
                                     <img src="/icons/cart.svg" alt="cart">
+                                {% endif %}
                                 </div>
                                 <div class="sliding-button-text">Cart</div>
                                 <div class="cart-counter-container">

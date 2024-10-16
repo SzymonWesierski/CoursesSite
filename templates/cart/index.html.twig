@@ -60,7 +60,11 @@
             
             {% endfor %}
             {% else %}
-                <p>Cart is empty</p>
+            <div class="cart-empty">
+                <img src="/icons/cart.svg" class="icon" alt="cart">
+                <h2>Cart is empty</h2>
+            </div>
+                
             {% endif %}
         </div>
     </div>

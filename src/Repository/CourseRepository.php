@@ -106,14 +106,29 @@ class CourseRepository extends ServiceEntityRepository
 
     public function findPurchasedCourses(int $userId): array
     {
-        return $this->createQueryBuilder('course')              // Alias dla encji Course
-            ->innerJoin('course.carts', 'cart')                // Dołączenie koszyków
-            ->innerJoin('cart.user', 'user')                   // Dołączenie użytkownika
-            ->andWhere('user.id = :userId')                    // Filtr dla użytkownika
-            ->andWhere('cart.purchased = true')                // Filtr dla kupionych koszyków
+        return $this->createQueryBuilder('course')  
+            ->innerJoin('course.carts', 'cart')
+            ->innerJoin('cart.user', 'user') 
+            ->andWhere('user.id = :userId') 
+            ->andWhere('cart.purchased = true') 
             ->setParameter('userId', $userId)
-            ->select('DISTINCT course')                        // Wybranie unikalnych kursów
+            ->select('DISTINCT course')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findPurchasedCoursesIds(int $userId): array
+    {
+        $coursesIds = $this->createQueryBuilder('course')  
+            ->innerJoin('course.carts', 'cart')
+            ->innerJoin('cart.user', 'user') 
+            ->andWhere('user.id = :userId') 
+            ->andWhere('cart.purchased = true') 
+            ->setParameter('userId', $userId)
+            ->select('DISTINCT course.id')
+            ->getQuery()
+            ->getResult();
+
+            return array_column($coursesIds, 'id');
     }
 }

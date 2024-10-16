@@ -4,41 +4,59 @@
 
 {% block body %}
 
-    <div class="courses-container">
+
+    <div class="my-learning-title">
+        {% if courses | length > 0 %}
+            <h1>Continue to learn</h1>
+        {% else %}
+            <h1>No courses yet</h1>
+        {% endif %}
+    </div>
+
+
+<div class="my-learning-container">
+    <div class="my-learning-list-container">
                 {% if courses | length > 0 %}
                     {% for course in courses %}
-                        <div class="courses-list-element">
-                            <img
-                                width = 200px
-                                src="{{ course.ImagePath }}"
-                                alt=""
-                            />
+                        <div class="my-learning-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
+                            <div class="my-learning-list-element-course-img">
+                                <img
+                                    src="{{ course.ImagePath }}"
+                                    alt=""
+                                />
+                            </div>
+                            <div class="my-learning-list-element-play-button-img">
+                                <img src="/icons/play-button.svg" alt="watch-course">
+                            </div>
                             <h2>
                                 {{ course.name }}
                             </h2>
 
-                            <p>
-                                {{ course.Description }}
-                            </p>
-                            
-                            <a href="/courses/show/{{ course.id }}">
-                                Preview
-                            </a>
+                             <div class="my-learning-list-element-rating">
+                                <div class="star-container">
+                                    {% for i in range(0, 4, 1) %}
+                                        <span class="star {% if course.ratingAverage >= i %} filled {% endif %}">★</span>
+                                    {% endfor %}
+                                </div>
+                                <div>
+                                    {{course.ratingAverage}}
+                                </div>
+                            </div>
+
+                            <div class="my-learning-list-element-details-createdby">
+                                Created by {{course.user.username}}
+                            </div>
                         </div>
                     {% endfor %}
                 {% else %}
 
-                    <h1>No courses yet</h1>
-                    <h4><a href="{{ path('create_course') }}">
-                            Create new course
-                        </a></h4>
+                    <h3> <a href="{{path('courses')}}"> Go get one </a></h3>
 
                 {% endif %}
 
             </div>
         </div>
-
     </div>
-
+</div>
 
 {% endblock %}

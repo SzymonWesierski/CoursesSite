@@ -57,7 +57,18 @@
         <div class="courses-list-container">
                 <div class="courses-list">
                     {% for course in paginator.results %}
-                        
+                        {% set purchased = false %}
+                        {% set inCart = false %}
+
+                        {% if purchasedCoursesIds and course.id in purchasedCoursesIds  %} 
+                            {% set purchased = true %}
+                        {% endif %}
+
+                        {% if productsInCartIds and course.id in productsInCartIds %}
+                            {% set inCart = true %}
+                        {% endif %}
+
+
                         <div class="courses-list-element-container">
                             <div class="courses-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
                                 <div class="courses-list-element-image-section">
@@ -89,7 +100,10 @@
                                 </div>
                                 <div class="courses-list-element-price-section">
                                     <div class="courses-list-element-price-section-price">
+                                    {% if purchased == false %}
                                         {{course.price}} $
+                                    {% endif %}
+                                        
                                     </div>
                                     <div>
                                         <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
@@ -97,10 +111,13 @@
                                                     
                                                     class="add-to-cart sliding-button"
                                                     onclick="event.stopPropagation();" 
-                                                    {% if productsInCartIds and course.id in productsInCartIds %} disabled{% endif %}>
-                                                {% if productsInCartIds and course.id in productsInCartIds %}
+                                                    {% if purchased or inCart  %} disabled{% endif %}>
+                                                {% if inCart %}
                                                     <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
                                                     <div class="sliding-button-text">In&nbsp;cart</div>
+                                                {% elseif purchased %}
+                                                    <div class="sliding-button-sign"><img src="/icons/play-button.svg" alt="watch-course"></div>
+                                                    <div class="sliding-button-text">Watch</div>
                                                 {% else %}
                                                     <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
                                                     <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>

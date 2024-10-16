@@ -15,14 +15,16 @@
                         </video>
                     </div>
                     
+                    <div class="cshow-details">
+                        <h1>
+                        {{ episode.name }}
+                        </h1>
 
-                    <h1>
-                    {{ episode.name }}
-                    </h1>
-
-                    <p class="cshow-text-block">
-                        {{ episode.Description }}
-                    </p>
+                        <p class="cshow-text-block">
+                            {{ episode.Description }}
+                        </p>
+                    </div>
+                    
                 </div>
             {% else %}
                 <div class="cshow-details-container">
@@ -31,76 +33,125 @@
                         src="{{ course.ImagePath }}"
                         />
                     </div>
-                    
-                    <h1>
-                    {{ course.name }}
-                    </h1>
+                    <div class="cshow-details">
+                        <h1>
+                            {{ course.name }}
+                        </h1>
 
-                    <p class="cshow-text-block">
-                        {{ course.Description }}
-                    </p>
+                        <p class="cshow-text-block">
+                            {{ course.Description }}
+                        </p>
 
-                    <p>
-                        Categories:
-                        {% for category in course.categories %}
-                        {{category.name}}
-                        {% endfor %}
+                        <p>
+                            Categories:
+                            {% for category in course.categories %}
+                            {{category.name}}
+                            {% endfor %}
 
-                        <h4>Course created by {{course.user.username}}</h4>
+                            <h4>Course created by {{course.user.username}}</h4>
 
-                        {% if app.user == course.user %}
-                            <p> 
-                                <a 
-                                    href="/courses/edit/{{ course.id }}">
-                                    Edit course   
-                                </a>
-                            </p>
-                            
-                            <p>
-                                <a 
-                                    href="/courses/delete/{{ course.id }}">
-                                    Delete course
-                                </a>
-                            </p>
+                            {% if app.user == course.user %}
+                                <p> 
+                                    <a 
+                                        href="/courses/edit/{{ course.id }}">
+                                        Edit course   
+                                    </a>
+                                </p>
                                 
-                        {% endif %}
-
-                    </p>
-
+                                <p>
+                                    <a 
+                                        href="/courses/delete/{{ course.id }}">
+                                        Delete course
+                                    </a>
+                                </p>
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-                
-                    
             {% endif %}
         </div>
 
             
         <div class="cshow-container-right">
 
-            <div class="cshow-chapters">
-                <h3>Content</h3>
-                {% for chapter in course.chapters %}       
-                    <h4>CHAPTER: {{ chapter.name }}</h4>
-                    <ul>
-                    {% for episode in chapter.episodes %}
-                        <div>
-                            <li>
-                                {{episode.name}}:
-                                <br>
-                                <img
-                                    width = 100px
-                                    src="{{ episode.ImagePath ? episode.ImagePath : "https://w7.pngwing.com/pngs/361/973/png-transparent-no-symbol-sign-scalable-graphics-hitting-others-s-angle-text-sticker.png" }}"
-                                    alt=""
-                                />
-                                <p><a href="/courses/show/{{course.id}}/{{episode.id}}">watch</a></p>
-                            </li>
+            <div class="cshow-chapters-list-container">
+                <h3>Content:</h3>
+                {% set episodeIndex = 1 %}
+                {% for chapter in course.chapters %}
+                        <div class="cshow-chapters-element">
+                            <div class="cshow-chapters-element-title" onclick="toggleChapter('{{ loop.index }}')">
+                                <h4>{{ chapter.name }}</h4> 
+                                <img class="cshow-arrow-right" id="arrow-right-{{ loop.index }}" src="/icons/arrow-right.svg" alt="arrow-right" style="display: inline;">
+                                <img class="cshow-arrow-down" id="arrow-down-{{ loop.index }}" src="/icons/arrow-down.svg" alt="arrow-down" style="display: none;">
+                            </div>
+                            <div class="cshow-chapters-element-episode-container" id="chapter-{{ loop.index }}" data-index="{{ loop.index }}">
+                                <ul>
+                                    {% for episode in chapter.episodes %}
+                                        <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
+                                            <li>{{episodeIndex}}. {{ episode.name }}</li>
+                                        </div>
+                                        {% set episodeIndex = episodeIndex + 1 %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     {% endfor %}
-                    </ul>
-                {% endfor %}
+
+
+
             </div>
 
         </div>
         
     </div>
+
+<script>
+
+    function toggleChapter(index) {
+        const chapter = document.getElementById('chapter-' + index);
+        const arrowRight = document.getElementById('arrow-right-' + index);
+        const arrowDown = document.getElementById('arrow-down-' + index);
+        let expandedChapters = JSON.parse(localStorage.getItem('expandedChapters')) || [];
+
+        if (chapter.style.display === 'none' || chapter.style.display === '') {
+            chapter.style.display = 'block';
+            arrowRight.style.display = 'none';
+            arrowDown.style.display = 'inline';
+            expandedChapters.push(index);
+        } else {
+            chapter.style.display = 'none';
+            arrowRight.style.display = 'inline';
+            arrowDown.style.display = 'none';
+            expandedChapters = expandedChapters.filter(i => i !== index);
+        }
+        localStorage.setItem('expandedChapters', JSON.stringify(expandedChapters));
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const chapters = document.querySelectorAll('.cshow-chapters-element-episode-container');
+        let expandedChapters = JSON.parse(localStorage.getItem('expandedChapters')) || [];
+
+        if (expandedChapters.length === 0 && chapters.length > 0) {
+            chapters[0].style.display = 'block';
+            document.getElementById('arrow-right-0').style.display = 'none';
+            document.getElementById('arrow-down-0').style.display = 'inline';
+            expandedChapters.push(chapters[0].dataset.index);
+            localStorage.setItem('expandedChapters', JSON.stringify(expandedChapters));
+        }
+
+        expandedChapters.forEach(index => {
+            const chapter = document.getElementById('chapter-' + index);
+            const arrowRight = document.getElementById('arrow-right-' + index);
+            const arrowDown = document.getElementById('arrow-down-' + index);
+
+            if (chapter) {
+                chapter.style.display = 'block';
+                arrowRight.style.display = 'none';
+                arrowDown.style.display = 'inline';
+            }
+        });
+    });
+
+</script>
 
 {% endblock %}
