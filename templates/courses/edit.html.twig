@@ -1,56 +1,55 @@
+{% extends 'clear_base.html.twig' %}
 
-{% block title %}Courses edit{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="">
-{% endblock %}
+{% block title %}Edit course{% endblock %}
 
 {% block body %}
 
+    {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
 
-<h1>Edit course</h1>
+    <div>
+         {{ form_start(course_form) }}
 
-{{ form_start(course_form) }}
+            {{ form_widget(course_form) }}
+                <button    
+                    type="submit"
+                    class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
+                    Submit Post
+                </button>
 
-    {{ form_widget(course_form) }}
-        <button    
-            type="submit"
-            class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
-            Submit Post
-        </button>
+        {{ form_end(course_form) }}
 
-{{ form_end(course_form) }}
+        <div id="chapter-list">
+            {% for chapter in course.chapters %}
 
-<div id="chapter-list">
-    {% for chapter in course.chapters %}
+                <p>{{ chapter.name }}</p>
 
-        <p>{{ chapter.name }}</p>
+                {% if chapter.episodes is not empty %}
+                    {% for episode in chapter.episodes %}
+                        <p> - - {{ episode.name }}</p>
+                        <img
+                            width = 100px
+                            src="{{ episode.ImagePath ? episode.ImagePath : "./images/no_content.png" }}"
+                            alt=""
+                        />
+                        <a href="/episodes/edit/{{episode.id}}/{{course.id}}">edit episode</a>
+                        <a href="/episodes/delete/{{episode.id}}/{{course.id}}">delete episode</a>
+                    {% endfor %}
+                {% else %}
+                    <p> - - No episodes yet</p>
+                {% endif %}
+                <p><a href="/episodes/create/{{chapter.id}}/{{course.id}}">Add episode</a></p>
+                
 
-        {% if chapter.episodes is not empty %}
-            {% for episode in chapter.episodes %}
-                <p> - - {{ episode.name }}</p>
-                <img
-                    width = 100px
-                    src="{{ episode.ImagePath ? episode.ImagePath : "./images/no_content.png" }}"
-                    alt=""
-                />
-                <a href="/episodes/edit/{{episode.id}}/{{course.id}}">edit episode</a>
-                <a href="/episodes/delete/{{episode.id}}/{{course.id}}">delete episode</a>
             {% endfor %}
-        {% else %}
-            <p> - - No episodes yet</p>
-        {% endif %}
-        <p><a href="/episodes/create/{{chapter.id}}/{{course.id}}">Add episode</a></p>
-        
+        </div>
 
-    {% endfor %}
-</div>
+        {% include 'partials/chapter/_create.html.twig' with { courseid: course.id, chapter_form: chapter_form } %}
 
-{% include 'partials/chapter/_create.html.twig' with { courseid: course.id, chapter_form: chapter_form } %}
-
-<h4>Delete your course:</h4>
-<a href="/courses/delete/{{ course.id }}">
-                    delete
-                </a>
+        <h4>Delete your course:</h4>
+        <a href="/courses/delete/{{ course.id }}">
+                            delete
+                        </a>
+    </div>
+   
 
 {% endblock %}

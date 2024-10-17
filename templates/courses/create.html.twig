@@ -1,14 +1,83 @@
-<h1>Create course</h1>
+{% extends 'clear_base.html.twig' %}
 
-<h4></h4>
+{% block title %}Create course{% endblock %}
 
-{{ form_start(form) }}
+{% block body %}
 
-    {{ form_widget(form) }}
-        <button    
-            type="submit"
-            class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
-            Submit Post
-        </button>
+    {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
 
-{{ form_end(form) }}
+    <div class="create-course-container" >
+        <div class="create-course-stepper" data-controller="form-stepper">
+            {{ form_start(form) }}
+            {{ form_row(form.image, {'attr': {'style': 'display:none;'}}) }}
+            {{ form_row(form.price, {'attr': {'style': 'display:none;'}}) }}
+            
+            <!-- step 1: course title -->
+            <div data-form-stepper-target="step" style="display:none;">
+                <div class="create-course-step-container">
+                    <div class="create-course-step-title">
+                        <h1>First, you have to enter title for your course</h1>
+                        <h3>It's ok if you can't think of a good title now. You can change it later.</h3>
+                    </div>
+                    <div class="create-course-step-input">{{ form_row(form.name) }}</div>
+
+                    <div class="create-course-button-section">
+                        <button type="button"  data-action="form-stepper#next">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- step 2: course description-->
+            <div data-form-stepper-target="step" style="display:none;">
+                <div class="create-course-step-container">
+                    <div class="create-course-step-title">
+                        <h1>Now, let's add a description for your course</h1>
+                        <h3>Give potential students an idea of what they'll learn. Don't worry, you can edit this later.</h3>
+                    </div>
+                    <div class="create-course-step-input">{{ form_row(form.Description) }}</div>
+
+                    <div class="create-course-button-section">
+                        <button type="button"  data-action="form-stepper#previous">Previous</button>
+                        <button type="button"  data-action="form-stepper#next">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- step 3: category -->
+            <div data-form-stepper-target="step" style="display:none;">
+                <div class="create-course-step-container">
+                    <div class="create-course-step-title">
+                        <h1>Now choose category which fits best for your course</h1>
+                        <h3>It's fine if you can't think of a perfectly fitting category now. You can change it later.</h3>
+                    </div>
+                    <div class="create-course-step-input">{{ form_row(form.categories) }}</div>
+
+                    <div class="create-course-button-section">
+                        <button type="button"  data-action="form-stepper#previous">Previous</button>
+                        <button type="button"  data-action="form-stepper#next">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- step 4: Submit -->
+            <div data-form-stepper-target="step" style="display:none;">
+                <div class="create-course-step-container">
+                    <div class="create-course-step-title">
+                        <h1>Wow, these were the first steps to create your course</h1>
+                        <h3>Now, after pressing the submit button you will be able to enter your newly created course
+                            in your instructor panel and enrich it with many different content.</h3>
+                    </div>
+                    <div class="create-course-step-input"></div>
+                    <div class="create-course-button-section">
+                        <button type="button" data-action="form-stepper#previous">Previous</button>
+                        <button type="button"  type="submit" class="">Submit</button>
+                    </div>
+                    
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

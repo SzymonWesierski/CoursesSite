@@ -1,0 +1,43 @@
+.create-course-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-course-stepper{
+    width: 60%;
+}
+
+.create-course-step-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 1px var(--navy);
+    height: 70vh;
+    margin-top: 2em;
+}
+
+.create-course-button-section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    height: 20%;
+}
+
+.create-course-step-title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 40%;
+    width: 80%;
+}
+
+.create-course-step-input{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40%;
+    width: 80%;
+}

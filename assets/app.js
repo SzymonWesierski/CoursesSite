@@ -16,6 +16,7 @@ import './styles/usercoursespanel.css';
 import './styles/cart.css';
 import './styles/security.css';
 import './styles/showcourse.css';
+import './styles/createcourse.css';
 
 
 

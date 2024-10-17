@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Course;
+use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,13 +44,21 @@ class CourseFormType extends AbstractType
             ])
             ->add('image', FileType::class, array(
                 'required' => false,
+                'label' => false,
                 'mapped' => false
             ))
             ->add('categories', EntityType::class, [
+                'label' => false,
                 'class' => Category::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+                'query_builder' => function (CategoryRepository $cr) {
+                    return $cr->createQueryBuilder('c')
+                        ->leftJoin('c.children', 'children')
+                        ->where('children.id IS NULL');
+                },
             ])
+            
         ;
     }
 
