@@ -21,7 +21,11 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('ajax-chapter-form', './assets/js/ajax-chapter-form.js')
+
+    .copyFiles({
+        from: './assets/images',  
+        to: 'images/[path][name].[hash:8].[ext]', 
+    })
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

@@ -1,0 +1,109 @@
+.edit-course-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 6em;
+}
+
+.edit-course-nav {
+    display: block;
+    width: 10%;
+    height: 20vh;
+    margin-top: 2em;
+}
+.nav-button{
+    height: 20%;
+    border-style: none;
+    border-left: 1px solid var(--navy);
+    border-bottom: 1px solid var(--navy);
+    cursor: pointer;
+    background-color: var(--white);
+    transition: all ease-in-out 0.2s
+}
+
+.nav-button:hover {
+    background-color: var(--lightblue);
+}
+
+.edit-course-nav-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 100%;
+}
+
+.edit-course-block{
+    width: 90%;
+    margin-bottom: 3em;
+}
+
+.edit-course-content {
+    width: 60%;
+    display: flex;
+    justify-content: center; 
+}
+
+.edit-course-block-content{
+    /* background-color: var(--white); */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--navy);
+    box-shadow: 0px 0px 51px -19px rgba(0, 0, 0, 0.199);
+    width: 80%;
+    min-height: 50vh;
+    padding: 2em;
+}
+
+.edit-course-block-content h2{
+    text-align: left;
+    width: 90%;
+}
+
+.edit-course-submit-btn{
+    position: absolute;
+    top: 3em;
+    right: 10em;
+}
+
+.edit-course-chapter-element{
+    border: 2px solid var(--navy);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    border-radius: 15px;
+    background-color: var(--white);
+    margin: 2em;
+}
+
+.chapter-header {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 90%;
+}
+
+.chapter-name {
+    margin-left: auto;
+}
+
+
+.edit-course-chapter-list{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.edit-course-episode-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    border-bottom: 1px solid var(--navy);
+}

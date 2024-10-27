@@ -28,7 +28,7 @@ class Course
     /**
      * @var Collection<int, Chapter>
      */
-    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'courses', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'course', orphanRemoval: true)]
     private Collection $chapters;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
@@ -120,7 +120,7 @@ class Course
     {
         if (!$this->chapters->contains($chapter)) {
             $this->chapters->add($chapter);
-            $chapter->setCourses($this);
+            $chapter->setCourse($this);
         }
 
         return $this;
@@ -129,8 +129,8 @@ class Course
     public function removeChapter(Chapter $chapter): static
     {
         if ($this->chapters->removeElement($chapter)) {
-            if ($chapter->getCourses() === $this) {
-                $chapter->setCourses(null);
+            if ($chapter->getCourse() === $this) {
+                $chapter->setCourse(null);
             }
         }
 

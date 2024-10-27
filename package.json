@@ -8,6 +8,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@symfony/stimulus-bridge": "^3.2.2",
+    "bootstrap": "^5.3.3",
     "core-js": "^3.38.1",
     "jquery": "^3.7.1",
     "owl.carousel": "^2.3.4"
@@ -16,9 +17,11 @@
     "@babel/core": "^7.25.7",
     "@babel/preset-env": "^7.25.7",
     "@symfony/ux-dropzone": "file:vendor/symfony/ux-dropzone/assets",
+    "@symfony/ux-live-component": "file:vendor/symfony/ux-live-component/assets",
     "@symfony/ux-toggle-password": "file:vendor/symfony/ux-toggle-password/assets",
     "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
     "@symfony/webpack-encore": "^5.0.0",
+    "file-loader": "^6.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4",
     "webpack-notifier": "^1.15.0"

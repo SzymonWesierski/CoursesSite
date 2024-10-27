@@ -1,55 +1,187 @@
 {% extends 'clear_base.html.twig' %}
 
-{% block title %}Edit course{% endblock %}
+{% block title %}Edit Course{% endblock %}
 
 {% block body %}
-
     {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
+    
+    {{ form_start(course_form) }}
+    <button class="edit-course-submit-btn" type="submit">
+        Save
+    </button>
 
-    <div>
-         {{ form_start(course_form) }}
+    <div data-controller="edit-course" class="edit-course-container" >
 
-            {{ form_widget(course_form) }}
-                <button    
-                    type="submit"
-                    class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
-                    Submit Post
-                </button>
-
-        {{ form_end(course_form) }}
-
-        <div id="chapter-list">
-            {% for chapter in course.chapters %}
-
-                <p>{{ chapter.name }}</p>
-
-                {% if chapter.episodes is not empty %}
-                    {% for episode in chapter.episodes %}
-                        <p> - - {{ episode.name }}</p>
-                        <img
-                            width = 100px
-                            src="{{ episode.ImagePath ? episode.ImagePath : "./images/no_content.png" }}"
-                            alt=""
-                        />
-                        <a href="/episodes/edit/{{episode.id}}/{{course.id}}">edit episode</a>
-                        <a href="/episodes/delete/{{episode.id}}/{{course.id}}">delete episode</a>
-                    {% endfor %}
-                {% else %}
-                    <p> - - No episodes yet</p>
-                {% endif %}
-                <p><a href="/episodes/create/{{chapter.id}}/{{course.id}}">Add episode</a></p>
-                
-
-            {% endfor %}
+        <!-- Navigation Panel -->
+        <div class="edit-course-nav">
+            <div class="edit-course-nav-container"> 
+                <button type="button" data-action="click->edit-course#navigate" data-index="0" class="nav-button">Basic Info</button>
+                <button type="button" data-action="click->edit-course#navigate" data-index="1" class="nav-button">Pricing</button>
+                <button type="button" data-action="click->edit-course#navigate" data-index="2" class="nav-button">Curriculum</button>
+                <button type="button" data-action="click->edit-course#navigate" data-index="3" class="nav-button">Critical</button>
+            </div>
         </div>
 
-        {% include 'partials/chapter/_create.html.twig' with { courseid: course.id, chapter_form: chapter_form } %}
+        <!-- Content Section -->
+        <div class="edit-course-content">
+            <!-- Basic Info Section -->
+            <div data-edit-course-target="section" class="edit-course-block">
+                <div class="edit-course-block-content">
+                    <h2>Basic info:</h2>
+                    {{ form_row(course_form.name) }}
+                    {{ form_row(course_form.Description) }}
+                    {{ form_row(course_form.image) }}
+                    {{ form_row(course_form.categories) }}
+                </div>
+            </div>
 
-        <h4>Delete your course:</h4>
-        <a href="/courses/delete/{{ course.id }}">
-                            delete
-                        </a>
+            <!-- Pricing Section -->
+            <div data-edit-course-target="section" class="edit-course-block" style="display: none;">
+                <div class="edit-course-block-content">
+                    <h2>Pricing:</h2>
+                    {{ form_row(course_form.price) }}
+                </div>
+            </div>
+            {{ form_end(course_form) }}
+
+            <!-- Curriculum Section -->
+            <div data-edit-course-target="section" class="edit-course-block" style="display: none;">
+                <div class="edit-course-block-content">
+                    <h2>Curriculum: </h2>
+                    <div id="chapter-list" data-edit-course-target="chapterList" class="edit-course-chapter-list">
+
+                        {% for chapter in course.chapters %}
+                            <div class="edit-course-chapter-element">
+                                <h3 class="chapter-header">
+                                    Chapter.{{ loop.index }} 
+                                    <span class="chapter-name">{{ chapter.name }}</span>
+                                </h3>
+                                {% if chapter.episodes is not empty %}
+                                    
+                                    {% for episode in chapter.episodes %}
+
+                                        <div class="edit-course-episode-container">
+                                            <img width="100px" src="{{ episode.ImagePath ? episode.ImagePath : '/images/no_content.png' }}" alt="">
+                                            <h4>{{ episode.name }}</h4>
+                                            <div>
+                                                <button type="button" 
+                                                        data-controller="custom-modal" 
+                                                        data-action="click->custom-modal#open" 
+                                                        data-modal-id="edit-episode" 
+                                                        data-course-id="{{ course.id }}"
+                                                        data-episode-id="{{ episode.id }}">
+                                                    Edit
+                                                </button>
+
+                                                 <button type="button"
+                                                         data-controller="custom-modal" 
+                                                         data-action="click->custom-modal#open" 
+                                                         data-modal-id="delete-episode"
+                                                         data-course-id="{{ course.id }}"
+                                                         data-episode-id="{{ episode.id }}">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+
+                                {% else %}
+                                    <div class="edit-course-episode-container">
+                                        <p> - - No episodes yet</p>
+                                    </div>
+                                {% endif %}
+
+                                 <button 
+                                        type="button" 
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open"
+                                        data-modal-id="create-episode"
+                                        data-chapter-id="{{ chapter.id }}">
+                                    Add episode
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% include 'partials/chapter/_create.html.twig' with { courseid: course.id, chapter_form: chapter_form } %}
+                    <div id="chapter-form-messages" data-edit-course-target="chapterFormMessages"></div>
+                </div>
+            </div>
+
+            <!-- Critical Section -->
+            <div data-edit-course-target="section" class="edit-course-block">
+                <div class="edit-course-block-content">
+                    <h2>Delete this course:</h2>
+                    <p>Once you delete a course, there is no going back. Please be certain.</p>
+                    <div class="col-auto">
+                        <div class="form-text">
+                            
+                            <button type="button" 
+                                    data-controller="custom-modal" 
+                                    data-action="click->custom-modal#open" 
+                                    data-modal-id="delete-course">
+                                Delete
+                            </button>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-   
+
+<!-- Modal Delete Episode  -->
+{% component Modal with {id: 'delete-episode'} %}
+    {% block modal_header %}
+        <h5>Delete episode</h5>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+    {% endblock %}
+    {% block modal_body %}
+        Are you sure you want to delete this episode?
+        <button type="button" id="deleteEpisodeButton" aria-label="Delete Episode">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+
+<!-- Modal Delete Course  -->
+{% component Modal with {id: 'delete-course'}  %}
+    {% block modal_header %}
+        <h5>Delete course: {{course.name}}</h5>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+    {% endblock %}
+    {% block modal_body %}
+        Are you sure you want to delete this course ?
+        <button type="button" class="btn-close" onclick="window.location.href='{{ path('delete_course', {id: course.id}) }}';">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal Create Episode  -->
+{% component Modal with {id: 'create-episode'}  %}
+    {% block modal_header %}
+        <h5>Create episode in chapter </h5>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+    {% endblock %}
+    {% block modal_body %}
+        {% include 'partials/episodes/_create.html.twig' with { create_episode_form: create_episode_form } %}
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal Edit Episode  -->
+{% component Modal with {id: 'edit-episode'}  %}
+    {% block modal_header %}
+        <h5>Edit episode</h5>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+    {% endblock %}
+    {% block modal_body %}
+        {% include 'partials/episodes/_edit.html.twig' with { edit_episode_form: edit_episode_form } %}
+    {% endblock %}
+{% endcomponent %}
+
+
 
 {% endblock %}
+

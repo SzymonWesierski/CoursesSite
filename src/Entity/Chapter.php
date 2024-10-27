@@ -20,7 +20,7 @@ class Chapter
 
     #[ORM\ManyToOne(inversedBy: 'chapters')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Course $courses = null;
+    private ?Course $course = null;
 
     /**
      * @var Collection<int, Episode>
@@ -50,14 +50,14 @@ class Chapter
         return $this;
     }
 
-    public function getCourses(): ?Course
+    public function getCourse(): ?Course
     {
-        return $this->courses;
+        return $this->course;
     }
 
-    public function setCourses(?Course $courses): static
+    public function setCourse(?Course $course): static
     {
-        $this->courses = $courses;
+        $this->course = $course;
 
         return $this;
     }

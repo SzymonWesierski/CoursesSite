@@ -10,11 +10,11 @@ use App\Entity\User;
 use App\Enum\CourseStatus;
 use App\Form\CourseFormType;
 use App\Form\ChapterFormType;
+use App\Form\EpisodeFormType;
 use App\Service\CloudinaryService;
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -113,6 +113,7 @@ class CoursesController extends AbstractController
 
         $productsInCartIds = [];
         $amountOfProducts = 0;
+        $isPurchased = false;
 
         $user = $this->getUser();
 
@@ -124,6 +125,13 @@ class CoursesController extends AbstractController
             }
             $amountOfProducts = $cart->getAmountOfProducts(); 
             $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
+            
+            if($this->courseRepository->isPurchasedCourse($courseId, $user->getId())) {
+                $isPurchased = true;
+            }
+            // if ($user->getId() == $course->getUser()->getId()){
+            //     $isPurchased = true;
+            // }
         }
 
         $episode = new Episode();
@@ -147,6 +155,7 @@ class CoursesController extends AbstractController
             'course' => $course,
             'episode' => $episode,
             'episodeId' => $episodeId,
+            'isPurchased' => $isPurchased,
             'productsInCartIds' => $productsInCartIds,
             'amountOfProducts' => $amountOfProducts
         ]);
@@ -159,6 +168,14 @@ class CoursesController extends AbstractController
 
         if (!$course) {
             throw $this->createNotFoundException('Course not found.');
+        }
+
+        $user = $this->getUser();
+
+        if ($user instanceof User) {
+            if ($course->getUser()->getId() !=  $user->getId()){
+                throw $this->createAccessDeniedException();
+            }
         }
 
         $currentPublicImageId = $course->getPublicImageId();
@@ -209,13 +226,25 @@ class CoursesController extends AbstractController
         $course = $this->courseRepository->find($id);
 
         if (!$course) {
-            throw $this->createNotFoundException('Episode not found.');
+            throw $this->createNotFoundException('Course not found.');
+        }
+
+        $user = $this->getUser();
+
+        if ($user instanceof User) {
+            if ($course->getUser()->getId() !=  $user->getId()){
+                throw $this->createAccessDeniedException();
+            }
         }
 
         $course_form = $this->createForm(CourseFormType::class, $course);
 
         $chapter = new Chapter();
         $chapter_form = $this->createForm(ChapterFormType::class, $chapter);
+
+        $episode = new Episode();
+        $episode_form = $this->createForm(EpisodeFormType::class, $episode);
+
 
         $course_form->handleRequest($request);
 
@@ -241,6 +270,8 @@ class CoursesController extends AbstractController
         return $this->render('courses/edit.html.twig', [
             'course_form' => $course_form->createView(),
             'chapter_form' => $chapter_form->createView(),
+            'create_episode_form' => $episode_form->createView(),
+            'edit_episode_form' => $episode_form->createView(),
             'course' => $course
         ]);
     }

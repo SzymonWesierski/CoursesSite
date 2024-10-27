@@ -25,7 +25,32 @@
 }
 
 
+.btn-create {
+    border: 2px solid  var(--brightblue);
+    background-color: var(--brightblue);
+    border-radius: 0.9em;
+    cursor: pointer;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+}
+  
+.btn-create span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--navy);
+    font-weight: 600;
+}
 
+.btn-create span img {
+    width: 15px;
+    margin-right: 20px;
+}
+  
+.btn-create:hover {
+    background-color: var(--lightblue);
+}
 
 
 

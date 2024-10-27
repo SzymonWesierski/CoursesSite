@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class EpisodeFormType extends AbstractType
 {
@@ -22,6 +23,9 @@ class EpisodeFormType extends AbstractType
             ->add('image', FileType::class, array(
                 'required' => false,
                 'mapped' => false
+            ))
+            ->add('isFreeToWatch', CheckboxType::class, array(
+                'required' => false,
             ))
         ;
     }

@@ -9,7 +9,6 @@ import 'owl.carousel/dist/assets//owl.theme.default.min.css';
 import 'owl.carousel/dist/owl.carousel.js';
 
 
-
 import './styles/app.css';
 import './styles/homepage.css';
 import './styles/usercoursespanel.css';
@@ -17,6 +16,8 @@ import './styles/cart.css';
 import './styles/security.css';
 import './styles/showcourse.css';
 import './styles/createcourse.css';
+import './styles/editcourse.css';
+
 
 
 

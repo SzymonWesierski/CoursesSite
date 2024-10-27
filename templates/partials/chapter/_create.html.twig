@@ -1,27 +1,16 @@
-{% block stylesheets %}
-    <link rel="stylesheet" href="">
-{% endblock %}
 
-{% block javascripts %}
-    {{ encore_entry_script_tags('ajax-chapter-form') }}
-{% endblock %}
-
-{% block body %}
-
-<div id="chapter-form">
+<div>
     <h1>Create Chapter</h1>
     {{ form_start(chapter_form, {'attr': {'id': 'ajax-chapter-form'}}) }}
         {{ form_widget(chapter_form) }}
 
         <input type="hidden" name="course_id" value="{{ courseid }}">
 
-        <button type="submit">
-            Submit Chapter
-        </button>
+        <button type="submit" data-action="click->edit-course#submitChapterForm">Submit Chapter</button>
+
     {{ form_end(chapter_form) }}
+    <div id="chapter-form-messages" data-edit-course-target="chapterFormMessages"></div>
 </div>
 
 
 <div id="chapter-form-messages"></div>
-
-{% endblock %}

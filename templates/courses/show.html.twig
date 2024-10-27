@@ -87,9 +87,27 @@
                             <div class="cshow-chapters-element-episode-container" id="chapter-{{ loop.index }}" data-index="{{ loop.index }}">
                                 <ul>
                                     {% for episode in chapter.episodes %}
-                                        <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
-                                            <li>{{episodeIndex}}. {{ episode.name }}</li>
-                                        </div>
+                                        {% if isPurchased %}
+                                            <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
+                                                <li>{{episodeIndex}}. {{ episode.name }}</li>
+                                            </div>
+                                        {% else %}
+
+                                            {% if episode.isFreeToWatch %}
+                                                <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
+                                                    <li>{{episodeIndex}}. {{ episode.name }}</li>
+                                                </div>
+
+                                            {% else %}
+                                                 <div class="cshow-chapters-element-episode episode-blocked">
+                                                    <li>{{episodeIndex}}. {{ episode.name }}</li>
+                                                    <img class="lock-img" src="/icons/lock.svg" alt="locked">
+                                                </div>
+                                            {% endif %}
+
+                                        {% endif %}
+                                        
+                                        
                                         {% set episodeIndex = episodeIndex + 1 %}
                                     {% endfor %}
                                 </ul>

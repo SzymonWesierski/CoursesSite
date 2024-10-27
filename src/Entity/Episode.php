@@ -35,6 +35,9 @@ class Episode
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $publicVideoId = null;
 
+    #[ORM\Column]
+    private ?bool $isFreeToWatch = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class Episode
     public function setPublicVideoId(?string $publicVideoId): static
     {
         $this->publicVideoId = $publicVideoId;
+
+        return $this;
+    }
+
+    public function getIsFreeToWatch(): ?bool
+    {
+        return $this->isFreeToWatch;
+    }
+
+    public function setIsFreeToWatch(bool $isFreeToWatch): static
+    {
+        $this->isFreeToWatch = $isFreeToWatch;
 
         return $this;
     }

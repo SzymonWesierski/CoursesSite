@@ -11,9 +11,12 @@
                 <h1>All your {{categoryName}} courses</h1>
             </div>
             <div class="course-list-title-right-side">
-                <a href="{{ path('create_course') }}">
-                    Create new course
-                </a>
+                <button class="btn-create"  onclick="window.location.href='{{ path('create_course') }}';">
+                    <span>
+                        <img src="/icons/plus.svg" alt="plus">
+                        Create
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -60,16 +63,16 @@
                                 {{ course.name }}
                             </h2>
 
-                            <p>
-                                {{ course.Description }}
-                            </p>
                             {% if statusValues['NOT_DONE_YET'] == course.status.value %}
-                            <p>
-                                Course is not finished yet
+                            <div class="courses-list-element-manage">
+                                <p>
+                                    Course is not finished yet
+                                </p>
+                                
                                 <a href="/courses/edit/{{ course.id }}">
                                     Manage/Edit
                                 </a>
-                            </p>
+                            </div>
                             {% endif %}
                             <a href="/courses/show/{{ course.id }}">
                                 Preview
@@ -79,9 +82,12 @@
                 {% else %}
 
                     <h1>No courses yet</h1>
-                    <h4><a href="{{ path('create_course') }}">
-                            Create new course
-                        </a></h4>
+                    <button class="btn-create"  onclick="window.location.href='{{ path('create_course') }}';">
+                        <span>
+                            <img src="/icons/plus.svg" alt="plus">
+                            Create new one
+                        </span>
+                    </button>
 
                 {% endif %}
 

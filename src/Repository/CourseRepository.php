@@ -117,6 +117,22 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function isPurchasedCourse(int $courseId, int $userId): bool
+    {
+        return (bool) $this->createQueryBuilder('course')
+            ->innerJoin('course.carts', 'cart')
+            ->innerJoin('cart.user', 'user')
+            ->andWhere('user.id = :userId')
+            ->andWhere('course.id = :courseId')
+            ->andWhere('cart.purchased = true')
+            ->setParameter('userId', $userId)
+            ->setParameter('courseId', $courseId)
+            ->select('1')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
     public function findPurchasedCoursesIds(int $userId): array
     {
         $coursesIds = $this->createQueryBuilder('course')  

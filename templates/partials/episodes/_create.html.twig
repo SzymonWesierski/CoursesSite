@@ -1,0 +1,11 @@
+<h1>Create episode</h1>
+
+{{ form_start(create_episode_form, { 'action': path('create_episode') }) }}
+    <input type="hidden" name="chapter_id" value="">
+    {{ form_widget(create_episode_form) }}
+    <button    
+        type="submit"
+        class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
+        Submit Post
+    </button>
+{{ form_end(create_episode_form) }}

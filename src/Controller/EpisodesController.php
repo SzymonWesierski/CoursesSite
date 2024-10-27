@@ -31,37 +31,29 @@ class EpisodesController extends AbstractController
         $this->cloudinaryService = $cloudinaryService;
     }
 
-
-
-    #[Route('/episodes', name: 'episodes')]
-    public function index(): Response
-    {
-        $user = $this->getUser();
-
-        if (!$user) {
-            return $this->redirectToRoute('/login');
-        }
-
-        if (!$user instanceof User) {
-            throw new \LogicException('Zalogowany użytkownik nie jest instancją encji User.');
-        }
-
-        $episodes = $this->episodeRepository->findAllUserEpisodes($user->getId());
-    
-        return $this->render('episodes/index.html.twig', [
-            'episodes' => $episodes,
-        ]);
-    }
-
-    #[Route('/episodes/create/{chapter_id}/{course_id}', name: 'create_episode')]
-    public function create($chapter_id, $course_id, Request $request): Response
+    #[Route('/episodes/create/{chapter_id?}', name: 'create_episode')]
+    public function create(Request $request, $chapter_id = 0): Response
     {
         $episode = new Episode();
         $form = $this->createForm(EpisodeFormType::class, $episode);
 
-        $form->handleRequest($request);
+        $form->handleRequest($request);      
 
         if($form->isSubmitted() && $form->isValid()){
+
+            $chapterRepo = $this->em->getRepository(Chapter::class); 
+
+            if($chapter_id > 0){
+                $chapter = $chapterRepo->find($chapter_id);
+            }else{
+                $chapter_id = $request->request->get('chapter_id');
+                $chapter = $chapterRepo->find($chapter_id);
+            }
+        
+            if (!$chapter) {
+                throw $this->createNotFoundException('Chapter not found');
+            }
+
             $newEpisode = $form->getData();
             $image = $form->get('image')->getData();
             if ($image) {
@@ -79,9 +71,7 @@ class EpisodesController extends AbstractController
                 $newEpisode->setVideoPath($_ENV['CLOUDINARY_VIDEO_URL'] . $result['public_id']);
             }
             
-            $chapterRepo = $this->em->getRepository(Chapter::class); 
-            $chapter = $chapterRepo->find($chapter_id);
-
+            $course = $chapter->getCourse();
 
             $this->em->persist($newEpisode);
             $chapter->addEpisode($newEpisode);
@@ -93,7 +83,7 @@ class EpisodesController extends AbstractController
             $this->em->persist($chapter);
             $this->em->flush();
             
-            return $this->redirectToRoute('edit_course', ['id' => $course_id]);
+            return $this->redirectToRoute('edit_course', ['id' => $course->getId()]);
         }
 
         return $this->render('episodes/create.html.twig', [
@@ -101,18 +91,33 @@ class EpisodesController extends AbstractController
         ]);
     }
 
-    #[Route('/episodes/edit/{episodeId}/{courseId}', name: 'edit')]
-    public function edit($episodeId, $courseId, Request $request): Response
+    #[Route('/episodes/edit/{episodeId}/{courseId}', name: 'edit_episode')]
+    public function edit( Request $request, $episodeId = 0, $courseId = 0): Response
     {
-        $episode = $this->episodeRepository->find($episodeId);
+        if($episodeId > 0){
+            $episode = $this->episodeRepository->find($episodeId);
+        }else{
+            $episodeId = $request->request->get('episode_id');
+            $episode = $this->episodeRepository->find($episodeId);
+        }
 
         if (!$episode) {
             throw $this->createNotFoundException('Episode not found.');
         }
 
-        $form = $this->createForm(EpisodeFormType::class, $episode);
+        if($courseId == 0){
+            $courseId = $request->request->get('course_id');
+        }
+
+        $form =$this->createForm(EpisodeFormType::class, $episode);
 
         $form->handleRequest($request);
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('partials/episodes/_edit.html.twig', [
+                'edit_episode_form' => $form->createView(),
+            ]);
+        }   
 
         if($form->isSubmitted() && $form->isValid()){
             
@@ -138,7 +143,7 @@ class EpisodesController extends AbstractController
         }
 
         return $this->render('episodes/edit.html.twig', [
-            'form' => $form->createView(),
+            'edit_episode_form' => $form->createView(),
             'episode' => $episode
         ]);
     }

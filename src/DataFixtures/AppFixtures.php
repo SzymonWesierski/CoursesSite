@@ -186,8 +186,21 @@ class AppFixtures extends Fixture
             $episode = new Episode();
             $episode->setName('Episode 1 of Course ' . ($i + 1));
             $episode->setDescription($faker->sentences(3, true));
+            $episode->setFreeToWatch(true);
+
+            $episode2 = new Episode();
+            $episode2->setName('Episode 2 of Course ' . ($i + 1));
+            $episode2->setDescription($faker->sentences(3, true));
+            $episode2->setFreeToWatch(false);
+
+            $episode3 = new Episode();
+            $episode3->setName('Episode 3 of Course ' . ($i + 1));
+            $episode3->setDescription($faker->sentences(3, true));
+            $episode3->setFreeToWatch(false);
 
             $chapter->addEpisode($episode);
+            $chapter->addEpisode($episode2);
+            $chapter->addEpisode($episode3);
             $course->addChapter($chapter);
 
             $randomCategory1 = $categories[array_rand($categories, 1)];
@@ -200,6 +213,8 @@ class AppFixtures extends Fixture
 
             $manager->persist($chapter);
             $manager->persist($episode);
+            $manager->persist($episode2);
+            $manager->persist($episode3);
             $manager->persist($course);
         }
 
