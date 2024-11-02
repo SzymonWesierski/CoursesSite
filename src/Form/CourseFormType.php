@@ -21,7 +21,6 @@ class CourseFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => array(
-                    'class' => 'bg-transparent block border-b-2 w-full h-20 text-6xl outline-none',
                     'placeholder' => 'Enter title...',
                 ),
                 'label' => false,
@@ -29,7 +28,6 @@ class CourseFormType extends AbstractType
             ])
             ->add('Description', TextareaType::class, [
                 'attr' => array(
-                    'class' => 'bg-transparent block mt-10 border-b-2 w-full h-60 text-6xl outline-none',
                     'placeholder' => 'Enter Description...'
                 ),
                 'label' => false,
@@ -57,6 +55,10 @@ class CourseFormType extends AbstractType
                         ->leftJoin('c.children', 'children')
                         ->where('children.id IS NULL');
                 },
+                'attr' => [
+                    'class' => 'course-category-select',
+                    'data-placeholder' => 'Choose category...',
+                ],
             ])
             
         ;

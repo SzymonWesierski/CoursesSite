@@ -25,7 +25,7 @@ export default class extends Controller {
                     });
                     if (response.ok) {
                         const html = await response.text();
-                        modal.querySelector('.modal-body').innerHTML = html;
+                        modal.querySelector('.modal-body-content').innerHTML = html;
 
                         const courseInput = modal.querySelector('input[name="course_id"]');
                         if (courseInput) courseInput.value = courseId;

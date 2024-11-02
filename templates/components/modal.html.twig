@@ -16,7 +16,9 @@
                 {% endif %}
 
                 <div class="modal-body">
-                    {% block modal_body %}{% endblock %}
+                    <div class="modal-body-content">
+                        {% block modal_body %}{% endblock %}
+                    </div>
                 </div>
 
                 {% if block('modal_footer') %}

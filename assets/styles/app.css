@@ -15,7 +15,7 @@ body {
 }
 
 .icon{
-    height: 30px;
+    height: 3em;
     margin-right: 10px;
 }
 
@@ -29,6 +29,10 @@ body {
     justify-content:space-between;
     border-bottom: 1px solid var(--navy);
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.199);
+}
+
+.navbar-return{
+    background-color: var(--navy);
 }
 
 .background-container{
@@ -374,6 +378,21 @@ body {
 
 
 
+.course-category-select {
+    background-color: var(--lightblue);
+    border: 1px solid var(--navy);
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 0.375rem;
+    outline: 0;
+    padding: 0.75rem 1rem;
+    color: var(--navy);
+}
+
+.course-category-select option {
+    color: #333;
+}
 
 
 
@@ -398,6 +417,7 @@ body {
 }
 
 .modal-dialog {
+
     position: absolute;
     top: 50%;
     left: 50%;
@@ -405,12 +425,68 @@ body {
 }
 
 .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background-color: #fff;
-    border-radius: 0.5rem;
+    width: 100%;
+    border-left: 2px solid var(--navy);
+    border-bottom: 2px solid var(--navy);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 
-.modal-header,
+.modal-body{
+    width: 100%;
+    background-color: var(--white);
+}
+
+.modal-body-content{
+    margin: 3em;
+}
+
+
 .modal-footer {
-    padding: 1rem;
+    width: 100%;
+    background-color: var(--white);
+}
+
+.modal-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--navy);
+}
+
+
+/* Buttons */
+
+.btn-default {
+    border: 2px solid  var(--brightblue);
+    background-color: var(--brightblue);
+    border-radius: 0.9em;
+    cursor: pointer;
+    padding: 0.8em 1.2em 0.8em 1em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+}
+  
+.btn-default span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--navy);
+    font-weight: 600;
+}
+
+.btn-default span img {
+    width: 15px;
+    margin-right: 20px;
+}
+  
+.btn-default:hover {
+    background-color: var(--lightblue);
 }

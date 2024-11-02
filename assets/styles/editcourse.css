@@ -13,15 +13,17 @@
 .nav-button{
     height: 20%;
     border-style: none;
-    border-left: 1px solid var(--navy);
-    border-bottom: 1px solid var(--navy);
+    border-left: 1px solid var(--lightblue);
+    border-bottom: 1px solid var(--lightblue);
+    color: var(--white);
     cursor: pointer;
-    background-color: var(--white);
+    background-color: var(--navy);
     transition: all ease-in-out 0.2s
 }
 
 .nav-button:hover {
     background-color: var(--lightblue);
+    color: var(--navy);
 }
 
 .edit-course-nav-container{
@@ -39,6 +41,7 @@
 
 .edit-course-content {
     width: 60%;
+    color: white;
     display: flex;
     justify-content: center; 
 }
@@ -47,7 +50,7 @@
     /* background-color: var(--white); */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     border: 1px solid var(--navy);
     box-shadow: 0px 0px 51px -19px rgba(0, 0, 0, 0.199);
@@ -63,20 +66,32 @@
 
 .edit-course-submit-btn{
     position: absolute;
-    top: 3em;
-    right: 10em;
+    top: 1.5em;
+    right: 5%;
 }
 
+.edit-course-edit-delete-btn{
+    background-color: transparent;
+}
+
+.edit-course-edit-delete-btn span img {
+    width: 15px;
+    margin-right: 0px;
+}
+  
+
 .edit-course-chapter-element{
-    border: 2px solid var(--navy);
+    border: 1px solid var(--lightblue);
+    border-radius: 2em;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     width: 100%;
-    border-radius: 15px;
-    background-color: var(--white);
+    background-color: var(--navy);
+    color: var(--lightblue);
     margin: 2em;
+    padding: 2em;
 }
 
 .chapter-header {
@@ -105,5 +120,46 @@
     justify-content: space-between;
     align-items: center;
     width: 90%;
-    border-bottom: 1px solid var(--navy);
+    border-bottom: 1px solid var(--lightblue);
+    margin-bottom: 2em;
 }
+
+.edit-course-inputs input, textarea{
+    width: 90%;
+    border-radius: 0.375rem;
+    border: 1px solid var(--navy);
+    outline: 0;
+    background-color: var(--lightblue);
+    padding: 0.75rem 1rem;
+    color: var(--navy);
+    margin-bottom: 2em;
+  }
+
+  .edit-course-inputs textarea{
+    min-height: 6em;;
+  }
+  
+  .edit-course-inputs input:focus {
+    border-color: var(--brightblue);;
+  }
+
+  .edit-course-block-content-title{
+    width: 100%;
+    border-bottom: solid 1px var(--navy);
+    margin-bottom: 2em;
+  }
+
+/* modals */
+
+.btn-close{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-close img{
+    width: 2em;
+}
+
+
+

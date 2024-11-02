@@ -1,12 +1,14 @@
-<h1>Edit episode</h1>
-
 {{ form_start(edit_episode_form, { 'action': path('edit_episode') }) }}
     <input type="hidden" name="course_id" value="">
     <input type="hidden" name="episode_id" value="">
-    {{ form_widget(edit_episode_form) }}
+
+    <div class="edit-course-inputs">
+         {{ form_widget(edit_episode_form) }}
+    </div>
+   
     <button    
         type="submit"
-        class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
+        class="btn-default">
         Submit Post
     </button>
 {{ form_end(edit_episode_form) }}

@@ -6,8 +6,13 @@
     {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
     
     {{ form_start(course_form) }}
-    <button class="edit-course-submit-btn" type="submit">
-        Save
+
+    <button class="btn-default edit-course-submit-btn"  
+            onclick="window.location.href='{{ path('create_course') }}';" 
+            type="submit">
+        <span>
+            Save
+        </span>
     </button>
 
     <div data-controller="edit-course" class="edit-course-container" >
@@ -27,19 +32,33 @@
             <!-- Basic Info Section -->
             <div data-edit-course-target="section" class="edit-course-block">
                 <div class="edit-course-block-content">
-                    <h2>Basic info:</h2>
-                    {{ form_row(course_form.name) }}
-                    {{ form_row(course_form.Description) }}
-                    {{ form_row(course_form.image) }}
-                    {{ form_row(course_form.categories) }}
+                    <div class="edit-course-block-content-title">
+                        <h2>Basic info:</h2>
+                    </div>
+                    
+                    <div class="edit-course-inputs">
+                        {{ form_row(course_form.name, {label: 'Title: '}) }}
+                        {{ form_row(course_form.Description, {label: 'Description:'}) }}
+                        {{ form_row(course_form.image, {label: 'Image:'}) }}
+                        {{ form_row(course_form.categories, {label: 'Category:'}) }}
+                    </div>
+                   
                 </div>
             </div>
 
             <!-- Pricing Section -->
             <div data-edit-course-target="section" class="edit-course-block" style="display: none;">
                 <div class="edit-course-block-content">
-                    <h2>Pricing:</h2>
-                    {{ form_row(course_form.price) }}
+                
+                    <div class="edit-course-block-content-title">
+                        <h2>Pricing:</h2>
+                    </div>
+                    <p>
+                        Enter the amount that best reflects the value of your course
+                    </p>
+                    <div class="edit-course-inputs">
+                        {{ form_row(course_form.price) }}
+                    </div>
                 </div>
             </div>
             {{ form_end(course_form) }}
@@ -47,7 +66,10 @@
             <!-- Curriculum Section -->
             <div data-edit-course-target="section" class="edit-course-block" style="display: none;">
                 <div class="edit-course-block-content">
-                    <h2>Curriculum: </h2>
+                    <div class="edit-course-block-content-title">
+                        <h2>Curriculum: </h2>
+                    </div>
+                
                     <div id="chapter-list" data-edit-course-target="chapterList" class="edit-course-chapter-list">
 
                         {% for chapter in course.chapters %}
@@ -64,22 +86,29 @@
                                             <img width="100px" src="{{ episode.ImagePath ? episode.ImagePath : '/images/no_content.png' }}" alt="">
                                             <h4>{{ episode.name }}</h4>
                                             <div>
-                                                <button type="button" 
+                                                <button class="btn-default edit-course-edit-delete-btn" 
+                                                        type="button" 
                                                         data-controller="custom-modal" 
                                                         data-action="click->custom-modal#open" 
                                                         data-modal-id="edit-episode" 
                                                         data-course-id="{{ course.id }}"
                                                         data-episode-id="{{ episode.id }}">
-                                                    Edit
+                                                    <span>
+                                                        <img src="/icons/edit-white.svg" alt="edit">
+                                                        
+                                                    </span>
                                                 </button>
 
-                                                 <button type="button"
+                                                 <button class="btn-default edit-course-edit-delete-btn" 
+                                                         type="button"
                                                          data-controller="custom-modal" 
                                                          data-action="click->custom-modal#open" 
                                                          data-modal-id="delete-episode"
                                                          data-course-id="{{ course.id }}"
                                                          data-episode-id="{{ episode.id }}">
-                                                    Delete
+                                                    <span>
+                                                        <img src="/icons/remove.svg" alt="remove">
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
@@ -93,13 +122,16 @@
                                     </div>
                                 {% endif %}
 
-                                 <button 
+                                <button class="btn-default" 
                                         type="button" 
                                         data-controller="custom-modal" 
                                         data-action="click->custom-modal#open"
                                         data-modal-id="create-episode"
                                         data-chapter-id="{{ chapter.id }}">
-                                    Add episode
+                                    <span>
+                                        <img src="/icons/plus.svg" alt="plus">
+                                        Add episode
+                                    </span>
                                 </button>
                             </div>
                         {% endfor %}
@@ -113,7 +145,9 @@
             <!-- Critical Section -->
             <div data-edit-course-target="section" class="edit-course-block">
                 <div class="edit-course-block-content">
-                    <h2>Delete this course:</h2>
+                    <div class="edit-course-block-content-title">
+                        <h2>Delete course:</h2>
+                    </div>
                     <p>Once you delete a course, there is no going back. Please be certain.</p>
                     <div class="col-auto">
                         <div class="form-text">
@@ -135,8 +169,10 @@
 <!-- Modal Delete Episode  -->
 {% component Modal with {id: 'delete-episode'} %}
     {% block modal_header %}
-        <h5>Delete episode</h5>
-        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+        <h1>Delete episode</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
     {% endblock %}
     {% block modal_body %}
         Are you sure you want to delete this episode?
@@ -149,8 +185,10 @@
 <!-- Modal Delete Course  -->
 {% component Modal with {id: 'delete-course'}  %}
     {% block modal_header %}
-        <h5>Delete course: {{course.name}}</h5>
-        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+        <h1>Delete course: {{course.name}}</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
     {% endblock %}
     {% block modal_body %}
         Are you sure you want to delete this course ?
@@ -162,8 +200,10 @@
 <!-- Modal Create Episode  -->
 {% component Modal with {id: 'create-episode'}  %}
     {% block modal_header %}
-        <h5>Create episode in chapter </h5>
-        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+        <h2>Create episode in chapter </h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
     {% endblock %}
     {% block modal_body %}
         {% include 'partials/episodes/_create.html.twig' with { create_episode_form: create_episode_form } %}
@@ -173,8 +213,10 @@
 <!-- Modal Edit Episode  -->
 {% component Modal with {id: 'edit-episode'}  %}
     {% block modal_header %}
-        <h5>Edit episode</h5>
-        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close"></button>
+        <h2>Edit episode</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
     {% endblock %}
     {% block modal_body %}
         {% include 'partials/episodes/_edit.html.twig' with { edit_episode_form: edit_episode_form } %}

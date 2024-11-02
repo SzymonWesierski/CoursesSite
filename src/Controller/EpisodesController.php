@@ -86,7 +86,7 @@ class EpisodesController extends AbstractController
             return $this->redirectToRoute('edit_course', ['id' => $course->getId()]);
         }
 
-        return $this->render('episodes/create.html.twig', [
+        return $this->render('partials/episodes/_create.html.twig', [
             'form' => $form->createView()
         ]);
     }
