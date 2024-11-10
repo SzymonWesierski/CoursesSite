@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit profile{% endblock %}
+
+{% block body %}
+
+<div class="edit-profile-container">
+
+    <div class="edit-profile-content">
+
+        <div class="edit-profile-container-left">
+            <div class="edit-profile-image-container">
+                <div class="edit-profile-image">
+                     <img 
+                        {% if user.imagePath == "" %}
+                            src="{{ asset('build/images/default_user.jpg') }}"
+                        {% else %}
+                            src="{{user.imagePath}}"
+                        {% endif %} 
+                        alt="profile image">
+                    <div class="edit-profile-image-hover"
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="edit-user-image">
+                        <img src="/icons/edit-white.svg" alt="edit-profile-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="edit-profile-container-right">
+            <div class="edit-profile-right-content">
+                <div class="edit-user-inputs-container">
+
+                    <label><h3>Username:</h3></label>
+                    <div class="edit-user-input-wrapper">
+                        <input type="text" value="{{user.username}}" class="edit-user-input" disabled>
+                        <button type="button" 
+                                class="edit-user-btn"
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="edit-user-username">
+                            <img src="/icons/edit-white.svg" alt="edit">
+                        </button>
+                    </div>
+                        
+                    <label><h3>E-mail:</h3></label>
+                    <div class="edit-user-input-wrapper">
+                        <input type="text" value="{{user.email}}" class="edit-user-input" disabled>
+                         <button type="button" 
+                                class="edit-user-btn"
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="edit-user-email">
+                            <img src="/icons/edit-white.svg" alt="edit">
+                        </button>
+                    </div>
+                
+                    <label><h3>Password:</h3></label>
+                    <div class="edit-user-input-wrapper">
+                        <input type="password" value="1234567890" class="edit-user-input" disabled>
+                         <button type="button" 
+                                class="edit-user-btn"
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="edit-user-password">
+                            <img src="/icons/edit-white.svg" alt="edit">
+                        </button>
+                    </div>
+
+                </div>
+            
+            </div>
+            
+        </div>
+        
+    </div>
+
+</div>
+
+
+<!-- Modal edit profile image  -->
+{% component Modal with {id: 'edit-user-image'}  %}
+    {% block modal_header %}
+        <h2>Edit user image</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        edit image
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal edit profile username  -->
+{% component Modal with {id: 'edit-user-username'}  %}
+    {% block modal_header %}
+        <h2>Edit user username</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        edit username
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal edit profile email  -->
+{% component Modal with {id: 'edit-user-email'}  %}
+    {% block modal_header %}
+        <h2>Edit user email</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        edit
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal edit profile image  -->
+{% component Modal with {id: 'edit-user-password'}  %}
+    {% block modal_header %}
+        <h2>Edit user password</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        edit
+    {% endblock %}
+{% endcomponent %}
+
+
+{% endblock %}

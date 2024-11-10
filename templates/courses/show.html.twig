@@ -3,6 +3,10 @@
 {% block title %}Courses{% endblock %}
 
 {% block body %}
+    {% set inCart = false %}
+    {% if productsInCartIds and course.id in productsInCartIds %}
+        {% set inCart = true %}
+    {% endif %}
 
     <div class="cshow-container">
         <div class="cshow-container-left">
@@ -16,13 +20,41 @@
                     </div>
                     
                     <div class="cshow-details">
-                        <h1>
-                        {{ episode.name }}
-                        </h1>
+                        <div class="cshow-details-content">
 
-                        <p class="cshow-text-block">
-                            {{ episode.Description }}
-                        </p>
+                            <h1>
+                            {{ episode.name }}
+                            </h1>
+
+                            <p class="cshow-text-block">
+                                {{ episode.Description }}
+                            </p>
+
+                        </div>
+                        {% if not isPurchased %}
+                            <div class="courses-list-element-price-section">
+                                <div class="courses-list-element-price-section-price">
+                                    {{course.price}} $
+                                </div>
+                                <div>
+                                    <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
+                                        <button type="submit"
+                                                class="add-to-cart sliding-button"
+                                                onclick="event.stopPropagation();" >
+                                            {% if inCart %}
+                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                <div class="sliding-button-text">In&nbsp;cart</div>
+                                            {% else %}
+                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+
                     </div>
                     
                 </div>
@@ -34,38 +66,49 @@
                         />
                     </div>
                     <div class="cshow-details">
-                        <h1>
+
+                        <div class="cshow-details-content">
+                            <h1>
                             {{ course.name }}
-                        </h1>
+                            </h1>
 
-                        <p class="cshow-text-block">
-                            {{ course.Description }}
-                        </p>
+                            <p class="cshow-text-block">
+                                {{ course.Description }}
+                            </p>
 
-                        <p>
-                            Categories:
-                            {% for category in course.categories %}
-                            {{category.name}}
-                            {% endfor %}
+                            <p>
+                                Categories:
+                                {% for category in course.categories %}
+                                {{category.name}}
+                                {% endfor %}
 
-                            <h4>Course created by {{course.user.username}}</h4>
+                                <h4>Course created by {{course.user.username}}</h4>
+                            </p>
+                        </div>
+                        
 
-                            {% if app.user == course.user %}
-                                <p> 
-                                    <a 
-                                        href="/courses/edit/{{ course.id }}">
-                                        Edit course   
-                                    </a>
-                                </p>
-                                
-                                <p>
-                                    <a 
-                                        href="/courses/delete/{{ course.id }}">
-                                        Delete course
-                                    </a>
-                                </p>
-                            {% endif %}
-                        </p>
+                        {% if not isPurchased %} 
+                            <div class="courses-list-element-price-section">
+                                <div class="courses-list-element-price-section-price">
+                                    {{course.price}} $
+                                </div>
+                                <div>
+                                    <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
+                                        <button type="submit"
+                                                class="add-to-cart sliding-button"
+                                                onclick="event.stopPropagation();" >
+                                            {% if inCart %}
+                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                <div class="sliding-button-text">In&nbsp;cart</div>
+                                            {% else %}
+                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -75,7 +118,6 @@
         <div class="cshow-container-right">
 
             <div class="cshow-chapters-list-container">
-                <h3>Content:</h3>
                 {% set episodeIndex = 1 %}
                 {% for chapter in course.chapters %}
                         <div class="cshow-chapters-element">
@@ -87,27 +129,23 @@
                             <div class="cshow-chapters-element-episode-container" id="chapter-{{ loop.index }}" data-index="{{ loop.index }}">
                                 <ul>
                                     {% for episode in chapter.episodes %}
-                                        {% if isPurchased %}
-                                            <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
-                                                <li>{{episodeIndex}}. {{ episode.name }}</li>
-                                            </div>
-                                        {% else %}
+                                        
+                                        <li>
+                                            <div class="cshow-chapters-element-episode" 
+                                                {% if episode.isFreeToWatch or isPurchased %}
+                                                    onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';"
+                                                {% endif %}>
 
-                                            {% if episode.isFreeToWatch %}
-                                                <div class="cshow-chapters-element-episode" onclick="window.location.href='{{ path('show_course', {courseId: course.id, episodeId: episode.id}) }}';">
-                                                    <li>{{episodeIndex}}. {{ episode.name }}</li>
-                                                </div>
-
-                                            {% else %}
-                                                 <div class="cshow-chapters-element-episode episode-blocked">
-                                                    <li>{{episodeIndex}}. {{ episode.name }}</li>
+                                                <p>
+                                                    {{episodeIndex}}. {{ episode.name }}
+                                                </p>
+                                                
+                                                {% if not ( episode.isFreeToWatch or isPurchased ) %}
                                                     <img class="lock-img" src="/icons/lock.svg" alt="locked">
-                                                </div>
-                                            {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </li>
 
-                                        {% endif %}
-                                        
-                                        
                                         {% set episodeIndex = episodeIndex + 1 %}
                                     {% endfor %}
                                 </ul>

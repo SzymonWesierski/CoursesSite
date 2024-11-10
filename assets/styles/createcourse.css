@@ -28,7 +28,7 @@
     right: 0;
     bottom: 0;
     background-color: var(--navy);
-    opacity: 0.5;
+    opacity: 0.2;
     backdrop-filter: blur(10px);
     z-index: -1;
     pointer-events: none;

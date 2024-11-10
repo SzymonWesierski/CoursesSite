@@ -59,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'user')]
     private Collection $ratings;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $public_image_id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image_path = null;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
@@ -251,6 +257,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $rating->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPublicImageId(): ?string
+    {
+        return $this->public_image_id;
+    }
+
+    public function setPublicImageId(?string $public_image_id): static
+    {
+        $this->public_image_id = $public_image_id;
+
+        return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->image_path;
+    }
+
+    public function setImagePath(?string $image_path): static
+    {
+        $this->image_path = $image_path;
 
         return $this;
     }

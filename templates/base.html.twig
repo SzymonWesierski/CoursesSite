@@ -91,9 +91,9 @@
                         </div>
 
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="">
+                            <button class="sliding-button" onclick="window.location.href='{{ path('app_user_edit') }}'">
                                     <div class="sliding-button-sign"><img src="/icons/user.svg" alt="edit-profile"></div>
-                                    <div class="sliding-button-text">Edit&nbsp;profile</div>
+                                    <div class="sliding-button-text">{{app.user.userIdentifier}}</div>
                             </button>
                         </div>
 

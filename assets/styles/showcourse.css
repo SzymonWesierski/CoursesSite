@@ -2,25 +2,39 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    margin-bottom: 10em;
+    height: 100%;
+    background-color: var(--lightblue);
 }
 
 .cshow-text-block{
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50%;
+    max-width: 90%;
 }
 
 .cshow-container-right{
     width: 20%;
+    padding-right: 25px;
 }
 
 .cshow-container-left{
     width: 80%;
+    border-right: solid 3px var(--brightblue);
+    height: 100%;
+    padding-bottom: 5em;
 }
 
 .cshow-details{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     margin-left: 2em;
+    padding-right: 5em;
+}
+
+.cshow-details-content{
+    width: 70%;
 }
 
 .cshow-course-img{
@@ -29,8 +43,8 @@
     justify-content: center;
     height: 60vh;
     max-width: 100%;
-    background-color: var(--lightblue);
-    border-bottom: 1px solid var(--navy);
+    background-color: var(--navy);
+    border-bottom: 1px solid var(--brightblue);
 }
 
 .cshow-course-img img{
@@ -45,8 +59,8 @@
     justify-content: center;
     height: 60vh;
     max-width: 100%;
-    background-color: var(--lightblue);
-    border-bottom: 1px solid var(--navy);
+    background-color: var(--navy);
+    border-bottom: 1px solid var(--brightblue);
 }
 
 .cshow-videoplayer-container video{
@@ -57,12 +71,7 @@
 .cshow-watch-container{
     display: flex;
     align-items: center;
-    justify-items: center;
-}
-
-.cshow-chapters-element-episode{
-    cursor: pointer;
-    list-style: none;
+    justify-content: center;
 }
 
 .cshow-chapters-list-container h3 {
@@ -73,8 +82,11 @@
     position: fixed;
     width: 20%;
     height: 85vh;
-    overflow-y: auto; 
-    border-left: 1px solid var(--navy);
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--lightblue);
+    color: var(--navy);
+    padding: 0.5em;
 }
 
 .cshow-chapters-element-title {
@@ -82,9 +94,13 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
+    background-color: var(--navy);
+    border-bottom: 1px solid var(--lightblue);
+    border-top: 1px solid var(--lightblue);
+    color: var(--lightblue);
     padding-left: 1em;
+    padding-right: 1em;
+    box-sizing: border-box;
 }
 
 .episode-blocked{
@@ -98,11 +114,39 @@
     margin-left: 1em;
 }
 
+.cshow-chapters-element-episode{
+    cursor: pointer;
+    list-style: none;
+    transition: all ease-in-out 0.2s;
+    width: 100%;
+    display: flex;
+    padding: 0.5em;
+    justify-content:space-between;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.cshow-chapters-element-episode p{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0;
+    margin-right: 1em;
+}
+
+.cshow-chapters-element-episode:hover {
+    background-color: var(--lightblue);
+    border-bottom: solid 1px var(--navy);
+}
+
 .cshow-chapters-element-episode-container {
-    padding-left: 20px;
-    border-left: 2px solid #ddd;
     margin-top: 5px;
     display: none;
+    width: 100%;
+}
+
+.cshow-chapters-element-episode-container ul{
+    padding-left: 0;
 }
 
 .cshow-arrow-right, .cshow-arrow-down {

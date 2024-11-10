@@ -43,7 +43,17 @@ export default class extends Controller {
                         <div class="edit-course-episode-container">
                             <p> - - No episodes yet</p>
                         </div>
-                        <p><a href="/episodes/create/${data.chapter.id}/${data.courseId}">Add episode</a></p>
+                            <button class="btn-default" 
+                                    type="button" 
+                                    data-controller="custom-modal" 
+                                    data-action="click->custom-modal#open"
+                                    data-modal-id="create-episode"
+                                    data-chapter-id="${data.chapter.id}">
+                                <span>
+                                    <img src="/icons/plus.svg" alt="plus">
+                                    Add episode
+                                </span>
+                            </button>
                     </div>
                 `;
                 console.log(newChapterHtml)
