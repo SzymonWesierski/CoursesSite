@@ -220,8 +220,8 @@ class CoursesController extends AbstractController
         ]);
     }
 
-    #[Route('/courses/edit/{id}', name: 'edit_course')]
-    public function edit($id, Request $request): Response 
+    #[Route('/courses/edit/{id}/{section?}', name: 'edit_course')]
+    public function edit($id, Request $request, $section = 0): Response 
     {
         $course = $this->courseRepository->find($id);
 
@@ -269,10 +269,12 @@ class CoursesController extends AbstractController
 
         return $this->render('courses/edit.html.twig', [
             'course_form' => $course_form->createView(),
-            'chapter_form' => $chapter_form->createView(),
+            'create_chapter_form' => $chapter_form->createView(),
+            'edit_chapter_form' =>  $chapter_form->createView(),
             'create_episode_form' => $episode_form->createView(),
             'edit_episode_form' => $episode_form->createView(),
-            'course' => $course
+            'course' => $course,
+            'initialSectionIndex' => $section
         ]);
     }
 }

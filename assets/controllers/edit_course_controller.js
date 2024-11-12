@@ -4,8 +4,8 @@ export default class extends Controller {
     static targets = ['section', 'chapterList', 'chapterFormMessages'];
 
     connect() {
-        this.currentSectionIndex = 0;
-        this.showSection(this.currentSectionIndex);
+        const initialSectionIndex = parseInt(this.element.dataset.editCourseInitialSection, 10) || 0;
+        this.showSection(initialSectionIndex);
     }
 
     navigate(event) {
@@ -35,10 +35,33 @@ export default class extends Controller {
                 const chapterCount = this.chapterListTarget.children.length + 1;
                 const newChapterHtml = `
                     <div class="edit-course-chapter-element">
-                        <h3 class="chapter-header">
-                            Chapter. ${chapterCount}
-                            <span class="chapter-name">${data.chapter.name}</span>
-                        </h3>
+                        <div class="chapter-header">
+                            <h3>Chapter.${chapterCount} </h3>
+                            <div class="chapter-buttons">
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button" 
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="edit-chapter" 
+                                        data-chapter-id="${data.chapter.id}">
+                                    <span>
+                                        <img src="/icons/edit-white.svg" alt="edit">
+                                    </span>
+                                </button>
+
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="delete-chapter"
+                                        data-chapter-id="${data.chapter.id}">
+                                    <span>
+                                        <img src="/icons/remove.svg" alt="remove">
+                                    </span>
+                                </button>
+                            </div>
+                            <h3>${data.chapter.name} </h3>
+                        </div>
                         
                         <div class="edit-course-episode-container">
                             <p> - - No episodes yet</p>
@@ -56,7 +79,7 @@ export default class extends Controller {
                             </button>
                     </div>
                 `;
-                console.log(newChapterHtml)
+
                 this.chapterListTarget.insertAdjacentHTML('beforeend', newChapterHtml);
                 this.element.querySelector('#ajax-chapter-form').reset();
             } else {

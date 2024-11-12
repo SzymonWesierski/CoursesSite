@@ -1,0 +1,18 @@
+{{ form_start(edit_chapter_form, { 'action': path('edit_chapter') }) }}
+
+    <input type="hidden" name="chapter_id" value="">
+
+    <div class="alert alert-danger">
+        {{ form_errors(edit_chapter_form) }}
+    </div>
+
+    <div class="edit-course-inputs">
+         {{ form_widget(edit_chapter_form) }}
+    </div>
+   
+    <button    
+        type="submit"
+        class="btn-default">
+        Submit
+    </button>
+{{ form_end(edit_chapter_form) }}

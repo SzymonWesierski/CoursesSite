@@ -35,10 +35,10 @@ export default class extends Controller {
 
 
                     } else {
-                        console.error("Nie udało się załadować danych epizodu.");
+                        console.error("Episode data wont load.");
                     }
                 } catch (error) {
-                    console.error("Błąd podczas pobierania danych epizodu:", error);
+                    console.error("Faild during loading episode data:", error);
                 }
 
             }
@@ -58,6 +58,46 @@ export default class extends Controller {
                     deleteButton.setAttribute(
                         'onclick',
                         `window.location.href='/episodes/delete/${episodeId}/${courseId}'`
+                    );
+                }
+            }
+
+            if(modalId === "edit-chapter"){
+                const chapterId = event.currentTarget.getAttribute('data-chapter-id');
+
+                const chapterInput = modal.querySelector('input[name="chapter_id"]');
+                if (chapterInput) chapterInput.value = chapterId;
+
+                try {
+                    const response = await fetch(`/chapter/edit/${chapterId}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest' 
+                        }
+                    });
+                    if (response.ok) {
+                        const html = await response.text();
+                        modal.querySelector('.modal-body-content').innerHTML = html;
+
+                        const chapterInput = modal.querySelector('input[name="chapter_id"]');
+                        if (chapterInput) chapterInput.value = chapterId;
+            
+                    } else {
+                        console.error("Chapter data wont load.");
+                    }
+                } catch (error) {
+                    console.error("Faild during loading Chapter data:", error);
+                }
+
+            }
+
+            if(modalId === "delete-chapter"){
+                const chapterId = event.currentTarget.getAttribute('data-chapter-id');
+
+                const deleteButton = document.getElementById('deleteChapterButton');
+                if (deleteButton) {
+                    deleteButton.setAttribute(
+                        'onclick',
+                        `window.location.href='/chapter/delete/${chapterId}'`
                     );
                 }
             }

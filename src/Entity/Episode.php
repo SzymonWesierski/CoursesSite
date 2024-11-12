@@ -14,10 +14,10 @@ class Episode
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $name = '';
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $description = null;
+    private ?string $description = '';
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $videoPath = null;

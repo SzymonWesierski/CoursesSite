@@ -81,7 +81,7 @@ class EpisodesController extends AbstractController
             $this->em->persist($chapter);
             $this->em->flush();
             
-            return $this->redirectToRoute('edit_course', ['id' => $course->getId()]);
+            return $this->redirectToRoute('edit_course', ['id' => $course->getId(), 'section' => 2]);
         }
 
         return $this->render('partials/episodes/_create.html.twig', [
@@ -117,6 +117,7 @@ class EpisodesController extends AbstractController
             ]);
         }   
 
+
         if($form->isSubmitted() && $form->isValid()){
             
             $image = $form->get('image')->getData();
@@ -137,10 +138,10 @@ class EpisodesController extends AbstractController
 
             $this->em->flush();
 
-            return $this->redirectToRoute('edit_course', ['id' => $courseId]);
+            return $this->redirectToRoute('edit_course', ['id' => $courseId, 'section' => 2]);
         }
 
-        return $this->render('episodes/edit.html.twig', [
+        return $this->render('partials/episodes/_edit.html.twig', [
             'edit_episode_form' => $form->createView(),
             'episode' => $episode
         ]);
@@ -163,7 +164,7 @@ class EpisodesController extends AbstractController
         $this->em->remove($episode);
         $this->em->flush();
 
-        return $this->redirectToRoute('edit_course', ['id' => $course_id]);
+        return $this->redirectToRoute('edit_course', ['id' => $course_id, 'section' => 2]);
     }
 
 }

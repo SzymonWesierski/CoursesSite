@@ -1,6 +1,11 @@
-{{ form_start(edit_episode_form, { 'action': path('edit_episode') }) }}
+{{ form_start(edit_episode_form, { 'action': path('edit_episode'), 'attr': {'data-turbo': 'false'} }) }}
+
     <input type="hidden" name="course_id" value="">
     <input type="hidden" name="episode_id" value="">
+
+   <div class="alert alert-danger">
+        {{ form_errors(edit_episode_form) }}
+    </div>
 
     <div class="edit-course-inputs">
          {{ form_widget(edit_episode_form) }}
@@ -9,6 +14,6 @@
     <button    
         type="submit"
         class="btn-default">
-        Submit Post
+        Submit
     </button>
 {{ form_end(edit_episode_form) }}

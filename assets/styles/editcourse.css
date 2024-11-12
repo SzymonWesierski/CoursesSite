@@ -111,14 +111,34 @@
 }
 
 .chapter-header {
+    width: 95%;
+    border-bottom: 2px solid var(--brightblue);
+    min-height: 3em;
+    margin-bottom: 2em;
+    position: relative;
     display: flex;
-    justify-content: left;
+    flex-direction: row;
     align-items: center;
-    width: 90%;
+    justify-content: space-between;
+}
+
+.chapter-header:hover .chapter-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .chapter-name {
     margin-left: auto;
+}
+
+.chapter-buttons{
+    display: none;
+    position: absolute;
+    left: 33%;
+    width: 33%;
+    transition: all ease-in-out 0.2s;
 }
 
 
