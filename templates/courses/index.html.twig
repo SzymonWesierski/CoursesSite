@@ -105,26 +105,33 @@
                                     {% endif %}
                                         
                                     </div>
+
                                     <div>
-                                        <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
+                                        {% if purchased %}
+                                            <button type="submit" class="add-to-cart sliding-button">
+                                                <div class="sliding-button-sign"><img src="/icons/play-button.svg" alt="watch-course"></div>
+                                                <div class="sliding-button-text">Watch</div>
+                                            </button>
+                                        {% elseif inCart %}
                                             <button type="submit"
-                                                    
                                                     class="add-to-cart sliding-button"
-                                                    onclick="event.stopPropagation();" 
-                                                    {% if purchased or inCart  %} disabled{% endif %}>
-                                                {% if inCart %}
-                                                    <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
-                                                    <div class="sliding-button-text">In&nbsp;cart</div>
-                                                {% elseif purchased %}
-                                                    <div class="sliding-button-sign"><img src="/icons/play-button.svg" alt="watch-course"></div>
-                                                    <div class="sliding-button-text">Watch</div>
-                                                {% else %}
+                                                    onclick="event.stopPropagation();">
+                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                <div class="sliding-button-text">In&nbsp;cart</div>
+                                            </button>
+                                        {% else %}
+                                            <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST" id="button-content-{{ course.id }}">
+                                                <button type="submit"
+                                                        class="add-to-cart sliding-button"
+                                                        onclick="event.stopPropagation();">
                                                     <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
                                                     <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
-                                                {% endif %}
-                                            </button>
-                                        </form>
+                                                </button>
+                                            </form>
+                                        {% endif %}
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
