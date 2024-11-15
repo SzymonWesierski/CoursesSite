@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_panel_base.html.twig' %}
 
 {% block title %}Courses{% endblock %}
 
@@ -7,51 +7,9 @@
 
     <h1>Kategorie</h1>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button    
-            type="submit">
-            Filtr
-        </button>
-        {{ form_end(form) }}
-
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% else %}
-        <div class="mb-3">
-           Login to get access to many features, <a href="{{ path('app_login') }}">Login</a> | <a href="{{ path('app_register') }}">Register</a>
-        </div>
-    {% endif %}
-
-    <h1>What's new</h1>
-
-    {% if app.user %}
     <a href="/courses/create">
                 Create new
             </a>
-    {% endif %}
 
-    {% for course in courses %}
-        <div>
-            <img
-                width = 200px
-                src="{{ course.ImagePath }}"
-                alt=""
-            />
-            <h2>
-                {{ course.name }}
-            </h2>
-
-            <p>
-                {{ course.Description }}
-            </p>
-
-            <a href="/courses/show/{{ course.id }}">
-                Show me
-            </a>
-        </div>
-    {% endfor %}
 
 {% endblock %}

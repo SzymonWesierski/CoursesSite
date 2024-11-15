@@ -21,7 +21,7 @@
                     <h1>Check out our top rated courses</h1>
                 </div>
 
-            <div class="owl-carousel" data-controller="owl-carousel">
+                <div class="owl-carousel" data-controller="owl-carousel">
                     {% for course in coursesTheBestByRating %}
                         <div class="owl-carousel-single-tile" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
                             <img src="{{ course.imagePath }}" alt="{{ course.name }}">

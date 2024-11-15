@@ -1,0 +1,46 @@
+.admin-panel-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: auto;
+}
+
+.admin-panel-menu{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin: 10vh;
+    border: 2px solid var(--navy);
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+}
+
+.admin-panel-menu-element{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    width: 15vh;
+    height: 20vh;
+    margin: 2em;
+    padding: 1em;
+    cursor: pointer;
+    border: solid 1px var(--navy);
+    border-radius: 2em;
+    overflow: hidden;
+    position: relative;
+    color:  var(--navy);
+    transition: all ease-in-out 0.2s;
+    background-color: var(--lightblue);
+}
+
+.admin-panel-menu-element:hover{
+    background-color: var(--brightblue);
+}
+
+.admin-panel-menu-element img{
+    width: 10vh;
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar">
+
+            <div class="navbar-container-left">
+                <div class="navbar-item">
+                    <a href="{{ path('app_admin_panel') }}" class="navbar-item"><img height=100 src="/images/logo.png" alt="logo"></a>
+                </div>
+
+                <div class="navbar-item">
+                    <span>Admin Panel</span>
+                </div>
+            </div>
+            
+
+
+            <div class="navbar-container-right">
+                {% if app.request.getPathInfo() != '/adminPanel' %}
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('app_users')}}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/user-manage.svg" alt="user-manage"></div>
+                                <div class="sliding-button-text">Users</div>
+                        </button>
+                    </div>
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('app_statistics')}}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/statistics.svg" alt="statistics-manage"></div>
+                                <div class="sliding-button-text">Statistics</div>
+                        </button>
+                    </div>
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('app_categories')}}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="categories-manage"></div>
+                                <div class="sliding-button-text">Categories</div>
+                        </button>
+                    </div>
+
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('app_reports')}}'">
+                                <div class="sliding-button-sign"><img src="/icons/report.svg" alt="courses-reports"></div>
+                                <div class="sliding-button-text">Reports</div>
+                        </button>
+                    </div>
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('app_courses_management')}}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="Courses-manage"></div>
+                                <div class="sliding-button-text">Courses</div>
+                        </button>
+                    </div>
+                {% endif %}
+
+                <div class="navbar-item">
+                    <button class="sliding-button" onclick="window.location.href='{{ path('app_logout') }}'">
+                        <div class="sliding-button-sign">
+                            <img src="/icons/logout.svg" alt="logout">
+                        </div>
+                        <div class="sliding-button-text">Logout</div>
+                    </button>
+                </div>
+                
+            </div>
+        </nav>
+
+        {% block body %} 
+        
+        {% endblock %}
+
+    </body>
+</html>

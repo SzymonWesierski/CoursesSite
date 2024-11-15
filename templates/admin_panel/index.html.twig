@@ -1,0 +1,36 @@
+{% extends 'admin_panel_base.html.twig' %}
+
+{% block title %}Admin panel{% endblock %}
+
+{% block body %}
+    <div class="admin-panel-container">
+        <div class="admin-panel-menu">
+             <div class="admin-panel-menu-element"  onclick="window.location.href='{{path('app_users')}}'">
+                <img src="/icons/user-manage.svg" alt="user-manage">
+                <h3>Users</h3>
+            </div>
+
+            <div class="admin-panel-menu-element" onclick="window.location.href='{{path('app_statistics')}}'">
+                <img src="/icons/statistics.svg" alt="statistics-manage">
+                <h3>Statistics</h3>
+            </div>
+
+            <div class="admin-panel-menu-element" onclick="window.location.href='{{path('app_categories')}}'">
+                <img src="/icons/categories.svg" alt="categories-manage">
+                <h3>Categories</h3>
+            </div>
+
+            <div class="admin-panel-menu-element" onclick="window.location.href='{{path('app_reports')}}'">
+                <img src="/icons/report.svg" alt="courses-reports">
+                <h3>Reports</h3>
+            </div>
+
+            <div class="admin-panel-menu-element" onclick="window.location.href='{{path('app_courses_management')}}'">
+                <img src="/icons/learning.svg" alt="Courses-manage">
+                <h3>Courses</h3>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

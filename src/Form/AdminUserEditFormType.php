@@ -20,7 +20,7 @@ class AdminUserEditFormType extends AbstractType
                     'Admin' => 'ROLE_ADMIN',
                 ],
                 'expanded' => true,
-                'multiple' => true,
+                'multiple' => false,
             ])
             ->add('password')
             ->add('email')

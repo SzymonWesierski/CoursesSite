@@ -20,7 +20,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: courses
+                success_handler: App\Security\LoginSuccessHandler
             logout:
                 path: app_logout
                 target: courses
@@ -38,17 +38,19 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        #User
          - { path: '^/courses/create', roles: ROLE_USER }
          - { path: '^/courses/edit', roles: ROLE_USER }
          - { path: '^/courses/delete', roles: ROLE_USER }
          - { path: '^/episodes', roles: ROLE_USER }
-         - { path: '^/categories', roles: ROLE_USER } #   <- HAVE TO BE CHANGE TO ROLE_ADMIN LATER
          - { path: '^/MyCoursesPanel', roles: ROLE_USER }
          - { path: '^/cart', roles: ROLE_USER }
          - { path: '^/checkout', roles: ROLE_USER }
          - { path: '^/editProfile', roles: ROLE_USER }
+
+         #Admin
+         - { path: '^/adminPanel', roles: ROLE_ADMIN }
+         - { path: '^/categories', roles: ROLE_ADMIN }
 
 when@test:
     security:

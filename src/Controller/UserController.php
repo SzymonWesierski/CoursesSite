@@ -25,7 +25,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/editProfile', name: 'app_user_edit')]
-    public function index(): Response
+    public function editProfile(): Response
     {
         $user = $this->getUser();
         $navBarCategories = $this->em->getRepository(Category::class)->findRootCategories();
@@ -47,10 +47,17 @@ class UserController extends AbstractController
 
         $amountOfProducts = $cart->getAmountOfProducts(); 
 
-        return $this->render('user/edit.html.twig', [
+        return $this->render('user/edit_profile.html.twig', [
             'navBarCategories' => $navBarCategories,
             'amountOfProducts' => $amountOfProducts,
             'user' => $user
+        ]);
+    }
+
+    #[Route('/users', name: 'app_users')]
+    public function index(): Response
+    {
+        return $this->render('user/index.html.twig', [
         ]);
     }
 }

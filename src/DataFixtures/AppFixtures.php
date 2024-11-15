@@ -33,9 +33,26 @@ class AppFixtures extends Fixture
 
         $this->loadUsers($manager, $faker);
 
+        $this->loadAdmin($manager);
+
         $this->loadCategories($manager, $faker);
 
         $this->loadCoursesWithChapters($manager, $faker);
+    }
+
+    private function loadAdmin(ObjectManager $manager): void
+    {
+
+        $admin = new User();
+        $admin->setUsername("Admin");
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'admin1@'));
+        $admin->setEmail("admin@email.com");
+        $admin->setVerified(true);
+
+        $manager->persist($admin);
+
+        $manager->flush();
     }
 
     private function loadUsers(ObjectManager $manager, $faker): void
@@ -186,17 +203,17 @@ class AppFixtures extends Fixture
             $episode = new Episode();
             $episode->setName('Episode 1 of Course ' . ($i + 1));
             $episode->setDescription($faker->sentences(3, true));
-            $episode->setFreeToWatch(true);
+            $episode->setIsFreeToWatch(true);
 
             $episode2 = new Episode();
             $episode2->setName('Episode 2 of Course ' . ($i + 1));
             $episode2->setDescription($faker->sentences(3, true));
-            $episode2->setFreeToWatch(false);
+            $episode2->setIsFreeToWatch(false);
 
             $episode3 = new Episode();
             $episode3->setName('Episode 3 of Course ' . ($i + 1));
             $episode3->setDescription($faker->sentences(3, true));
-            $episode3->setFreeToWatch(false);
+            $episode3->setIsFreeToWatch(false);
 
             $chapter->addEpisode($episode);
             $chapter->addEpisode($episode2);
