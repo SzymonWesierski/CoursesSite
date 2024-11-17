@@ -3,40 +3,43 @@
         <ul >
             {% if paginator.hasPreviousPage %}
                 <li>
-                    <a class="prev" href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.previousPage} : { page: paginator.previousPage }) }}" rel="previous">
+                    <a class="prev" href="{{ path(path, prevPathArg) }}" rel="previous">
                         <img src="/icons/arrow-left.svg" alt="arrow-left">
                     </a>
                 </li>
             {% endif %}
 
-        {% set lastPage = paginator.getLastPage %}
-
+            {% set lastPage = paginator.getLastPage %}
             {% if paginator.currentPage + 2 < paginator.getLastPage %}
                 {% set lastPage = paginator.currentPage + 2 %}
             {% endif %}
 
-
             {% for i in (paginator.currentPage - 2)..lastPage %}
                 {% if i > 0 %}
+
+                    {# Use `merge` to create a new array with the updated `page` key #}
+                    {% set updatedListedPathArg = listedPathArg|merge({ page: i }) %}
+
                     {% if i == paginator.currentPage %}
                         <li>
-                            <a class="active" >{{ i }}</a>
+                            <a class="active">{{ i }}</a>
                         </li>
                     {% else %}
-                    <li>
-                        <a href="{{ path(path, categoryId ? { categoryId: categoryId, page: i } : { page: i }) }}">{{ i }}</a>
-                    </li>
+                        <li>
+                            <a href="{{ path(path, updatedListedPathArg) }}">{{ i }}</a>
+                        </li>
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
             {% if paginator.hasNextPage %}
                 <li class="next">
-                    <a  href="{{ path(path, categoryId ? { categoryId: categoryId, page: paginator.nextPage} : { page: paginator.nextPage }) }}">
-                    <img src="/icons/arrow-right.svg" alt="arrow-right">
+                    <a href="{{ path(path, nextPathArg) }}">
+                        <img src="/icons/arrow-right.svg" alt="arrow-right">
                     </a>
                 </li>
             {% endif %}
+
         </ul>
     </div>
 </div>

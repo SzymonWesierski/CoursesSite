@@ -52,6 +52,14 @@ class AppFixtures extends Fixture
 
         $manager->persist($admin);
 
+        $cart = new Cart();
+        $cart->setAmountOfProducts(0);
+        $cart->setPurchased(false);
+        $cart->setTotalValue(0);
+        $cart->setUser($admin);
+
+        $manager->persist($cart);
+
         $manager->flush();
     }
 

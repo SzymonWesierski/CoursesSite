@@ -3,7 +3,94 @@
 {% block title %}User management{% endblock %}
 
 {% block body %}
-    <h1>User management</h1>
+
+<div class="user-management-container">
+    <div class="user-management-list">
+        <h1 class="user-management-title">User management</h1>
+        <form action="{{ path('users') }}" method="get">
+            <input class="search-input" placeholder="Search for users" type="text" name="usernameParam" class="input" value="{{ usernameParam }}">
+        </form>
+        {% if paginator.results | length > 0 %}
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Verified</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in paginator.results %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                            <td>
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        onclick="window.location.href='{{ path('edit_user', {userId: user.id}) }}';">
+                                    <span>
+                                        <img src="/icons/edit-white.svg" alt="edit">
+                                    </span>
+                                </button>
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="delete-user"
+                                        data-user-id="{{ user.id }}"
+                                        onclick=";">
+                                    <span>
+                                        <img src="/icons/remove.svg" alt="remove">
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2 class="user-management-not-found">No users found</h2>
+        {% endif %}
+
+       
+
+        {% if paginator.hasToPaginate %}
+            {% set prevPathArg = usernameParam ? { usernameParam: usernameParam, page: paginator.previousPage } : { page: paginator.previousPage } %}
+            {% set listedPathArg = usernameParam ? { usernameParam: usernameParam, page: 1 } : { page: 1 } %}
+            {% set nextPathArg = usernameParam ? { usernameParam: usernameParam, page: paginator.nextPage } : { page: paginator.nextPage } %}
+
+            {% include 'partials/pagination/_course_pagination.html.twig' 
+                with { path: "users",
+                    prevPathArg: prevPathArg,
+                    listedPathArg: listedPathArg,
+                    nextPathArg: nextPathArg
+                }
+            %}
+        {% endif %}
+    </div>
+</div>
+    
+
+<!-- Modal Delete Episode  -->
+{% component Modal with {id: 'delete-user'} %}
+    {% block modal_header %}
+        <h1>Delete User</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        Are you sure you want to delete this user?
+        <button type="button" id="deleteUserButton" aria-label="Delete User">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+
 {% endblock %}
 
 

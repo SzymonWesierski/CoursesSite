@@ -102,6 +102,18 @@ export default class extends Controller {
                 }
             }
 
+            if(modalId === "delete-user"){
+                const userId = event.currentTarget.getAttribute('data-user-id');
+
+                const deleteButton = document.getElementById('deleteUserButton');
+                if (deleteButton) {
+                    deleteButton.setAttribute(
+                        'onclick',
+                        `window.location.href='/users/delete/${userId}'`
+                    );
+                }
+            }
+
         }
 
         

@@ -1,0 +1,133 @@
+
+.user-management-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-management-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    margin-top: 6em;
+    margin-bottom: 6em;
+    border: 2px solid var(--navy);
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+}
+
+.user-management-title{
+    text-align: left;
+    width: 90%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.user-table {
+    width: 90%;
+    border-collapse: collapse;
+    margin-top: 2em;
+    font-family: Arial, sans-serif;
+    border-radius: 3em;
+    margin-bottom: 2em;
+}
+
+.user-table th, .user-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid var(--navy);
+    color: var(--lightblue);
+}
+
+.user-table th {
+    background-color: var(--navy);
+    font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+    background-color: var(--white);
+}
+
+.user-table tr:nth-child(odd) {
+    background-color: var(--lightblue);
+}
+
+.user-table td{
+    color: var(--navy);
+}
+
+.user-table tr:hover {
+    color: var(--brightblue);
+}
+
+.edit-course-edit-delete-btn{
+    border-color: var(--navy);
+    background-color: var(--brightblue);
+}
+
+.user-management-not-found{
+    margin-bottom: 2em;
+    margin-top: 2em;
+
+}
+
+.edit-user-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-user-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    margin-top: 6em;
+    margin-bottom: 6em;
+    border: 2px solid var(--navy);
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+}
+
+.edit-user-form{
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.edit-user-form label{
+    font-size: 1.5em;
+}
+
+.edit-user-form input[type="checkbox"] {
+    width: 1.5em; 
+    height: 1.5em;
+    position: relative;
+    top: 0.8em;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+
+#admin_user_edit_form_roles label{
+    font-size: 1em;
+}
+
+#admin_user_edit_form_roles{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5em;
+}
+
+.edit-user-inputs-inline{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-user-return{
+    position: relative;
+    top: 1em;
+    left: -40%;
+}

@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="navbar-item">
-                    <span>Admin Panel</span>
+                    <a href="{{ path('app_admin_panel') }}" class="navbar-item">Admin Panel</a>
                 </div>
             </div>
             
@@ -30,7 +30,7 @@
             <div class="navbar-container-right">
                 {% if app.request.getPathInfo() != '/adminPanel' %}
                     <div class="navbar-item">
-                        <button class="sliding-button" onclick="window.location.href='{{path('app_users')}}'">
+                        <button class="sliding-button" onclick="window.location.href='{{path('users')}}'">
                                 <div class="sliding-button-sign"><img class="icon" src="/icons/user-manage.svg" alt="user-manage"></div>
                                 <div class="sliding-button-text">Users</div>
                         </button>

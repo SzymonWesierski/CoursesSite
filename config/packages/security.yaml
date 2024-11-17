@@ -43,7 +43,7 @@ security:
          - { path: '^/courses/edit', roles: ROLE_USER }
          - { path: '^/courses/delete', roles: ROLE_USER }
          - { path: '^/episodes', roles: ROLE_USER }
-         - { path: '^/MyCoursesPanel', roles: ROLE_USER }
+         - { path: '^/MyCoursesPanel', roles: ROLE_USER } 
          - { path: '^/cart', roles: ROLE_USER }
          - { path: '^/checkout', roles: ROLE_USER }
          - { path: '^/editProfile', roles: ROLE_USER }
@@ -51,6 +51,9 @@ security:
          #Admin
          - { path: '^/adminPanel', roles: ROLE_ADMIN }
          - { path: '^/categories', roles: ROLE_ADMIN }
+         - { path: '^/users', roles: ROLE_ADMIN }
+         - { path: '^/statistics', roles: ROLE_ADMIN }
+         - { path: '^/reports', roles: ROLE_ADMIN }
 
 when@test:
     security:

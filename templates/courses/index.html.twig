@@ -51,99 +51,110 @@
             </div>  
         {% endif %}
 
-        <div class="course-list-title">
-            <h1>All {{categoryName}} courses</h1>
-        </div>
-        <div class="courses-list-container">
-                <div class="courses-list">
-                    {% for course in paginator.results %}
-                        {% set purchased = false %}
-                        {% set inCart = false %}
+        {% if paginator.results | length > 0 %}
+            <div class="course-list-title">
+                <h1>All {{categoryName}} courses</h1>
+            </div>
+            <div class="courses-list-container">
+                    <div class="courses-list">
+                        {% for course in paginator.results %}
+                            {% set purchased = false %}
+                            {% set inCart = false %}
 
-                        {% if purchasedCoursesIds and course.id in purchasedCoursesIds  %} 
-                            {% set purchased = true %}
-                        {% endif %}
+                            {% if purchasedCoursesIds and course.id in purchasedCoursesIds  %} 
+                                {% set purchased = true %}
+                            {% endif %}
 
-                        {% if productsInCartIds and course.id in productsInCartIds %}
-                            {% set inCart = true %}
-                        {% endif %}
+                            {% if productsInCartIds and course.id in productsInCartIds %}
+                                {% set inCart = true %}
+                            {% endif %}
 
 
-                        <div class="courses-list-element-container">
-                            <div class="courses-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
-                                <div class="courses-list-element-image-section">
-                                    <img
-                                        src="{{ course.ImagePath }}"
-                                        alt=""
-                                    />
-                                </div>
-                                <div class="courses-list-element-details-section">
-                                    <h2>
-                                        {{ course.name }}
-                                    </h2>
-                                    <p class="courses-list-element-details-section-p">
-                                        {{ course.Description }}
-                                    </p>
-                                    <div class="courses-list-element-details-section-rating">
-                                        <div class="star-container">
-                                            {% for i in range(0, 4, 1) %}
-                                                <span class="star {% if course.ratingAverage >= i %} filled {% endif %}">★</span>
-                                            {% endfor %}
+                            <div class="courses-list-element-container">
+                                <div class="courses-list-element" onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';">
+                                    <div class="courses-list-element-image-section">
+                                        <img
+                                            src="{{ course.ImagePath }}"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div class="courses-list-element-details-section">
+                                        <h2>
+                                            {{ course.name }}
+                                        </h2>
+                                        <p class="courses-list-element-details-section-p">
+                                            {{ course.Description }}
+                                        </p>
+                                        <div class="courses-list-element-details-section-rating">
+                                            <div class="star-container">
+                                                {% for i in range(0, 4, 1) %}
+                                                    <span class="star {% if course.ratingAverage >= i %} filled {% endif %}">★</span>
+                                                {% endfor %}
+                                            </div>
+                                            <div>
+                                                {{course.ratingAverage}}
+                                            </div>
                                         </div>
+                                        <div class="courses-list-element-details-section-createdby">
+                                            Created by {{course.user.username}}
+                                        </div>
+                                    </div>
+                                    <div class="courses-list-element-price-section">
+                                        <div class="courses-list-element-price-section-price">
+                                        {% if purchased == false %}
+                                            {{course.price}} $
+                                        {% endif %}
+                                            
+                                        </div>
+
                                         <div>
-                                            {{course.ratingAverage}}
-                                        </div>
-                                    </div>
-                                    <div class="courses-list-element-details-section-createdby">
-                                        Created by {{course.user.username}}
-                                    </div>
-                                </div>
-                                <div class="courses-list-element-price-section">
-                                    <div class="courses-list-element-price-section-price">
-                                    {% if purchased == false %}
-                                        {{course.price}} $
-                                    {% endif %}
-                                        
-                                    </div>
-
-                                    <div>
-                                        {% if purchased %}
-                                            <button type="submit" class="add-to-cart sliding-button">
-                                                <div class="sliding-button-sign"><img src="/icons/play-button.svg" alt="watch-course"></div>
-                                                <div class="sliding-button-text">Watch</div>
-                                            </button>
-                                        {% elseif inCart %}
-                                            <button type="submit"
-                                                    class="add-to-cart sliding-button"
-                                                    onclick="event.stopPropagation();">
-                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
-                                                <div class="sliding-button-text">In&nbsp;cart</div>
-                                            </button>
-                                        {% else %}
-                                            <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST" id="button-content-{{ course.id }}">
+                                            {% if purchased %}
+                                                <button type="submit" class="add-to-cart sliding-button">
+                                                    <div class="sliding-button-sign"><img src="/icons/play-button.svg" alt="watch-course"></div>
+                                                    <div class="sliding-button-text">Watch</div>
+                                                </button>
+                                            {% elseif inCart %}
                                                 <button type="submit"
                                                         class="add-to-cart sliding-button"
                                                         onclick="event.stopPropagation();">
-                                                    <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
-                                                    <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                                    <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                    <div class="sliding-button-text">In&nbsp;cart</div>
                                                 </button>
-                                            </form>
-                                        {% endif %}
+                                            {% else %}
+                                                <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST" id="button-content-{{ course.id }}">
+                                                    <button type="submit"
+                                                            class="add-to-cart sliding-button"
+                                                            onclick="event.stopPropagation();">
+                                                        <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                        <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+
+
                                     </div>
-
-
                                 </div>
                             </div>
-                        </div>
-                        
-                    {% else %}
-                        <div >No course found</div>
+                            
                     {% endfor %}
 
-                    {% if paginator.hasToPaginate %}
+        {% else %}
+            <div >No course found</div>
+        {% endif %}
 
-                        {% include 'partials/pagination/_course_pagination.html.twig' with { path: "courses"} %}
-                        
+                    {% if paginator.hasToPaginate %}
+                        {% set prevPathArg = categoryId ? { categoryId: categoryId, page: paginator.previousPage } : { page: paginator.previousPage } %}
+                        {% set listedPathArg = categoryId ? { categoryId: categoryId, page: 1 } : { page: 1 } %}
+                        {% set nextPathArg = categoryId ? { categoryId: categoryId, page: paginator.nextPage } : { page: paginator.nextPage } %}
+
+                        {% include 'partials/pagination/_course_pagination.html.twig' 
+                            with { path: "courses",
+                                prevPathArg: prevPathArg,
+                                listedPathArg: listedPathArg,
+                                nextPathArg: nextPathArg
+                            }
+                        %}
                     {% endif %}
                 </div>
         </div>

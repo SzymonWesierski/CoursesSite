@@ -3,11 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -57,4 +58,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findAllPaginated(int $page = 1): Paginator{
+        $qb = $this->createQueryBuilder('u');
+
+        return (new Paginator($qb))->paginate($page); 
+    }  
+
+    public function findAllByUsernamePaginated(int $page = 1, string $usernameParam = ""): Paginator {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb = $qb
+            ->where($qb->expr()->like('u.username', ':usernameParam'))
+            ->setParameter('usernameParam', '%' . $usernameParam . '%');
+    
+        return (new Paginator($qb))->paginate($page); 
+    }
+    
 }

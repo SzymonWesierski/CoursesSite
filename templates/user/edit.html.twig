@@ -1,0 +1,49 @@
+{% extends 'admin_panel_base.html.twig' %}
+
+{% block title %}User management{% endblock %}
+
+{% block body %}
+    <div class="edit-user-container">
+        <div class="edit-user-content">
+            <div class="edit-user-return">
+                <a href= {{ path('users') }} class="navbar-item"><img height=50 src="/icons/return.svg" alt="return"></a>
+            </div>
+            <div class="edit-user-form">
+
+                
+
+                {{ form_start(user_form) }}
+
+                    <div class="alert alert-danger">
+                        {{ form_errors(user_form) }}
+                    </div>
+
+                    <div class="edit-course-inputs">
+                        {{ form_row(user_form.username) }}
+
+                        {{ form_label(user_form.roles) }}
+                        {{ form_widget(user_form.roles) }}
+
+                        {{ form_row(user_form.email) }}
+
+                        <div class="edit-user-inputs-inline">
+                            {{ form_label(user_form.isVerified) }}
+                        
+                            {{ form_widget(user_form.isVerified) }}
+                        </div>
+                    </div>
+                
+                    <button    
+                        type="submit"
+                        class="btn-default ">
+                        Submit
+                    </button>
+
+                {{ form_end(user_form) }}
+            </div>
+            
+        </div>
+    </div>
+   
+
+{% endblock %}

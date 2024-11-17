@@ -19,6 +19,7 @@ import './styles/createcourse.css';
 import './styles/editcourse.css';
 import './styles/editprofile.css';
 import './styles/adminpanel.css';
+import './styles/usermanagement.css';
 
 
 

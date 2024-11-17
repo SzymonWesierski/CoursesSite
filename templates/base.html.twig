@@ -70,25 +70,27 @@
                             </button>
                         </div>
 
-                        <div class="navbar-item">
-                            <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
-                                <div class="sliding-button-sign">
-                                {% if amountOfProducts > 0 %}
-                                    <img src="/icons/cart-full-2.svg" alt="cart">
-                                {% else %}
-                                    <img src="/icons/cart.svg" alt="cart">
-                                {% endif %}
-                                </div>
-                                <div class="sliding-button-text">Cart</div>
-                                <div class="cart-counter-container">
-                                    <turbo-frame id="cart">
-                                        <div id="cart-counter">
-                                            {{ amountOfProducts }}
-                                        </div>
-                                    </turbo-frame>
-                                </div>
-                            </button>
-                        </div>
+                        {% if 'ROLE_USER' in app.user.roles %}
+                            <div class="navbar-item">
+                                <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
+                                    <div class="sliding-button-sign">
+                                    {% if amountOfProducts > 0 %}
+                                        <img src="/icons/cart-full-2.svg" alt="cart">
+                                    {% else %}
+                                        <img src="/icons/cart.svg" alt="cart">
+                                    {% endif %}
+                                    </div>
+                                    <div class="sliding-button-text">Cart</div>
+                                    <div class="cart-counter-container">
+                                        <turbo-frame id="cart">
+                                            <div id="cart-counter">
+                                                {{ amountOfProducts }}
+                                            </div>
+                                        </turbo-frame>
+                                    </div>
+                                </button>
+                            </div>
+                        {% endif %}
 
                         <div class="navbar-item">
                             <button class="sliding-button" onclick="window.location.href='{{ path('app_user_edit') }}'">
