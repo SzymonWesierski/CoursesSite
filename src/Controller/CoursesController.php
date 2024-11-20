@@ -43,8 +43,8 @@ class CoursesController extends AbstractController
         return $this->redirectToRoute('courses');
     }
 
-    #[Route('/courses/{page?}/{categoryId?}', name: 'courses', defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
-    public function index($categoryId = null, int $page = 1): Response
+    #[Route('/courses/{page?}/{categoryId?}/{titleParam?}', name: 'courses', defaults: ['page' => '1', 'categoryId' => '0'], requirements: ['page' => Requirement::POSITIVE_INT])]
+    public function index(Request $request, $categoryId, $titleParam, $page): Response
     {   
         $user = $this->getUser();
         $navBarCategories = $this->categoryRepository->findRootCategories();
@@ -67,8 +67,9 @@ class CoursesController extends AbstractController
         $amountOfProducts = $cart->getAmountOfProducts(); 
         $productsInCartIds = $cart->getCourses()->map(fn($course) => $course->getId())->toArray();
         
-
-        if ($categoryId) {
+        if ($titleParam == null) $titleParam = $request->query->get('titleParam');
+        
+        if ($categoryId > 0) {
             $category = $this->categoryRepository->find($categoryId);
 
             if (!$category) {
@@ -84,6 +85,9 @@ class CoursesController extends AbstractController
                 $courses = $this->courseRepository->findAllAprovedByCategoryAndHerChildren( $categories, $page);
             }
         }
+        else if($titleParam){
+            $courses = $this->courseRepository->findAllByTitlePaginated($page, $titleParam);
+        }
         else{
             $courses = $this->courseRepository->findAllApproved($page);
             $coursesTheBestByRating = $this->courseRepository->findWithTheBestRating();
@@ -97,7 +101,8 @@ class CoursesController extends AbstractController
             'productsInCartIds' => $productsInCartIds,
             'coursesTheBestByRating' => $coursesTheBestByRating,
             'amountOfProducts' => $amountOfProducts,
-            'purchasedCoursesIds' => $purchasedCoursesIds
+            'purchasedCoursesIds' => $purchasedCoursesIds,
+            'titleParam' => $titleParam
         ]);
     }
 

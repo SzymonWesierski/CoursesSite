@@ -52,5 +52,20 @@ class CategoryRepository extends ServiceEntityRepository
 
         return $children;
     }
+
+    public function findRelationWithCourses(int $categoryId): bool
+    {
+        return (bool) $this->createQueryBuilder('c')
+            ->innerJoin('c.courses', 'courses')
+            ->andWhere('c.id = :categoryId')
+            ->setParameter('categoryId', $categoryId)
+            ->select('1')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+
     
 }

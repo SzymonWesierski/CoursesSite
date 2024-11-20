@@ -1,0 +1,145 @@
+
+.categories-management-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.categories-management-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    margin-top: 6em;
+    margin-bottom: 6em;
+    border: 2px solid var(--navy);
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+}
+
+.categories-management-title{
+    text-align: left;
+    width: 90%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.categories-management-tree-container{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+    margin: 1em;
+}
+
+.categories-management-parent-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 50%;
+    border-left: 1px solid var(--navy);
+    border-bottom: 1px solid var(--navy);
+    padding: 0.5em;
+}
+
+.categories-management-children-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    border-top: 1px solid var(--navy);
+    border-left: 1px solid var(--navy);
+    border-bottom: 1px solid var(--navy);
+    padding: 0.5em;
+}
+
+.categories-management-child-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    padding: 0.5em;
+    width: 90%;
+    border-bottom: 1px solid var(--navy);
+}
+
+.categories-management-button-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.edit-course-edit-delete-btn{
+    border-color: var(--navy);
+    background-color: var(--brightblue);
+}
+
+.categories-management-not-found{
+    margin-bottom: 2em;
+    margin-top: 2em;
+
+}
+
+.edit-categories-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-categories-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    margin-top: 6em;
+    margin-bottom: 6em;
+    border: 2px solid var(--navy);
+    box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.199);
+}
+
+.edit-categories-form{
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.edit-categories-form label{
+    font-size: 1.5em;
+}
+
+.edit-categories-form input[type="checkbox"] {
+    width: 1.5em; 
+    height: 1.5em;
+    position: relative;
+    top: 0.8em;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+
+#admin_categories_edit_form_roles label{
+    font-size: 1em;
+}
+
+#admin_categories_edit_form_roles{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5em;
+}
+
+.edit-categories-inputs-inline{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-categories-return{
+    position: relative;
+    top: 1em;
+    left: -40%;
+}

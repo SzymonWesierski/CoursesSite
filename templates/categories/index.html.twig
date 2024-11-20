@@ -1,15 +1,189 @@
 {% extends 'admin_panel_base.html.twig' %}
 
-{% block title %}Courses{% endblock %}
+{% block title %}Categories management{% endblock %}
 
 {% block body %}
 
+<div class="categories-management-container">
+    <div class="categories-management-list">
+        <h1 class="categories-management-title">Categories management</h1>
 
-    <h1>Kategorie</h1>
+        {% if categories | length > 0 %}
+            {% for category in categories %}
+                <div class="categories-management-tree-container">
+                    <div class="categories-management-parent-container">
+                        <div>
+                            {{ category.name }}
+                        </div>
+                        
+                        <div class="categories-management-button-section">
+                            <div>
+                                 <button class="btn-default edit-course-edit-delete-btn" 
+                                                type="button" 
+                                                data-controller="custom-modal" 
+                                                data-action="click->custom-modal#open" 
+                                                data-modal-id="edit-category" 
+                                                data-category-id="{{ category.id }}">
+                                            <span>
+                                                <img src="/icons/edit-white.svg" alt="edit">
+                                                
+                                            </span>
+                                        </button>
+                            </div>
+                            
+                            <div>
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="delete-category"
+                                        data-category-id="{{ category.id }}"
+                                        onclick=";">
+                                    <span>
+                                        <img src="/icons/remove.svg" alt="remove">
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
 
-    <a href="/courses/create">
-                Create new
-            </a>
+                    <div class="categories-management-children-container">
+                        {% for child in category.getChildren %}
+                            <div class="categories-management-child-container">
+                                
+                                <div>
+                                    {{child.name}}
+                                </div>
+
+                                <div class="categories-management-button-section">
+                                    <div>
+                                         <button class="btn-default edit-course-edit-delete-btn" 
+                                                type="button" 
+                                                data-controller="custom-modal" 
+                                                data-action="click->custom-modal#open" 
+                                                data-modal-id="edit-category" 
+                                                data-category-id="{{ child.id }}">
+                                            <span>
+                                                <img src="/icons/edit-white.svg" alt="edit">
+                                                
+                                            </span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div>
+                                        <button class="btn-default edit-course-edit-delete-btn" 
+                                                type="button"
+                                                data-controller="custom-modal" 
+                                                data-action="click->custom-modal#open" 
+                                                data-modal-id="delete-category"
+                                                data-category-id="{{ child.id }}"
+                                                onclick=";">
+                                            <span>
+                                                <img src="/icons/remove.svg" alt="remove">
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="categories-management-child-container">
+                                
+                            <div>
+                                Add category:
+                            </div>
+
+                            <div class="categories-management-button-section">
+                                <div>
+                                    <button class="btn-default" 
+                                            type="button" 
+                                            data-controller="custom-modal" 
+                                            data-action="click->custom-modal#open" 
+                                            data-modal-id="create-category" 
+                                            data-parent-id="{{ category.id }}">
+                                        <span>
+                                            <img src="/icons/plus.svg" alt="add">
+                                            Create
+                                        </span>
+                                    </button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <h2 class="categories-management-not-found">No categories found</h2>
+        {% endif %}
+             <div class="categories-management-tree-container">
+                <div>
+                    Add category:
+                </div>
+
+                <div class="categories-management-button-section">
+                    <div>
+                        <button class="btn-default" 
+                                type="button" 
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="create-category" >
+                            <span>
+                                <img src="/icons/plus.svg" alt="add">
+                                Create
+                            </span>
+                        </button>
+                    </div>
+                    
+                </div>
+             </div>
+    </div>
+</div>
+    
+
+<!-- Modal Delete Category  -->
+{% component Modal with {id: 'delete-category'} %}
+    {% block modal_header %}
+        <h1>Delete Category</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        Are you sure you want to delete this category?
+        <button type="button" id="deleteCategoryButton" aria-label="Delete Category">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal Edit Category  -->
+{% component Modal with {id: 'edit-category'}  %}
+    {% block modal_header %}
+        <h2>Edit episode</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        {% include 'categories/_edit.html.twig' with { edit_category_form: edit_category_form } %}
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal Edit Category  -->
+{% component Modal with {id: 'create-category'}  %}
+    {% block modal_header %}
+        <h2>Edit episode</h2>
+         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        {% include 'categories/_create.html.twig' with { create_category_form: create_category_form } %}
+    {% endblock %}
+{% endcomponent %}
 
 
 {% endblock %}
+
+

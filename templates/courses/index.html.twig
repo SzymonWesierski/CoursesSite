@@ -6,7 +6,7 @@
 
     <div class="courses-container">
          
-        {% if categoryId == null %}
+        {% if categoryId == 0 and titleParam == "" %}
 
             {% if app.user %}
                 <div class="greeting">
@@ -50,11 +50,16 @@
                 
             </div>  
         {% endif %}
-
-        {% if paginator.results | length > 0 %}
             <div class="course-list-title">
-                <h1>All {{categoryName}} courses</h1>
+                {% if titleParam != "" %}
+                    <h1>All courses containing "{{titleParam}}"</h1>
+                {% else %}
+                    <h1>All {{categoryName}} courses</h1>
+                {% endif %}
+                    
             </div>
+        {% if paginator.results | length > 0 %}
+            
             <div class="courses-list-container">
                     <div class="courses-list">
                         {% for course in paginator.results %}
@@ -140,13 +145,17 @@
                     {% endfor %}
 
         {% else %}
-            <div >No course found</div>
+            <div class="courses-list-container">
+                <div class="courses-list">
+                     <h1>No course found</h1>
+                </div>
+            </div>
         {% endif %}
 
                     {% if paginator.hasToPaginate %}
-                        {% set prevPathArg = categoryId ? { categoryId: categoryId, page: paginator.previousPage } : { page: paginator.previousPage } %}
-                        {% set listedPathArg = categoryId ? { categoryId: categoryId, page: 1 } : { page: 1 } %}
-                        {% set nextPathArg = categoryId ? { categoryId: categoryId, page: paginator.nextPage } : { page: paginator.nextPage } %}
+                        {% set prevPathArg = { categoryId: categoryId, titleParam: titleParam, page: paginator.previousPage } %}
+                        {% set listedPathArg = {categoryId: categoryId, titleParam: titleParam, page: 1 } %}
+                        {% set nextPathArg = { categoryId: categoryId, titleParam: titleParam, page: paginator.nextPage } %}
 
                         {% include 'partials/pagination/_course_pagination.html.twig' 
                             with { path: "courses",

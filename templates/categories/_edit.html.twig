@@ -1,0 +1,13 @@
+
+<h1>Edit category</h1>
+
+{{ form_start(edit_category_form, { 'action': path('edit_category') }) }}
+    <input type="hidden" name="category_id" value="">
+    {{ form_widget(edit_category_form) }}
+        <button    
+            type="submit"
+            class="uppercase mt-15 bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
+            Submit
+        </button>
+
+{{ form_end(edit_category_form) }}

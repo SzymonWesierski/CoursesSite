@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'admin1@'));
         $admin->setEmail("admin@email.com");
-        $admin->setVerified(true);
+        $admin->setIsVerified(true);
 
         $manager->persist($admin);
 
@@ -71,7 +71,7 @@ class AppFixtures extends Fixture
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->userPasswordHasher->hashPassword($user, 'test123'));
             $user->setEmail($faker->email);
-            $user->setVerified(true);
+            $user->setIsVerified(true);
 
             $manager->persist($user);
 

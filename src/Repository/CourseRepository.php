@@ -147,4 +147,14 @@ class CourseRepository extends ServiceEntityRepository
 
             return array_column($coursesIds, 'id');
     }
+
+    public function findAllByTitlePaginated(int $page = 1, string $titleParam = ""): Paginator {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb = $qb
+            ->where($qb->expr()->like('c.name', ':titleParam'))
+            ->setParameter('titleParam', '%' . $titleParam . '%');
+    
+        return (new Paginator($qb))->paginate($page); 
+    }
 }

@@ -24,8 +24,9 @@ class Category
     #[ORM\JoinColumn(nullable: true)]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent', cascade: ['remove'])]
     private Collection $children;
+
 
     #[ORM\ManyToMany(targetEntity: Course::class, mappedBy: 'categories')]
     private Collection $courses;

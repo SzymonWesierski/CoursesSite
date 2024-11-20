@@ -43,8 +43,8 @@
                         </div>
 
                         <div class="navbar-item">
-                            <form action="">
-                                <input class="search-input" placeholder="Searth for course" type="text" name="text" class="input">
+                            <form action="{{ path('courses') }}" method="get">
+                                <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
                             </form>
                         </div>
                        
