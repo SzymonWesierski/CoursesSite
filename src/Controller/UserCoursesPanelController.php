@@ -2,16 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Cart;
+use App\Entity\User;
 use App\Enum\CourseStatus;
 use App\Form\CategoryFilterType;
-use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CourseDraftRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -21,12 +22,14 @@ class UserCoursesPanelController extends AbstractController
     private $em;
     private $categoryRepository;
     private $courseRepository;
+    private $courseDraftRepository;
 
-    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, CategoryRepository $categoryRepository)
+    public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository,  CourseDraftRepository $courseDraftRepository, CategoryRepository $categoryRepository)
     {
         $this->em = $em;
         $this->categoryRepository = $categoryRepository;
         $this->courseRepository = $courseRepository;
+        $this->courseDraftRepository = $courseDraftRepository;
     }
 
 
@@ -62,11 +65,11 @@ class UserCoursesPanelController extends AbstractController
                 $categories = $this->categoryRepository->findAllChildren($category);
                 $categories[] = $category;
 
-                $courses = $this->courseRepository->findUserCoursesByCategoryAndHerChildren($user, $categories ,$page);
+                $courses = $this->courseDraftRepository->findUserDraftCoursesByCategoryAndHerChildren($user, $categories ,$page);
             }
         }
         else{
-            $courses = $this->courseRepository->findUserAll($user, $page);
+            $courses = $this->courseDraftRepository->findUserAllDraftCourses($user, $page);
         }
 
         return $this->render('user_courses_panel/instructor.html.twig', [
@@ -79,6 +82,9 @@ class UserCoursesPanelController extends AbstractController
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,
                 'APPROVED' => CourseStatus::APPROVED->value,
+                'DRAFT' => CourseStatus::DRAFT->value,
+                'BANNED' => CourseStatus::BANNED->value,
+                'APPROVED_AND_DRAFT' => CourseStatus::APPROVED_AND_DRAFT->value,
             ],
         ]);
     }

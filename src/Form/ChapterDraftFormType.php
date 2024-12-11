@@ -2,14 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Chapter;
-use App\Entity\Course;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\ChapterDraft;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ChapterFormType extends AbstractType
+class ChapterDraftFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -21,7 +19,7 @@ class ChapterFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Chapter::class,
+            'data_class' => ChapterDraft::class,
         ]);
     }
 }

@@ -1,0 +1,20 @@
+{% extends 'clear_base.html.twig' %}
+
+{% block title %}Verified email{% endblock %}
+
+{% block body %}
+
+<div class="verified-email-container">
+    <div class="verified-email-content">
+        <h1>You successfully verified your email</h1>
+
+        <button 
+            class="btn-default"
+            onclick="window.location.href='{{ path('app_login') }}'"
+            >
+            Login
+        </button>
+    </div>
+</div>
+
+{% endblock %}

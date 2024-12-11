@@ -2,165 +2,136 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
 
-   async open(event) {
+    async open(event) {
         const modalId = event.currentTarget.getAttribute('data-modal-id');
         const modal = document.getElementById(modalId);
-
-        if (modal) {  
-            if(modalId === "edit-episode"){
+    
+        if (!modal) return;
+    
+        const fetchHtml = async (url) => {
+            try {
+                const response = await fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (response.ok) {
+                    return await response.text();
+                } else {
+                    console.error("Failed to load data from:", url);
+                }
+            } catch (error) {
+                console.error("Error during fetch:", error);
+            }
+            return null;
+        };
+    
+        switch (modalId) {
+            case "edit-episode":
                 const courseId = event.currentTarget.getAttribute('data-course-id');
                 const episodeId = event.currentTarget.getAttribute('data-episode-id');
-
-                try {
-                    const response = await fetch(`/episodes/edit/${episodeId}/${courseId}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest' 
-                        }
-                    });
-                    if (response.ok) {
-                        const html = await response.text();
-                        modal.querySelector('.modal-body-content').innerHTML = html;
-
-                        const courseInput = modal.querySelector('input[name="course_id"]');
-                        if (courseInput) courseInput.value = courseId;
-            
-                        const episodeInput = modal.querySelector('input[name="episode_id"]');
-                        if (episodeInput) episodeInput.value = episodeId;
-
-
-                    } else {
-                        console.error("Episode data wont load.");
-                    }
-                } catch (error) {
-                    console.error("Faild during loading episode data:", error);
+                const episodeHtml = await fetchHtml(`/episodes/edit/${episodeId}/${courseId}`);
+                if (episodeHtml) {
+                    modal.querySelector('.modal-body-content').innerHTML = episodeHtml;
+                    modal.querySelector('input[name="course_id"]')?.setAttribute('value', courseId);
+                    modal.querySelector('input[name="episode_id"]')?.setAttribute('value', episodeId);
                 }
-
-            }
+                break;
     
-            if(modalId === "create-episode"){
-                const chapterId = event.currentTarget.getAttribute('data-chapter-id');
-
-                const chapterInput = modal.querySelector('input[name="chapter_id"]');
-                if (chapterInput) chapterInput.value = chapterId;
-            }
+            case "create-episode":
+                modal.querySelector('input[name="chapter_id"]')?.setAttribute(
+                    'value',
+                    event.currentTarget.getAttribute('data-chapter-id')
+                );
+                break;
     
-            if(modalId === "delete-episode"){
-                const episodeId = event.currentTarget.getAttribute('data-episode-id');
-                const courseId = event.currentTarget.getAttribute('data-course-id');
-                const deleteButton = document.getElementById('deleteEpisodeButton');
-                if (deleteButton) {
-                    deleteButton.setAttribute(
-                        'onclick',
-                        `window.location.href='/episodes/delete/${episodeId}/${courseId}'`
-                    );
-                }
-            }
-
-            if(modalId === "edit-chapter"){
+            case "delete-episode":
+                const delEpisodeId = event.currentTarget.getAttribute('data-episode-id');
+                const delCourseId = event.currentTarget.getAttribute('data-course-id');
+                document.getElementById('deleteEpisodeButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/episodes/delete/${delEpisodeId}/${delCourseId}'`
+                );
+                break;
+    
+            case "edit-chapter":
                 const chapterId = event.currentTarget.getAttribute('data-chapter-id');
-
-                try {
-                    const response = await fetch(`/chapter/edit/${chapterId}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest' 
-                        }
-                    });
-                    if (response.ok) {
-                        const html = await response.text();
-                        modal.querySelector('.modal-body-content').innerHTML = html;
-
-                        const chapterInput = modal.querySelector('input[name="chapter_id"]');
-                        if (chapterInput) chapterInput.value = chapterId;
-            
-                    } else {
-                        console.error("Chapter data wont load.");
-                    }
-                } catch (error) {
-                    console.error("Faild during loading Chapter data:", error);
+                const chapterHtml = await fetchHtml(`/chapter/edit/${chapterId}`);
+                if (chapterHtml) {
+                    modal.querySelector('.modal-body-content').innerHTML = chapterHtml;
+                    modal.querySelector('input[name="chapter_id"]')?.setAttribute('value', chapterId);
                 }
-
-            }
-
-            if(modalId === "delete-chapter"){
-                const chapterId = event.currentTarget.getAttribute('data-chapter-id');
-
-                const deleteButton = document.getElementById('deleteChapterButton');
-                if (deleteButton) {
-                    deleteButton.setAttribute(
-                        'onclick',
-                        `window.location.href='/chapter/delete/${chapterId}'`
-                    );
-                }
-            }
-
-            if(modalId === "delete-user"){
+                break;
+    
+            case "delete-chapter":
+                const delChapterId = event.currentTarget.getAttribute('data-chapter-id');
+                document.getElementById('deleteChapterButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/chapter/delete/${delChapterId}'`
+                );
+                break;
+    
+            case "delete-user":
                 const userId = event.currentTarget.getAttribute('data-user-id');
-
-                const deleteButton = document.getElementById('deleteUserButton');
-                if (deleteButton) {
-                    deleteButton.setAttribute(
-                        'onclick',
-                        `window.location.href='/users/delete/${userId}'`
-                    );
-                }
-            }
-
-            if(modalId === "delete-category"){
+                document.getElementById('deleteUserButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/users/delete/${userId}'`
+                );
+                break;
+    
+            case "delete-category":
                 const categoryId = event.currentTarget.getAttribute('data-category-id');
-
-                const deleteButton = document.getElementById('deleteCategoryButton');
-                if (deleteButton) {
-                    deleteButton.setAttribute(
-                        'onclick',
-                        `window.location.href='/categories/delete/${categoryId}'`
-                    );
+                document.getElementById('deleteCategoryButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/categories/delete/${categoryId}'`
+                );
+                break;
+    
+            case "edit-category":
+                const editCategoryId = event.currentTarget.getAttribute('data-category-id');
+                const categoryHtml = await fetchHtml(`/categories/edit/${editCategoryId}`);
+                if (categoryHtml) {
+                    modal.querySelector('.modal-body-content').innerHTML = categoryHtml;
+                    modal.querySelector('input[name="category_id"]')?.setAttribute('value', editCategoryId);
                 }
-            }
+                break;
+    
+            case "create-category":
+                modal.querySelector('input[name="parent_id"]')?.setAttribute(
+                    'value',
+                    event.currentTarget.getAttribute('data-parent-id')
+                );
+                break;
 
-            if(modalId === "edit-category"){
-                const categoryId = event.currentTarget.getAttribute('data-category-id');
+            case "approve-course":
+                const approveCourseId = event.currentTarget.getAttribute('data-course-id');
+                document.getElementById('approveCourseButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/approve/courses/management/${approveCourseId}'`
+                );
+                break;
 
-                try {
-                    const response = await fetch(`/categories/edit/${categoryId}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest' 
-                        }
-                    });
-                    if (response.ok) {
-                        const html = await response.text();
-                        modal.querySelector('.modal-body-content').innerHTML = html;
+            case "ban-course":
+                const banCourseId = event.currentTarget.getAttribute('data-course-id');
+                document.getElementById('banCourseButton')?.setAttribute(
+                    'onclick',
+                    `window.location.href='/ban/courses/management/${banCourseId}'`
+                );
+                break;
 
-                        const categoryInput = modal.querySelector('input[name="category_id"]');
-                        if (categoryInput) categoryInput.value = categoryId;
-            
-                    } else {
-                        console.error("Category data wont load.");
-                    }
-                } catch (error) {
-                    console.error("Faild during loading Category data:", error);
-                }
-            }
-
-            if(modalId === "create-category"){
-                const parentId = event.currentTarget.getAttribute('data-parent-id');
-                const parentInput = modal.querySelector('input[name="parent_id"]');
-                if (parentInput) parentInput.value = parentId;
-            }
-
+            default:
+                console.warn(`No case for modalId: ${modalId}`);
         }
-
-        
-        // schow modal
+    
+        // Show modal
         modal.classList.add('show');
         modal.style.display = 'block';
         modal.setAttribute('aria-hidden', 'false');
         document.body.classList.add('modal-open');
-
+    
         const backdrop = document.createElement('div');
         backdrop.className = 'modal-backdrop fade show';
         document.body.appendChild(backdrop);
-                
     }
+    
     
     hide(event) {
         const modal = event.currentTarget.closest('.modal');

@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Course;
-use App\Entity\Chapter;
-use App\Form\ChapterFormType;
-use App\Repository\ChapterRepository;
+use App\Entity\CourseDraft;
+use App\Entity\ChapterDraft;
+use App\Form\ChapterDraftFormType;
+use App\Repository\ChapterDraftRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,32 +16,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ChapterController extends AbstractController
 {
 
-    private $chapterRepository;
+    private $chapterDraftRepository;
     private $em;
 
-    public function __construct(EntityManagerInterface $em, ChapterRepository $chapterRepository)
+    public function __construct(EntityManagerInterface $em, ChapterDraftRepository $chapterDraftRepository)
     {
         $this->em = $em;
-        $this->chapterRepository = $chapterRepository;
+        $this->chapterDraftRepository = $chapterDraftRepository;
     }
 
 
     #[Route('/chapter/create', name: 'create_chapter')]
     public function create(Request $request): JsonResponse
     {
-        $chapter = new Chapter();
-        $form = $this->createForm(ChapterFormType::class, $chapter);
+        $chapter = new ChapterDraft();
+        $form = $this->createForm(ChapterDraftFormType::class, $chapter);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $chapter = $form->getData();
-
             $courseId = $request->request->get('course_id');
-            $course = $this->em->getRepository(Course::class)->find($courseId);
+            $course = $this->em->getRepository(CourseDraft::class)->find($courseId);
             
             if ($course) {
                 $this->em->persist($chapter);
+
                 $course->addChapter($chapter);
+                
                 $this->em->persist($course);
                 $this->em->flush();
 
@@ -64,17 +65,17 @@ class ChapterController extends AbstractController
     public function edit( Request $request, $chapterId = 0): Response
     {
         if($chapterId > 0){
-            $chapter = $this->chapterRepository->find($chapterId);
+            $chapter = $this->chapterDraftRepository->find($chapterId);
         }else{
             $chapterId = $request->request->get('chapter_id');
-            $chapter = $this->chapterRepository->find($chapterId);
+            $chapter = $this->chapterDraftRepository->find($chapterId);
         }
 
         if (!$chapter) {
             throw $this->createNotFoundException('Chapter not found.');
         }
 
-        $form =$this->createForm(ChapterFormType::class, $chapter);
+        $form =$this->createForm(ChapterDraftFormType::class, $chapter);
 
         $form->handleRequest($request);
 
@@ -88,7 +89,7 @@ class ChapterController extends AbstractController
             
             $this->em->flush();
 
-            return $this->redirectToRoute('edit_course', ['id' => $chapter->getCourse()->getId(), 'section' => 2]);
+            return $this->redirectToRoute('edit_course', ['id' => $chapter->getCourseDraft()->getId(), 'section' => 2]);
         }
 
         return $this->render('partials/chapter/_edit.html.twig', [
@@ -100,7 +101,7 @@ class ChapterController extends AbstractController
     #[Route('/chapter/delete/{chapterId}', methods: ['GET', 'DELETE'], name: 'delete_chapter')]
     public function delete($chapterId): Response
     {
-        $chapter = $this->chapterRepository->find($chapterId);
+        $chapter = $this->chapterDraftRepository->find($chapterId);
 
         if (!$chapter) {
             throw $this->createNotFoundException('Chapter not found.');
@@ -109,7 +110,7 @@ class ChapterController extends AbstractController
         $this->em->remove($chapter);
         $this->em->flush();
 
-        return $this->redirectToRoute('edit_course', ['id' => $chapter->getCourse()->getId(), 'section' => 2]);
+        return $this->redirectToRoute('edit_course', ['id' => $chapter->getCourseDraft()->getId(), 'section' => 2]);
     }
 
 

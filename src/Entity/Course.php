@@ -2,51 +2,27 @@
 
 namespace App\Entity;
 
-use App\Enum\CourseStatus;
 use App\Repository\CourseRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
-class Course
+class Course extends BaseCourse
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $Description = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ImagePath = null;
-
-    /**
-     * @var Collection<int, Chapter>
-     */
-    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'course', orphanRemoval: true)]
-    private Collection $chapters;
+    #[ORM\OneToOne(inversedBy: 'course', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?CourseDraft $courseDraft = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'courses')]
-    #[ORM\JoinTable(name: 'course_category')]
-    private Collection $categories;
-
-    #[ORM\Column(type: 'string', length: 64, enumType: CourseStatus::class)]
-    private CourseStatus $status;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $publicImageId = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $price = null;
+    /**
+     * @var Collection<int, Chapter>
+     */
+    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'course', orphanRemoval: true, cascade:["persist"])]
+    private Collection $chapters;
 
     /**
      * @var Collection<int, Cart>
@@ -63,76 +39,26 @@ class Course
     #[ORM\Column]
     private ?float $ratingAverage = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function __construct()
     {
+        parent::__construct();
         $this->chapters = new ArrayCollection();
-        $this->categories = new ArrayCollection();
         $this->carts = new ArrayCollection();
         $this->ratings = new ArrayCollection();
     }
 
-    // Gettery i settery dla pól
-    public function getId(): ?int
+    public function getCourseDraft(): ?CourseDraft
     {
-        return $this->id;
+        return $this->courseDraft;
     }
 
-    public function getName(): ?string
+    public function setCourseDraft(CourseDraft $courseDraft): static
     {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->Description;
-    }
-
-    public function setDescription(string $Description): static
-    {
-        $this->Description = $Description;
-        return $this;
-    }
-
-    public function getImagePath(): ?string
-    {
-        return $this->ImagePath;
-    }
-
-    public function setImagePath(?string $ImagePath): static
-    {
-        $this->ImagePath = $ImagePath;
-        return $this;
-    }
-
-    public function getChapters(): Collection
-    {
-        return $this->chapters;
-    }
-
-    public function addChapter(Chapter $chapter): static
-    {
-        if (!$this->chapters->contains($chapter)) {
-            $this->chapters->add($chapter);
-            $chapter->setCourse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChapter(Chapter $chapter): static
-    {
-        if ($this->chapters->removeElement($chapter)) {
-            if ($chapter->getCourse() === $this) {
-                $chapter->setCourse(null);
-            }
-        }
+        $this->courseDraft = $courseDraft;
 
         return $this;
     }
@@ -145,62 +71,6 @@ class Course
     public function setUser(?User $user): static
     {
         $this->user = $user;
-        return $this;
-    }
-
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(Category $category): static
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): static
-    {
-        $this->categories->removeElement($category);
-
-        return $this;
-    }
-
-    public function getStatus(): CourseStatus
-    {
-        return $this->status;
-    }
-
-    public function setStatus(CourseStatus $status): self
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function getPublicImageId(): ?string
-    {
-        return $this->publicImageId;
-    }
-
-    public function setPublicImageId(?string $publicImageId): static
-    {
-        $this->publicImageId = $publicImageId;
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(?float $price): static
-    {
-        $this->price = round($price, 2);
-
         return $this;
     }
 
@@ -272,5 +142,50 @@ class Course
 
         return $this;
     }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getChapters(): Collection
+    {
+        return $this->chapters;
+    }
+
+    public function addChapter(Chapter $chapter): static
+    {
+        if (!$this->chapters->contains($chapter)) {
+            $this->chapters->add($chapter);
+            $chapter->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function setChapters(?Collection $chapters): static
+    {
+        $this->chapters = $chapters;
+        return $this;
+    }
+
+    public function removeChapter(Chapter $chapter): static
+    {
+        if ($this->chapters->removeElement($chapter)) {
+            if ($chapter->getCourse() === $this) {
+                $chapter->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+    
 
 }

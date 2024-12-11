@@ -40,7 +40,7 @@
                         {{ form_row(course_form.name, {label: 'Title: '}) }}
                         {{ form_row(course_form.Description, {label: 'Description:'}) }}
                         {{ form_row(course_form.image, {label: 'Image:'}) }}
-                        {{ form_row(course_form.categories, {label: 'Category:'}) }}
+                        {{ form_row(course_form.category, {label: 'Category:'}) }}
                     </div>
                    
                 </div>
@@ -69,102 +69,105 @@
                     <div class="edit-course-block-content-title">
                         <h2>Curriculum: </h2>
                     </div>
-                
+                    
+                    {% set chapter_number =  0 %}
+                    
                     <div id="chapter-list" data-edit-course-target="chapterList" class="edit-course-chapter-list">
-                        {% set chapter_number =  0 %}
-                        {% for chapter in course.chapters %}
-                            <div class="edit-course-chapter-element">
+                        {% if course.chapters is not empty %}
+                            {% for chapter in course.chapters %}
+                                <div class="edit-course-chapter-element">
 
-                            
-                                {% set chapter_number = loop.index %}
-                                <div class="chapter-header">
-                                    <h3>Chapter.{{ chapter_number }} </h3>
-                                    <div class="chapter-buttons">
-                                        <button class="btn-default edit-course-edit-delete-btn" 
-                                                type="button" 
-                                                data-controller="custom-modal" 
-                                                data-action="click->custom-modal#open" 
-                                                data-modal-id="edit-chapter" 
-                                                data-chapter-id="{{ chapter.id }}">
-                                            <span>
-                                                <img src="/icons/edit-white.svg" alt="edit">
-                                            </span>
-                                        </button>
+                                
+                                    {% set chapter_number = loop.index %}
+                                    <div class="chapter-header">
+                                        <h3>Chapter.{{ chapter_number }} </h3>
+                                        <div class="chapter-buttons">
+                                            <button class="btn-default edit-course-edit-delete-btn" 
+                                                    type="button" 
+                                                    data-controller="custom-modal" 
+                                                    data-action="click->custom-modal#open" 
+                                                    data-modal-id="edit-chapter" 
+                                                    data-chapter-id="{{ chapter.id }}">
+                                                <span>
+                                                    <img src="/icons/edit-white.svg" alt="edit">
+                                                </span>
+                                            </button>
 
-                                        <button class="btn-default edit-course-edit-delete-btn" 
-                                                type="button"
-                                                data-controller="custom-modal" 
-                                                data-action="click->custom-modal#open" 
-                                                data-modal-id="delete-chapter"
-                                                data-chapter-id="{{ chapter.id }}">
-                                            <span>
-                                                <img src="/icons/remove.svg" alt="remove">
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <h3>{{ chapter.name }} </h3>
-                                </div>
-
-
-                                {% if chapter.episodes is not empty %}
-                                    
-                                    {% for episode in chapter.episodes %}
-
-                                        <div class="edit-course-episode-container">
-                                            <img width="100px" src="{{ episode.ImagePath ? episode.ImagePath : '/images/no_content.png' }}" alt="">
-                                            <h4>{{ episode.name }}</h4>
-                                            <div>
-                                                <button class="btn-default edit-course-edit-delete-btn" 
-                                                        type="button" 
-                                                        data-controller="custom-modal" 
-                                                        data-action="click->custom-modal#open" 
-                                                        data-modal-id="edit-episode" 
-                                                        data-course-id="{{ course.id }}"
-                                                        data-episode-id="{{ episode.id }}">
-                                                    <span>
-                                                        <img src="/icons/edit-white.svg" alt="edit">
-                                                        
-                                                    </span>
-                                                </button>
-
-                                                 <button class="btn-default edit-course-edit-delete-btn" 
-                                                         type="button"
-                                                         data-controller="custom-modal" 
-                                                         data-action="click->custom-modal#open" 
-                                                         data-modal-id="delete-episode"
-                                                         data-course-id="{{ course.id }}"
-                                                         data-episode-id="{{ episode.id }}">
-                                                    <span>
-                                                        <img src="/icons/remove.svg" alt="remove">
-                                                    </span>
-                                                </button>
-                                            </div>
+                                            <button class="btn-default edit-course-edit-delete-btn" 
+                                                    type="button"
+                                                    data-controller="custom-modal" 
+                                                    data-action="click->custom-modal#open" 
+                                                    data-modal-id="delete-chapter"
+                                                    data-chapter-id="{{ chapter.id }}">
+                                                <span>
+                                                    <img src="/icons/remove.svg" alt="remove">
+                                                </span>
+                                            </button>
                                         </div>
-
-                                    {% endfor %}
-
-
-                                {% else %}
-                                    <div class="edit-course-episode-container">
-                                        <p> - - No episodes yet</p>
+                                        <h3>{{ chapter.name }} </h3>
                                     </div>
-                                {% endif %}
 
-                                <button class="btn-default" 
-                                        type="button" 
-                                        data-controller="custom-modal" 
-                                        data-action="click->custom-modal#open"
-                                        data-modal-id="create-episode"
-                                        data-chapter-id="{{ chapter.id }}">
-                                    <span>
-                                        <img src="/icons/plus.svg" alt="plus">
-                                        Add episode
-                                    </span>
-                                </button>
-                            </div>
-                        {% endfor %}
+
+                                    {% if chapter.episodesDraft is not empty %}
+                                        
+                                        {% for episode in chapter.episodesDraft %}
+
+                                            <div class="edit-course-episode-container">
+                                                <img width="100px" src="{{ episode.ImagePath ? episode.ImagePath : '/images/no_content.png' }}" alt="">
+                                                <h4>{{ episode.name }}</h4>
+                                                <div>
+                                                    <button class="btn-default edit-course-edit-delete-btn" 
+                                                            type="button" 
+                                                            data-controller="custom-modal" 
+                                                            data-action="click->custom-modal#open" 
+                                                            data-modal-id="edit-episode" 
+                                                            data-course-id="{{ course.id }}"
+                                                            data-episode-id="{{ episode.id }}">
+                                                        <span>
+                                                            <img src="/icons/edit-white.svg" alt="edit">
+                                                            
+                                                        </span>
+                                                    </button>
+
+                                                    <button class="btn-default edit-course-edit-delete-btn" 
+                                                            type="button"
+                                                            data-controller="custom-modal" 
+                                                            data-action="click->custom-modal#open" 
+                                                            data-modal-id="delete-episode"
+                                                            data-course-id="{{ course.id }}"
+                                                            data-episode-id="{{ episode.id }}">
+                                                        <span>
+                                                            <img src="/icons/remove.svg" alt="remove">
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        {% endfor %}
+
+
+                                    {% else %}
+                                        <div class="edit-course-episode-container">
+                                            <p> - - No episodes yet</p>
+                                        </div>
+                                    {% endif %}
+
+                                    <button class="btn-default" 
+                                            type="button" 
+                                            data-controller="custom-modal" 
+                                            data-action="click->custom-modal#open"
+                                            data-modal-id="create-episode"
+                                            data-chapter-id="{{ chapter.id }}">
+                                        <span>
+                                            <img src="/icons/plus.svg" alt="plus">
+                                            Add episode
+                                        </span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
-
+                    
                     {% include 'partials/chapter/_create.html.twig' with { courseid: course.id, chapter_form: create_chapter_form, chapter_number: chapter_number + 1 } %}
                     <div id="chapter-form-messages" data-edit-course-target="chapterFormMessages"></div>
                 </div>
@@ -204,7 +207,7 @@
             {{ form_end(course_form) }}
 
             <!-- Critical Section -->
-            <div data-edit-course-target="section" class="edit-course-block">
+            <div data-edit-course-target="section" class="edit-course-block" style="display: none;">
                 <div class="edit-course-block-content">
                     <div class="edit-course-block-content-title">
                         <h2>Delete course:</h2>

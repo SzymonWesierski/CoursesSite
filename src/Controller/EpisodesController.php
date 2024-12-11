@@ -2,44 +2,42 @@
 
 namespace App\Controller;
 
-use App\Entity\Chapter;
-use App\Entity\Course;
-use App\Entity\User;
-use App\Entity\Episode;
+use App\Entity\ChapterDraft;
+use App\Entity\EpisodeDraft;
+use App\Form\EpisodeDraftFormType;
 use App\Service\CloudinaryService;
-use App\Form\EpisodeFormType;
-use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EpisodeDraftRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EpisodesController extends AbstractController
 {
     private $em;
-    private $episodeRepository;
+    private $episodeDraftRepository;
     private $cloudinaryService;
 
-    public function __construct(EntityManagerInterface $em, EpisodeRepository $episodeRepository,
+    public function __construct(EntityManagerInterface $em, EpisodeDraftRepository $episodeDraftRepository,
      CloudinaryService $cloudinaryService)
     {
         $this->em = $em;
-        $this->episodeRepository = $episodeRepository;
+        $this->episodeDraftRepository = $episodeDraftRepository;
         $this->cloudinaryService = $cloudinaryService;
     }
 
     #[Route('/episodes/create/{chapter_id?}', name: 'create_episode')]
     public function create(Request $request, $chapter_id = 0): Response
     {
-        $episode = new Episode();
-        $form = $this->createForm(EpisodeFormType::class, $episode);
+        $episode = new EpisodeDraft();
+        $form = $this->createForm(EpisodeDraftFormType::class, $episode);
 
         $form->handleRequest($request);      
 
         if($form->isSubmitted() && $form->isValid()){
 
-            $chapterRepo = $this->em->getRepository(Chapter::class); 
+            $chapterRepo = $this->em->getRepository(ChapterDraft::class); 
 
             if($chapter_id > 0){
                 $chapter = $chapterRepo->find($chapter_id);
@@ -49,7 +47,7 @@ class EpisodesController extends AbstractController
             }
         
             if (!$chapter) {
-                throw $this->createNotFoundException('Chapter not found');
+                throw $this->createNotFoundException('ChapterDraft not found');
             }
 
             $newEpisode = $form->getData();
@@ -69,10 +67,10 @@ class EpisodesController extends AbstractController
                 $newEpisode->setVideoPath($_ENV['CLOUDINARY_VIDEO_URL'] . $result['public_id']);
             }
             
-            $course = $chapter->getCourse();
+            $course = $chapter->getCourseDraft();
 
             $this->em->persist($newEpisode);
-            $chapter->addEpisode($newEpisode);
+            $chapter->addEpisodeDraft($newEpisode);
             
             if (!$chapter) {
                 throw $this->createNotFoundException('Chapter not found.');
@@ -93,21 +91,21 @@ class EpisodesController extends AbstractController
     public function edit( Request $request, $episodeId = 0, $courseId = 0): Response
     {
         if($episodeId > 0){
-            $episode = $this->episodeRepository->find($episodeId);
+            $episode = $this->episodeDraftRepository->find($episodeId);
         }else{
             $episodeId = $request->request->get('episode_id');
-            $episode = $this->episodeRepository->find($episodeId);
+            $episode = $this->episodeDraftRepository->find($episodeId);
         }
 
         if (!$episode) {
-            throw $this->createNotFoundException('Episode not found.');
+            throw $this->createNotFoundException('EpisodeDraft not found.');
         }
 
         if($courseId == 0){
             $courseId = $request->request->get('course_id');
         }
 
-        $form =$this->createForm(EpisodeFormType::class, $episode);
+        $form =$this->createForm(EpisodeDraftFormType::class, $episode);
 
         $form->handleRequest($request);
 
@@ -150,10 +148,10 @@ class EpisodesController extends AbstractController
     #[Route('/episodes/delete/{episode_id}/{course_id}', methods: ['GET', 'DELETE'], name: 'delete_episode')]
     public function delete($episode_id, $course_id): Response
     {
-        $episode = $this->episodeRepository->find($episode_id);
+        $episode = $this->episodeDraftRepository->find($episode_id);
 
         if (!$episode) {
-            throw $this->createNotFoundException('Episode not found.');
+            throw $this->createNotFoundException('EpisodeDraft not found.');
         }
 
         $currentPublicImageId = $episode->getPublicImageId();

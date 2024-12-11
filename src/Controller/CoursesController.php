@@ -2,19 +2,23 @@
 // src/Controller/CoursesController.php
 namespace App\Controller;
 
-use App\Entity\Course;
 use App\Entity\Cart;
-use App\Entity\Chapter;
-use App\Entity\Episode;
 use App\Entity\User;
+use App\Entity\Course;
+use App\Entity\Episode;
 use App\Enum\CourseStatus;
+use App\Entity\CourseDraft;
+use App\Entity\ChapterDraft;
+use App\Entity\EpisodeDraft;
 use App\Form\CourseFormType;
-use App\Form\ChapterFormType;
-use App\Form\EpisodeFormType;
+use App\Form\CourseDraftFormType;
+use App\Form\ChapterDraftFormType;
+use App\Form\EpisodeDraftFormType;
 use App\Service\CloudinaryService;
 use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CourseDraftRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,13 +30,16 @@ class CoursesController extends AbstractController
     private $em;
     private $courseRepository;
     private $categoryRepository;
+    private $courseDraftRepository;
     private $cloudinaryService;
 
     public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, 
-        CategoryRepository $categoryRepository, CloudinaryService $cloudinaryService)
+        CourseDraftRepository $courseDraftRepository, CategoryRepository $categoryRepository,
+        CloudinaryService $cloudinaryService)
     {
         $this->em = $em;
         $this->courseRepository = $courseRepository;
+        $this->courseDraftRepository = $courseDraftRepository;
         $this->categoryRepository = $categoryRepository;
         $this->cloudinaryService = $cloudinaryService;
     }
@@ -108,7 +115,7 @@ class CoursesController extends AbstractController
 
 
     #[Route('/courses/show/{courseId}/{episodeId}', methods: ['GET'], name: 'show_course')]
-    public function show(int $courseId, int $episodeId = 0): Response
+    public function show(string $courseId, int $episodeId = 0): Response
     {
         $course = $this->courseRepository->find($courseId);
 
@@ -166,6 +173,42 @@ class CoursesController extends AbstractController
         ]);
     }
 
+    #[Route('/courses/preview/{courseId}/{episodeId}', methods: ['GET'], name: 'preview_course')]
+    public function preview(string $courseId, int $episodeId = 0): Response
+    {
+        $course = $this->courseDraftRepository->find($courseId);
+
+        if (!$course) {
+            throw $this->createNotFoundException('CourseDraft not found.');
+        }
+
+        $user = $this->getUser();
+
+        $episode = new EpisodeDraft();
+
+        if ($episodeId > 0){
+            $episodeRepo = $this->em->getRepository(EpisodeDraft::class);
+
+            if (!$episodeId || !is_numeric($episodeId)) {
+                throw $this->createNotFoundException('Episode ID is missing or invalid.');
+            }
+
+            $episode = $episodeRepo->find($episodeId);
+
+            if (!$episode) {
+                throw $this->createNotFoundException('Episode not found.');
+            }
+        }
+        
+
+        return $this->render('courses/preview.html.twig', [
+            'course' => $course,
+            'episode' => $episode,
+            'episodeId' => $episodeId,
+            'username' => $user->getUserIdentifier()
+        ]);
+    }
+
     #[Route('/courses/delete/{id}', methods: ['GET','DELETE'], name: 'delete_course')]
     public function delete($id): Response
     {
@@ -215,6 +258,16 @@ class CoursesController extends AbstractController
             }
             
             $this->em->persist($newCourse);
+
+            $courseDraft = new CourseDraft();
+            $courseDraft->setName($newCourse->getName());
+            $courseDraft->setDescription($newCourse->getDescription());
+            $courseDraft->setStatus($newCourse->getStatus());
+            $courseDraft->setCourse($newCourse);
+            $courseDraft->setCategory($newCourse->getCategory());
+
+            $this->em->persist($courseDraft);
+
             $this->em->flush();
 
             return $this->redirectToRoute('userCoursesPanel');
@@ -228,27 +281,27 @@ class CoursesController extends AbstractController
     #[Route('/courses/edit/{id}/{section?}', name: 'edit_course')]
     public function edit($id, Request $request, $section = 0): Response 
     {
-        $course = $this->courseRepository->find($id);
+        $courseDraft = $this->courseDraftRepository->find($id);
 
-        if (!$course) {
-            throw $this->createNotFoundException('Course not found.');
+        if (!$courseDraft) {
+            throw $this->createNotFoundException('Course draft not found.');
         }
 
         $user = $this->getUser();
 
         if ($user instanceof User) {
-            if ($course->getUser()->getId() !=  $user->getId()){
+            if ($courseDraft->getCourse()->getUser()->getId() !=  $user->getId()){
                 throw $this->createAccessDeniedException();
             }
         }
 
-        $course_form = $this->createForm(CourseFormType::class, $course);
+        $course_form = $this->createForm(CourseDraftFormType::class, $courseDraft);
 
-        $chapter = new Chapter();
-        $chapter_form = $this->createForm(ChapterFormType::class, $chapter);
+        $chapter = new ChapterDraft();
+        $chapter_form = $this->createForm(ChapterDraftFormType::class, $chapter);
 
-        $episode = new Episode();
-        $episode_form = $this->createForm(EpisodeFormType::class, $episode);
+        $episode = new EpisodeDraft();
+        $episode_form = $this->createForm(EpisodeDraftFormType::class, $episode);
 
 
         $course_form->handleRequest($request);
@@ -257,16 +310,17 @@ class CoursesController extends AbstractController
 
             $image = $course_form->get('image')->getData();
             if ($image) {
-                $currentPublicImageId = $course->getPublicImageId();
+                $currentPublicImageId = $courseDraft->getPublicImageId();
                 if($currentPublicImageId){
                     $this->cloudinaryService->deleteImage($currentPublicImageId);
                 }
                 $localImagePath = $image->getRealPath();
                 $result = $this->cloudinaryService->uploadImage($localImagePath, "CourseSite/Course");
-                $course->setPublicImageId($result['public_id']);
-                $course->setImagePath($_ENV['CLOUDINARY_IMAGE_URL'] . $result['public_id']);
-                
+                $courseDraft->setPublicImageId($result['public_id']);
+                $courseDraft->setImagePath($_ENV['CLOUDINARY_IMAGE_URL'] . $result['public_id']);  
             } 
+
+            $courseDraft->setStatus(CourseStatus::DRAFT);
 
             $this->em->flush();
             return $this->redirectToRoute('userCoursesPanel');
@@ -278,7 +332,7 @@ class CoursesController extends AbstractController
             'edit_chapter_form' =>  $chapter_form->createView(),
             'create_episode_form' => $episode_form->createView(),
             'edit_episode_form' => $episode_form->createView(),
-            'course' => $course,
+            'course' => $courseDraft,
             'initialSectionIndex' => $section
         ]);
     }

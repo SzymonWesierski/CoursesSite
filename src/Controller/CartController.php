@@ -77,7 +77,7 @@ class CartController extends AbstractController
     }
 
     #[Route('/cart/add/{courseId}', name: 'add_to_cart')]
-    public function addToCart(int $courseId): Response
+    public function addToCart(string $courseId): Response
     {
         $user = $this->getUser();
 

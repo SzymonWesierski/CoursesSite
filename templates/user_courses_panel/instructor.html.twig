@@ -63,18 +63,29 @@
                                 {{ course.name }}
                             </h2>
 
-                            {% if statusValues['NOT_DONE_YET'] == course.status.value %}
                             <div class="courses-list-element-manage">
-                                <p>
-                                    Course is not finished yet
-                                </p>
+                                {% if course.status.value == statusValues['NOT_DONE_YET'] %}
+                                    Not done yet
+                                {% elseif course.status.value == statusValues['WAITING_FOR_APPROVAL'] %}
+                                    Waiting for approval
+                                {% elseif course.status.value == statusValues['APPROVED'] %}
+                                    Approved
+                                {% elseif course.status.value == statusValues['DRAFT'] %}
+                                    Draft
+                                {% elseif course.status.value == statusValues['APPROVED_AND_DRAFT'] %}
+                                    Approved and new version in draft
+                                {% elseif course.status.value == statusValues['BANNED'] %}
+                                    Banned
+                                {% else %}
+                                    Unknown status
+                                {% endif %}
                                 
                                 <a href="/courses/edit/{{ course.id }}">
                                     Manage/Edit
                                 </a>
                             </div>
-                            {% endif %}
-                            <a href="/courses/show/{{ course.id }}">
+
+                            <a href="/courses/preview/{{ course.id }}">
                                 Preview
                             </a>
                         </div>

@@ -8,46 +8,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChapterRepository::class)]
-class Chapter
+class Chapter extends BaseChapter
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $Name = null;
-
-    #[ORM\ManyToOne(inversedBy: 'chapters')]
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'chapters')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Course $course = null;
 
     /**
      * @var Collection<int, Episode>
      */
-    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'chapter', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'chapter', orphanRemoval: true, cascade:["persist"])]
     private Collection $episodes;
 
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->Name;
-    }
-
-    public function setName(string $Name): static
-    {
-        $this->Name = $Name;
-
-        return $this;
     }
 
     public function getCourse(): ?Course

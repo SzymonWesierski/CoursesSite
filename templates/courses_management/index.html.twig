@@ -1,20 +1,151 @@
 {% extends 'admin_panel_base.html.twig' %}
 
-{% block title %}Hello CoursesManagementController!{% endblock %}
+{% block title %}Courses management{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="user-management-container">
+    <div class="user-management-list">
+        <h1 class="user-management-title">Courses management</h1>
+         <form action="{{ path('app_courses_management') }}" method="get">
+            <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
+        </form>
+        {% if paginator.results | length > 0 %}
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Main image</th>
+                        <th>Title</th>
+                        <th>Public</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in paginator.results %}
+                        <tr>
+                            <td>{{ course.id }}</td>
+                            <td>
+                                <img
+                                    width = 150px
+                                    src="{{ course.ImagePath }}"
+                                    alt=""
+                                />
+                            </td>
+                            <td>{{ course.name }}</td>
+                            <td>
+                                {% if course.status.value == statusValues['NOT_DONE_YET'] %}
+                                    Not done yet
+                                {% elseif course.status.value == statusValues['WAITING_FOR_APPROVAL'] %}
+                                    Waiting for approval
+                                {% elseif course.status.value == statusValues['APPROVED'] %}
+                                    Approved
+                                {% elseif course.status.value == statusValues['DRAFT'] %}
+                                    Draft
+                                {% elseif course.status.value == statusValues['APPROVED_AND_DRAFT'] %}
+                                    Approved and new version in draft
+                                {% elseif course.status.value == statusValues['BANNED'] %}
+                                    Banned
+                                {% else %}
+                                    Unknown status
+                                {% endif %}
+                                
+                            </td>
+                            <td>
+                                <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';"> 
+                                    <span>
+                                        Preview
+                                    </span>
+                                </button>
+                                 <button class="btn-default edit-course-edit-delete-btn" 
+                                        type="button"
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="approve-course"
+                                        data-course-id="{{ course.id }}"
+                                        onclick="s">
+                                    <span>
+                                        Approve
+                                    </span>
+                                </button>
+                                <button class="btn-default-red" 
+                                        type="button"
+                                        data-controller="custom-modal" 
+                                        data-action="click->custom-modal#open" 
+                                        data-modal-id="ban-course"
+                                        data-course-id="{{ course.id }}"
+                                        onclick="s">
+                                    <span>
+                                        Ban
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2 class="user-management-not-found">No courses found</h2>
+        {% endif %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Szymon/source/repos/PHPprojects/CoursesSite/src/Controller/CoursesManagementController.php</code></li>
-        <li>Your template at <code>C:/Users/Szymon/source/repos/PHPprojects/CoursesSite/templates/courses_management/index.html.twig</code></li>
-    </ul>
+       
+
+        {% if paginator.hasToPaginate %}
+            {% set prevPathArg = titleParam ? { titleParam: titleParam, page: paginator.previousPage } : { page: paginator.previousPage } %}
+            {% set listedPathArg = titleParam ? { titleParam: titleParam, page: 1 } : { page: 1 } %}
+            {% set nextPathArg = titleParam ? { titleParam: titleParam, page: paginator.nextPage } : { page: paginator.nextPage } %}
+
+            {% include 'partials/pagination/_course_pagination.html.twig' 
+                with { path: "app_courses_management",
+                    prevPathArg: prevPathArg,
+                    listedPathArg: listedPathArg,
+                    nextPathArg: nextPathArg
+                }
+            %}
+        {% endif %}
+    </div>
 </div>
+    
+
+<!-- Modal Delete Episode  -->
+{% component Modal with {id: 'ban-course'} %}
+    {% block modal_header %}
+        <h1>Ban Course</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        <h2> Cause of ban: </h2>
+
+        <textarea name="" id="" required></textarea>
+
+        <h2> Are you sure you want to ban this course?</h2>
+       
+        <button type="button" id="banCourseButton" aria-label="Delete User">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+<!-- Modal Delete Episode  -->
+{% component Modal with {id: 'approve-course'} %}
+    {% block modal_header %}
+        <h1>Approve Course</h1>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
+            <img src="/icons/remove.svg" alt="close">
+        </button>
+    {% endblock %}
+    {% block modal_body %}
+        <h2> Are you sure you want to approve this course?</h2>
+        <p> After approval this course will be visible for every platform user and available to buy</p>
+        <button type="button" id="approveCourseButton" aria-label="Approve Course">Yes</button>
+        <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">No</button>
+    {% endblock %}
+{% endcomponent %}
+
+
 {% endblock %}
+
+

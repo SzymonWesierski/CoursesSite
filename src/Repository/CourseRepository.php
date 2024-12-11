@@ -45,7 +45,7 @@ class CourseRepository extends ServiceEntityRepository
 
     public function findAllAprovedByCategoryAndHerChildren($categoryWithCihildrenCategory, int $page = 1): Paginator{
         $qb = $this->createQueryBuilder('c')
-            ->join('c.categories', 'cat')
+            ->join('c.category', 'cat')
             ->andWhere('c.status IN (:approved)')
             ->andWhere('cat IN (:categories)')
             ->setParameter('categories', $categoryWithCihildrenCategory)
@@ -63,9 +63,16 @@ class CourseRepository extends ServiceEntityRepository
             
     }       
 
+    public function findAllPaginated(int $page = 1): Paginator{
+        $qb = $this->createQueryBuilder('c');
+        
+        return (new Paginator($qb))->paginate($page);
+            
+    }   
+
     public function findUserCoursesByCategoryAndHerChildren($categoryWithCihildrenCategory, $user, int $page = 1): Paginator{
         $qb = $this->createQueryBuilder('c')
-            ->join('c.categories', 'cat')
+            ->join('c.category', 'cat')
             ->join('c.user', 'u')
             ->andWhere('u IN (:user)')
             ->andWhere('cat IN (:categories)')
@@ -73,7 +80,7 @@ class CourseRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
 
         return (new Paginator($qb))->paginate($page);
-    }
+    }   
 
     public function findUserAll( $user, int $page = 1): Paginator{
         $qb = $this->createQueryBuilder('c')
@@ -117,7 +124,7 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function isPurchasedCourse(int $courseId, int $userId): bool
+    public function isPurchasedCourse(string $courseId, int $userId): bool
     {
         return (bool) $this->createQueryBuilder('course')
             ->innerJoin('course.carts', 'cart')

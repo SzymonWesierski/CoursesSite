@@ -27,14 +27,9 @@ class Category
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent', cascade: ['remove'])]
     private Collection $children;
 
-
-    #[ORM\ManyToMany(targetEntity: Course::class, mappedBy: 'categories')]
-    private Collection $courses;
-
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->courses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,31 +87,7 @@ class Category
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
-    public function addCourse(Course $course): self
-    {
-        if (!$this->courses->contains($course)) {
-            $this->courses[] = $course;
-            $course->addCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        if ($this->courses->removeElement($course)) {
-            $course->removeCategory($this);
-        }
-
-        return $this;
-    }
 }
+
+
+

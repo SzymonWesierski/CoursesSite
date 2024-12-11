@@ -2,28 +2,37 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
-use App\Entity\Chapter;
-use App\Entity\Course;
-use App\Entity\Episode;
-use App\Entity\User;
-use App\Entity\Cart;
-use App\Enum\CourseStatus;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\Persistence\ObjectManager;
-use App\Repository\CategoryRepository;
 use Faker\Factory;
+use App\Entity\Cart;
+use App\Entity\User;
+use App\Entity\Course;
+use App\Entity\Chapter;
+use App\Entity\Episode;
+use App\Entity\Category;
+use App\Enum\CourseStatus;
+use App\Entity\CourseDraft;
+use App\Entity\ChapterDraft;
+use App\Entity\EpisodeDraft;
+use App\Repository\CategoryRepository;
+use Doctrine\Persistence\ObjectManager;
+use App\Service\DraftToCourseMapperService;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use phpDocumentor\Reflection\Types\Collection;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private CategoryRepository $categoryRepository;
+    private DraftToCourseMapperService $draftToCourseMapperService;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher, CategoryRepository $categoryRepository)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, 
+        CategoryRepository $categoryRepository,
+        DraftToCourseMapperService $draftToCourseMapperService)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->categoryRepository = $categoryRepository;
+        $this->draftToCourseMapperService = $draftToCourseMapperService;
     }
 
     public function load(ObjectManager $manager): void
@@ -37,7 +46,7 @@ class AppFixtures extends Fixture
 
         $this->loadCategories($manager, $faker);
 
-        $this->loadCoursesWithChapters($manager, $faker);
+        $this->loadCoursesWithChapters($manager, $faker, $this->draftToCourseMapperService);
     }
 
     private function loadAdmin(ObjectManager $manager): void
@@ -192,55 +201,64 @@ class AppFixtures extends Fixture
     }
 
 
-    private function loadCoursesWithChapters(ObjectManager $manager, $faker): void
+    private function loadCoursesWithChapters(ObjectManager $manager, $faker, $draftToCourseMapperService): void
     {
          $categories = $this->categoryRepository->findLeafCategories();
 
         for ($i = 0; $i < 100; $i++) {
-            $course = new Course();
-            $course->setName('Course ' . ($i + 1));
-            $course->setDescription($faker->sentences(10, true));
-            $course->setImagePath("/images/course_example_image.png");
-            $course->setStatus(CourseStatus::APPROVED);
-            $course->setPrice($this->randomFloat(49.99, 99.99));
-            $course->setRatingAverage($this->randomFloat(3.0, 5.0));
+            $courseDraft = new CourseDraft();
+            $courseDraft->setName('Course ' . ($i + 1));
+            $courseDraft->setDescription($faker->sentences(10, true));
+            $courseDraft->setImagePath("/images/course_example_image.png");
+            $courseDraft->setStatus(CourseStatus::APPROVED);
+            $courseDraft->setPrice($this->randomFloat(49.99, 99.99));
 
-            $chapter = new Chapter();
+            
+
+            $chapter = new ChapterDraft();
             $chapter->setName('Chapter 1 of Course ' . ($i + 1));
             
-            $episode = new Episode();
+            $episode = new EpisodeDraft();
             $episode->setName('Episode 1 of Course ' . ($i + 1));
             $episode->setDescription($faker->sentences(3, true));
             $episode->setIsFreeToWatch(true);
 
-            $episode2 = new Episode();
+            $episode2 = new EpisodeDraft();
             $episode2->setName('Episode 2 of Course ' . ($i + 1));
             $episode2->setDescription($faker->sentences(3, true));
             $episode2->setIsFreeToWatch(false);
 
-            $episode3 = new Episode();
+            $episode3 = new EpisodeDraft();
             $episode3->setName('Episode 3 of Course ' . ($i + 1));
             $episode3->setDescription($faker->sentences(3, true));
             $episode3->setIsFreeToWatch(false);
 
-            $chapter->addEpisode($episode);
-            $chapter->addEpisode($episode2);
-            $chapter->addEpisode($episode3);
-            $course->addChapter($chapter);
+            $chapter->addEpisodeDraft($episode);
+            $chapter->addEpisodeDraft($episode2);
+            $chapter->addEpisodeDraft($episode3);
+            $courseDraft->addChapter($chapter);
 
             $randomCategory1 = $categories[array_rand($categories, 1)];
 
-            $course->addCategory($randomCategory1);
-
-            $userRepo = $manager->getRepository(User::class);
-            $randomUser = $userRepo->findOneBy([], ['id' => 'ASC'], rand(0, 19), 1);
-            $randomUser->addCourse($course);
+            $courseDraft->setCategory($randomCategory1);
 
             $manager->persist($chapter);
             $manager->persist($episode);
             $manager->persist($episode2);
             $manager->persist($episode3);
+            $manager->persist($courseDraft);
+
+            $course = new Course();
+            $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraft);
+
+            $course->setRatingAverage($this->randomFloat(3.0, 5.0));
+            $userRepo = $manager->getRepository(User::class);
+            $randomUser = $userRepo->findOneBy([], ['id' => 'ASC'], rand(0, 19), 1);
+            $randomUser->addCourse($course);
+            $course->setCourseDraft($courseDraft);
+
             $manager->persist($course);
+
         }
 
         $manager->flush();

@@ -1,0 +1,24 @@
+{% extends 'clear_base.html.twig' %}
+
+{% block title %}Verify email{% endblock %}
+
+{% block body %}
+
+<div class="verified-email-container" data-controller="resend-email" data-resend-email-user-id-value="{{ userId }}">
+    <div class="verified-email-content">
+        <h1>You are successfully registered. Now check out your email from us to verify it and you are good to go</h1>
+
+        <h3>If you didn't get one, you can resend it.</h3>
+
+        <button
+            class="btn-default"
+            data-action="click->resend-email#resendEmail"
+            data-resend-email-target="button">
+            Resend e-mail
+        </button>
+    </div>
+</div>
+
+
+
+{% endblock %}

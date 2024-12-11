@@ -27,6 +27,7 @@ body {
     color: var(--navy);
     margin: 0px;
     display: flex;
+    flex-wrap: wrap;
     justify-content:space-between;
     border-bottom: 1px solid var(--navy);
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.199);
@@ -519,4 +520,16 @@ body {
   
 .btn-default-red:hover {
     background-color:#570b0b;
+}
+
+.login-btn{
+    background-color: var(--lightblue);
+}
+
+.login-btn:hover {
+    background-color: var(--white);
+}
+
+.register-btn:hover {
+    background-color: var(--white);
 }

@@ -109,7 +109,16 @@
                         </div>
                     {% else %}
                         <div class="navbar-item">
-                            <a href="{{ path('app_login') }}" class="navbar-item">Login</a> | <a href="{{ path('app_register') }}" class="navbar-item">Register</a>
+                            <a href="{{ path('app_login') }}" class="navbar-item">
+                                <button class="btn-default login-btn">
+                                    <span>Login</span>
+                                </button>
+                            </a>
+                            <a href="{{ path('app_register') }}" class="navbar-item">
+                                <button class="btn-default register-btn">
+                                    <span>Register</span>
+                                </button>
+                            </a>
                         </div>
                     {% endif %} 
                 </div>
