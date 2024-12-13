@@ -2,4 +2,4 @@ name: course-site
 type: 'php:8.3'
 disk: 1024
 relationships:
-     database: postgresqldb: postgresql
+     postgresql: postgresqldb
