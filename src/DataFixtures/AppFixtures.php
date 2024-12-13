@@ -220,7 +220,7 @@ class AppFixtures extends Fixture
             
             $episode = new EpisodeDraft();
             $episode->setName('Episode 1 of Course ' . ($i + 1));
-            $episode->setDescription($faker->sentences(3, true));
+            $episode->setDescription($faker->sentences(2, true));
             $episode->setIsFreeToWatch(true);
 
             $episode2 = new EpisodeDraft();
