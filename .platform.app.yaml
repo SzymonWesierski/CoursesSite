@@ -3,3 +3,13 @@ type: 'php:8.3'
 disk: 1024
 relationships:
      postgresqldb:
+
+web:
+  commands:
+    start: 'php-fpm'
+  locations:
+    '/':
+      root: 'public'
+      passthru: true
+      index: ['index.php']
+      allow: true
