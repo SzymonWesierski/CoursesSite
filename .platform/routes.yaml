@@ -1,3 +1,3 @@
-"https://{default}/":
+"https://main-bvxea6i-ebogbvn63o3gi.eu-5.platformsh.site/":
   type: upstream
   upstream: course-site:http
