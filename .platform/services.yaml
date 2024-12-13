@@ -1,0 +1,5 @@
+postgresql:
+  type: postgresql:16  
+  disk: 256           
+  ports:
+    - 5432            
