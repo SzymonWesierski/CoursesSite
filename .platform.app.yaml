@@ -44,8 +44,12 @@ hooks:
     build: |
         set -x -e
 
-        curl -fs https://get.symfony.com/cloud/configurator | bash
-        
+        curl -sL https://deb.nodesource.com/setup_22.x | bash -
+        apt-get install -y nodejs
+
+        npm install
+        npm run build
+
         NODE_VERSION=22 symfony-build
 
     deploy: |

@@ -3,6 +3,7 @@
 {% block title %}Verify email{% endblock %}
 
 {% block body %}
+{% include '/partials/_return_nav.html.twig' with { return_route: path('app_login') } %}
 
 <div class="verified-email-container" data-controller="resend-email" data-resend-email-user-id-value="{{ userId }}">
     <div class="verified-email-content">
