@@ -1,11 +1,30 @@
+monolog:
+    channels: ["deprecation"]
+    handlers:
+        main:
+            type: stream
+            path: "/tmp/%kernel.environment%.log"
+            level: debug
+            channels: ["!event"]
+        deprecation:
+            type: stream
+            path: "/tmp/deprecation_%kernel.environment%.log"
+            channels: ["deprecation"]
+
+
 when@dev:
     monolog:
+        channels: ["deprecation"]
         handlers:
             main:
                 type: stream
                 path: "/tmp/%kernel.environment%.log"
                 level: debug
                 channels: ["!event"]
+            deprecation:
+                type: stream
+                channels: [deprecation]
+                path: "/tmp/deprecation_%kernel.environment%.log"
 
 when@test:
     monolog:
@@ -18,8 +37,12 @@ when@test:
                 channels: ["!event"]
             nested:
                 type: stream
-                path: "/tmp/%kernel.environment%.log" 
+                path: "/tmp/%kernel.environment%.log"
                 level: debug
+            deprecation:
+                type: stream
+                channels: [deprecation]
+                path: "/tmp/deprecation_%kernel.environment%.log"
 
 when@prod:
     monolog:
