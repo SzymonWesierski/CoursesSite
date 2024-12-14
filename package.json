@@ -17,7 +17,6 @@
     "@babel/core": "^7.25.7",
     "@babel/preset-env": "^7.25.7",
     "@hotwired/turbo": "^7.1.1 || ^8.0",
-    "@symfony/ux-dropzone": "file:vendor/symfony/ux-dropzone/assets",
     "@symfony/ux-live-component": "file:vendor/symfony/ux-live-component/assets",
     "@symfony/ux-toggle-password": "file:vendor/symfony/ux-toggle-password/assets",
     "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
