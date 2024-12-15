@@ -44,18 +44,8 @@ hooks:
     build: |
         set -x -e
 
-        unset NPM_CONFIG_PREFIX
-
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-        nvm install 22
-        nvm use 22
-
-        npm install --force
-        npm run build
-
+        curl -fs https://get.symfony.com/cloud/configurator | bash
+        
         NODE_VERSION=22 symfony-build
 
     deploy: |
