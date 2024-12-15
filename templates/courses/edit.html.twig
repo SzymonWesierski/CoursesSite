@@ -237,7 +237,7 @@
 
 
 <!-- Modal Edit Chapter  -->
-{% component ModalComponent with {id: 'edit-chapter'} %}
+{% component Modal with {id: 'edit-chapter'} %}
     {% block modal_header %}
         <h1>Edit chapter</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -250,7 +250,7 @@
 {% endcomponent %}
 
 <!-- Modal Delete Chapter  -->
-{% component ModalComponent with {id: 'delete-chapter'} %}
+{% component Modal with {id: 'delete-chapter'} %}
     {% block modal_header %}
         <h1>Delete chapter</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -266,7 +266,7 @@
 
 
 <!-- Modal Delete Episode  -->
-{% component ModalComponent with {id: 'delete-episode'} %}
+{% component Modal with {id: 'delete-episode'} %}
     {% block modal_header %}
         <h1>Delete episode</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -282,7 +282,7 @@
 
 
 <!-- Modal Delete Course  -->
-{% component ModalComponent with {id: 'delete-course'}  %}
+{% component Modal with {id: 'delete-course'}  %}
     {% block modal_header %}
         <h1>Delete course</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -301,7 +301,7 @@
 {% endcomponent %}
 
 <!-- Modal Publish Course  -->
-{% component ModalComponent with {id: 'publish-course'}  %}
+{% component Modal with {id: 'publish-course'}  %}
     {% block modal_header %}
         <h1>Publishing the course</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -320,7 +320,7 @@
 {% endcomponent %}
 
 <!-- Modal Create Episode  -->
-{% component ModalComponent with {id: 'create-episode'}  %}
+{% component Modal with {id: 'create-episode'}  %}
     {% block modal_header %}
         <h2>Create episode in chapter </h2>
          <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -333,7 +333,7 @@
 {% endcomponent %}
 
 <!-- Modal Edit Episode  -->
-{% component ModalComponent with {id: 'edit-episode'}  %}
+{% component Modal with {id: 'edit-episode'}  %}
     {% block modal_header %}
         <h2>Edit episode</h2>
          <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">

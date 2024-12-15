@@ -6,8 +6,6 @@ use Faker\Factory;
 use App\Entity\Cart;
 use App\Entity\User;
 use App\Entity\Course;
-use App\Entity\Chapter;
-use App\Entity\Episode;
 use App\Entity\Category;
 use App\Enum\CourseStatus;
 use App\Entity\CourseDraft;
@@ -17,7 +15,6 @@ use App\Repository\CategoryRepository;
 use Doctrine\Persistence\ObjectManager;
 use App\Service\DraftToCourseMapperService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -37,16 +34,14 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create();
 
-
-        $this->loadUsers($manager, $faker);
+        $this->loadUsers($manager);
 
         $this->loadAdmin($manager);
 
-        $this->loadCategories($manager, $faker);
+        $this->loadCategories($manager);
 
-        $this->loadCoursesWithChapters($manager, $faker, $this->draftToCourseMapperService);
+        $this->loadCoursesWithChapters($manager, $this->draftToCourseMapperService);
     }
 
     private function loadAdmin(ObjectManager $manager): void
@@ -72,14 +67,14 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function loadUsers(ObjectManager $manager, $faker): void
+    private function loadUsers(ObjectManager $manager): void
     {
         for ($i = 0; $i < 20; $i++) {
             $user = new User();
-            $user->setUsername($faker->userName);
+            $user->setUsername("user" + $i);
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->userPasswordHasher->hashPassword($user, 'test123'));
-            $user->setEmail($faker->email);
+            $user->setEmail("user" + $i + "@gmail.com");
             $user->setIsVerified(true);
 
             $manager->persist($user);
@@ -98,7 +93,7 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function loadCategories(ObjectManager $manager, $faker): void
+    private function loadCategories(ObjectManager $manager): void
     {
         $categories = [];
         
@@ -201,14 +196,15 @@ class AppFixtures extends Fixture
     }
 
 
-    private function loadCoursesWithChapters(ObjectManager $manager, $faker, $draftToCourseMapperService): void
+    private function loadCoursesWithChapters(ObjectManager $manager, $draftToCourseMapperService): void
     {
          $categories = $this->categoryRepository->findLeafCategories();
 
+        $loremIpsum = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." ;
         for ($i = 0; $i < 100; $i++) {
             $courseDraft = new CourseDraft();
             $courseDraft->setName('Course ' . ($i + 1));
-            $courseDraft->setDescription($faker->sentences(10, true));
+            $courseDraft->setDescription($loremIpsum);
             $courseDraft->setImagePath("/images/course_example_image.png");
             $courseDraft->setStatus(CourseStatus::APPROVED);
             $courseDraft->setPrice($this->randomFloat(49.99, 99.99));
@@ -220,17 +216,17 @@ class AppFixtures extends Fixture
             
             $episode = new EpisodeDraft();
             $episode->setName('Episode 1 of Course ' . ($i + 1));
-            $episode->setDescription($faker->sentences(2, true));
+            $episode->setDescription($loremIpsum);
             $episode->setIsFreeToWatch(true);
 
             $episode2 = new EpisodeDraft();
             $episode2->setName('Episode 2 of Course ' . ($i + 1));
-            $episode2->setDescription($faker->sentences(3, true));
+            $episode2->setDescription($loremIpsum);
             $episode2->setIsFreeToWatch(false);
 
             $episode3 = new EpisodeDraft();
             $episode3->setName('Episode 3 of Course ' . ($i + 1));
-            $episode3->setDescription($faker->sentences(3, true));
+            $episode3->setDescription($loremIpsum);
             $episode3->setIsFreeToWatch(false);
 
             $chapter->addEpisodeDraft($episode);
