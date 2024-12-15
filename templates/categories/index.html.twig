@@ -143,7 +143,7 @@
     
 
 <!-- Modal Delete Category  -->
-{% component ModalComponent with {id: 'delete-category'} %}
+{% component Modal with {id: 'delete-category'} %}
     {% block modal_header %}
         <h1>Delete Category</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -158,7 +158,7 @@
 {% endcomponent %}
 
 <!-- Modal Edit Category  -->
-{% component ModalComponent with {id: 'edit-category'}  %}
+{% component Modal with {id: 'edit-category'}  %}
     {% block modal_header %}
         <h2>Edit episode</h2>
          <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -171,7 +171,7 @@
 {% endcomponent %}
 
 <!-- Modal Edit Category  -->
-{% component ModalComponent with {id: 'create-category'}  %}
+{% component Modal with {id: 'create-category'}  %}
     {% block modal_header %}
         <h2>Edit episode</h2>
          <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
