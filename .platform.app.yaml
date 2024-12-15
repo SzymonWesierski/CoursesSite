@@ -45,6 +45,9 @@ hooks:
         set -x -e
 
         curl -fs https://get.symfony.com/cloud/configurator | bash
+
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" 
         
         NODE_VERSION=22 symfony-build
 

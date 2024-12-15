@@ -47,8 +47,7 @@ class CoursesController extends AbstractController
     #[Route('/', name: 'app_home_redirect')]
     public function redirectToHomepage(): Response
     {
-        return $this->render('index.html.twig');
-        //return $this->redirectToRoute('courses');
+        return $this->redirectToRoute('courses');
     }
 
     #[Route('/courses/{page?}/{categoryId?}/{titleParam?}', name: 'courses', defaults: ['page' => '1', 'categoryId' => '0'], requirements: ['page' => Requirement::POSITIVE_INT])]

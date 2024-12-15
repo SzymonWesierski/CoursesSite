@@ -110,7 +110,7 @@
     
 
 <!-- Modal Delete Episode  -->
-{% component Modal with {id: 'ban-course'} %}
+{% component ModalComponent with {id: 'ban-course'} %}
     {% block modal_header %}
         <h1>Ban Course</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
@@ -130,7 +130,7 @@
 {% endcomponent %}
 
 <!-- Modal Delete Episode  -->
-{% component Modal with {id: 'approve-course'} %}
+{% component ModalComponent with {id: 'approve-course'} %}
     {% block modal_header %}
         <h1>Approve Course</h1>
         <button type="button" class="btn-close" data-action="click->custom-modal#hide" aria-label="Close">
