@@ -17,6 +17,17 @@ export default class extends Controller {
         this.sectionTargets.forEach((section, i) => {
             section.style.display = i === index ? 'block' : 'none';
         });
+
+        const currentUrl = window.location.pathname.split('/');
+        const newSection = index;
+
+        if (currentUrl.length > 4) {
+            currentUrl[4] = newSection;
+        } else {
+            currentUrl.push(newSection);
+        }
+        const newUrl = currentUrl.join('/');
+        window.history.pushState({ path: newUrl }, '', newUrl);
     }
 
     submitChapterForm(event) {
@@ -79,16 +90,29 @@ export default class extends Controller {
                             </button>
                     </div>
                 `;
-
+                this.chapterFormMessagesTarget.innerHTML = "";
                 this.chapterListTarget.insertAdjacentHTML('beforeend', newChapterHtml);
                 this.element.querySelector('#ajax-chapter-form').reset();
             } else {
-                this.chapterFormMessagesTarget.innerHTML = '<p>An error occurred.</p>';
+                if (data.chapter.errors && typeof data.chapter.errors === 'object') {
+                    let errorMessages = '';
+                    
+                    for (let key in data.chapter.errors) {
+                        if (data.chapter.errors.hasOwnProperty(key)) {
+                            errorMessages += `<p>${data.chapter.errors[key]}</p>`;
+                        }
+                    }
+            
+                    this.chapterFormMessagesTarget.innerHTML = errorMessages;
+                }else{
+                    this.chapterFormMessagesTarget.innerHTML = '<p>An error occurred222.</p>';
+                }
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            this.chapterFormMessagesTarget.innerHTML = '<p>An error occurred.</p>';
+
+            this.chapterFormMessagesTarget.innerHTML = "<p style=\"color:red;\">Invalid title</p>";
         });
     }
 }

@@ -37,10 +37,53 @@
                     </div>
                     
                     <div class="edit-course-inputs">
-                        {{ form_row(course_form.name, {label: 'Title: '}) }}
-                        {{ form_row(course_form.Description, {label: 'Description:'}) }}
-                        {{ form_row(course_form.image, {label: 'Image:'}) }}
-                        {{ form_row(course_form.category, {label: 'Category:'}) }}
+                         <div>
+                            {{ form_label(course_form.name, 'Title:') }}
+                            {{ form_widget(course_form.name) }}
+                            {% if course_form.name.vars.errors is not empty %}
+                                {% for error in course_form.name.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            {{ form_label(course_form.Description, 'Description:') }}
+                            {{ form_widget(course_form.Description) }}
+                            {% if course_form.Description.vars.errors is not empty %}
+                                {% for error in course_form.Description.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            {{ form_label(course_form.image, 'Image:') }}
+                            {{ form_widget(course_form.image) }}
+                            {% if course_form.image.vars.errors is not empty %}
+                                {% for error in course_form.image.vars.errors %}
+                                   <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            {{ form_label(course_form.category, 'Category:') }}
+                            {{ form_widget(course_form.category) }}
+                            {% if course_form.category.vars.errors is not empty %}
+                                {% for error in course_form.category.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                    
                 </div>
@@ -57,7 +100,14 @@
                         Enter the amount that best reflects the value of your course
                     </p>
                     <div class="edit-course-inputs">
-                        {{ form_row(course_form.price) }}
+                        {{ form_widget(course_form.price) }}
+                        {% if course_form.price.vars.errors is not empty %}
+                                {% for error in course_form.price.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

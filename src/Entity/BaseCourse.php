@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Ramsey\Uuid\Uuid;
 use App\Enum\CourseStatus;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 
 #[ORM\MappedSuperclass]
 abstract class BaseCourse
@@ -13,9 +14,23 @@ abstract class BaseCourse
     #[ORM\Column(type: 'uuid', unique: true)]
     private string $id;
 
-    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "The title is required.")]
+    #[Assert\Length(
+        max: 255,
+        min: 2,
+        maxMessage: "The title cannot exceed {{ limit }} characters.",
+        minMessage: "The title must exceed {{ limit }} characters."
+    )]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotBlank(message: "The description is required.")]
+    #[Assert\Length(
+        max: 1024,
+        min: 20,
+        maxMessage: "The description cannot exceed {{ limit }} characters.",
+        minMessage: "The description must exceed {{ limit }} characters."
+    )]
     #[ORM\Column(length: 1024)]
     private ?string $Description = null;
 
@@ -27,7 +42,8 @@ abstract class BaseCourse
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $publicImageId = null;
-
+    
+    #[Assert\PositiveOrZero(message: 'The price must be zero or a positive number.')]
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 

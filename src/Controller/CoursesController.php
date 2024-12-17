@@ -334,7 +334,7 @@ class CoursesController extends AbstractController
             'edit_episode_form' => $episode_form->createView(),
             'course' => $courseDraft,
             'initialSectionIndex' => $section
-        ]);
+        ], new Response(null, $course_form->isSubmitted() && !$course_form->isValid() ? 422 : 200));
     }
 }
 

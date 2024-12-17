@@ -287,9 +287,6 @@
             "./templates/base.html.twig"
         ]
     },
-    "symfony/ux-dropzone": {
-        "version": "v2.19.3"
-    },
     "symfony/ux-live-component": {
         "version": "2.20",
         "recipe": {

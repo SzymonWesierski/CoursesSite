@@ -57,7 +57,12 @@ class ChapterController extends AbstractController
             }
         }
 
-        return new JsonResponse(['status' => 'error', 'message' => 'Form is not valid.'], 400);
+        $errors = [];
+        foreach ($form->get('name')->getErrors() as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        return new JsonResponse(['status' => 'error', 'message' => $errors ], 400);
 
     }
 

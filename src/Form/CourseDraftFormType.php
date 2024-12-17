@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Category;
-use App\Entity\Course;
 use App\Entity\CourseDraft;
 use App\Repository\CategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -14,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CourseDraftFormType extends AbstractType
 {
@@ -21,31 +21,43 @@ class CourseDraftFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'Enter title...',
-                ),
+                ],
+                'empty_data' => '',
                 'label' => false,
-                'required' => true
+                'required' => false,
             ])
             ->add('Description', TextareaType::class, [
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'Enter Description...'
-                ),
+                ],
+                'empty_data' => '',
                 'label' => false,
-                'required' => true,
+                'required' => false,
             ])
-            ->add('price', NumberType::class,[
-                'attr' => array(
+            ->add('price', NumberType::class, [
+                'attr' => [
                     'placeholder' => 'Enter price...'
-                ),
+                ],
                 'label' => false,
-                'required' => false
+                'required' => false,
             ])
-            ->add('image', FileType::class, array(
+            ->add('image', FileType::class, [
                 'required' => false,
                 'label' => false,
-                'mapped' => false
-            ))
+                'mapped' => false,
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG or PNG).',
+                    ]),
+                ],
+            ])
             ->add('category', EntityType::class, [
                 'label' => false,
                 'class' => Category::class,
@@ -60,9 +72,12 @@ class CourseDraftFormType extends AbstractType
                     'class' => 'course-category-select',
                     'data-placeholder' => 'Choose category...',
                 ],
-            ])
-            
-        ;
+                'constraints' => [
+                    new Assert\NotNull([
+                        'message' => 'Please select a category.',
+                    ]),
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

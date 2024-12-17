@@ -24,6 +24,13 @@
             
 
         {{ form_end(chapter_form) }}
+        {% if chapter_form.name.vars.errors is not empty %}
+            <ul class="form-errors">
+                {% for error in chapter_form.name.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div id="chapter-form-messages" data-edit-course-target="chapterFormMessages"></div>
     </div>
     

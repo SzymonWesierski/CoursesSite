@@ -65,7 +65,7 @@ class UserCoursesPanelController extends AbstractController
                 $categories = $this->categoryRepository->findAllChildren($category);
                 $categories[] = $category;
 
-                $courses = $this->courseDraftRepository->findUserDraftCoursesByCategoryAndHerChildren($user, $categories ,$page);
+                $courses = $this->courseDraftRepository->findUserDraftCoursesByCategoryAndHerChildren($categories, $user, $page);
             }
         }
         else{

@@ -533,3 +533,10 @@ body {
 .register-btn:hover {
     background-color: var(--white);
 }
+
+.validation-error{
+    color:rgb(216, 53, 53);
+    display: block;
+    margin: auto;
+    text-align: center;
+}
