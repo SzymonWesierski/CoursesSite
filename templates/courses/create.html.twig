@@ -19,7 +19,19 @@
                         <h1>First, you have to enter title for your course</h1>
                         <h3>It's ok if you can't think of a good title now. You can change it later.</h3>
                     </div>
-                    <div class="create-course-step-input">{{ form_row(form.name) }}</div>
+                    <div class="create-course-step-input">
+                        <div>
+                            {{ form_widget(form.name) }}
+
+                            {% if form.name.vars.errors is not empty %}
+                                {% for error in form.name.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
 
                     <div class="create-course-button-section">
                         <div>
@@ -40,7 +52,19 @@
                         <h1>Now, let's add a description for your course</h1>
                         <h3>Give potential students an idea of what they'll learn. Don't worry, you can edit this later.</h3>
                     </div>
-                    <div class="create-course-step-input">{{ form_row(form.Description) }}</div>
+                    <div class="create-course-step-input">
+                        <div>
+                            {{ form_widget(form.Description) }}
+                            {% if form.Description.vars.errors is not empty %}
+                                {% for error in form.Description.vars.errors %}
+                                    <div class="validation-error">
+                                        <p>{{ error.message }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                        
 
                     <div class="create-course-button-section">
                         <button class="btn-default"

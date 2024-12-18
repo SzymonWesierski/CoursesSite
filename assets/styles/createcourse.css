@@ -57,8 +57,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     height: 40%;
-    width: 80%;
+    width: 60%;
 }
 
 .courses-list-element-manage{

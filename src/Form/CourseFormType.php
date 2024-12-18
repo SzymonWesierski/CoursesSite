@@ -20,18 +20,20 @@ class CourseFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'Enter title...',
-                ),
+                ],
+                'empty_data' => '',
                 'label' => false,
-                'required' => true
+                'required' => false,
             ])
             ->add('Description', TextareaType::class, [
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'Enter Description...'
-                ),
+                ],
+                'empty_data' => '',
                 'label' => false,
-                'required' => true,
+                'required' => false,
             ])
             ->add('price', NumberType::class,[
                 'attr' => array(

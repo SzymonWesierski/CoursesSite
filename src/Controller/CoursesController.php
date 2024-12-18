@@ -275,7 +275,7 @@ class CoursesController extends AbstractController
 
         return $this->render('courses/create.html.twig', [
             'form' => $form->createView()
-        ]);
+        ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200));;
     }
 
     #[Route('/courses/edit/{id}/{section?}', name: 'edit_course')]
