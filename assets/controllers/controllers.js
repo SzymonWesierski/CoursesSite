@@ -18,6 +18,7 @@ application.register('edit-course', EditCourseController);
 application.register('resend-email', ResendEmailController);
 
 
+
 const context = require.context('./', true, /\.js$/);
 application.load(definitionsFromContext(context));
 

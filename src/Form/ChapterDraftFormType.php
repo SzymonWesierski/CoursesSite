@@ -19,6 +19,7 @@ class ChapterDraftFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Enter title...',
                 ],
+                'empty_data' => '',
                 'label' => false,
                 'required' => true,
                 'constraints' => [

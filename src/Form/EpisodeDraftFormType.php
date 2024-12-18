@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -18,23 +19,21 @@ class EpisodeDraftFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('episode_id', HiddenType::class, [
+                'mapped' => false,
+            ])
+            ->add('chapter_id', HiddenType::class, [
+                'mapped' => false,
+            ])
             ->add('name', TextType::class, [
-                'required' => true,
+                'required' => false,
+                'empty_data' => '',
                 'label' => 'Title:',
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter the title',
-                    ])
-                ],
             ])
             ->add('description', TextareaType::class,[
-                'required' => true,
+                'required' => false,
+                'empty_data' => '',
                 'label' => 'Description:',
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter the description',
-                    ])
-                ],
             ])
             ->add('video', FileType::class, [
                 'required' => false,

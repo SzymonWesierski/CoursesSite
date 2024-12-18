@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\MappedSuperclass]
@@ -12,9 +13,21 @@ class BaseEpisode
     #[ORM\Column]
     private ?int $id = null;
 
+    
+    #[Assert\NotBlank(message: "The title is required.")]
+    #[Assert\Length(
+        max: 255,
+        min: 2,
+        maxMessage: "The title cannot exceed {{ limit }} characters.",
+        minMessage: "The title must exceed {{ limit }} characters."
+    )]
     #[ORM\Column(length: 255)]
     private ?string $name = '';
-
+    
+    #[Assert\Length(
+        max: 1024,
+        maxMessage: "The description cannot exceed {{ limit }} characters.",
+    )]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = '';
 

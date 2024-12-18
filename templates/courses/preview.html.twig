@@ -117,15 +117,12 @@
                                         
                                         <li>
                                             <div class="cshow-chapters-element-episode" 
-                                                {% if episode.isFreeToWatch or isPurchased %}
-                                                    onclick="window.location.href='{{ path('preview_course', {courseId: course.id, episodeId: episode.id}) }}';"
-                                                {% endif %}>
-
+                                                onclick="window.location.href='{{ path('preview_course', {courseId: course.id, episodeId: episode.id}) }}';">
                                                 <p>
                                                     {{episodeIndex}}. {{ episode.name }}
                                                 </p>
                                                 
-                                                {% if not ( episode.isFreeToWatch or isPurchased ) %}
+                                                {% if not ( episode.isFreeToWatch) %}
                                                     <img class="lock-img" src="/icons/lock.svg" alt="locked">
                                                 {% endif %}
                                             </div>

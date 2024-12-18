@@ -1,8 +1,68 @@
-{{ form_start(create_episode_form, { 'action': path('create_episode') }) }}
-    <input type="hidden" name="chapter_id" value="">
-
+{{ form_start(create_episode_form, {
+    action: path('create_episode'),
+}) }}
+    {{ form_widget(create_episode_form.chapter_id) }}    
     <div class="edit-course-inputs">
-        {{ form_widget(create_episode_form) }}
+        <div>
+            {{ form_label(create_episode_form.name) }}
+            {{ form_widget(create_episode_form.name) }}
+            {% if create_episode_form.name.vars.errors is not empty %}
+                {% for error in create_episode_form.name.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(create_episode_form.description) }}
+            {{ form_widget(create_episode_form.description) }}
+            {% if create_episode_form.description.vars.errors is not empty %}
+                {% for error in create_episode_form.description.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(create_episode_form.video) }}
+            {{ form_widget(create_episode_form.video) }}
+            {% if create_episode_form.video.vars.errors is not empty %}
+                {% for error in create_episode_form.video.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(create_episode_form.image) }}
+            {{ form_widget(create_episode_form.image) }}
+            {% if create_episode_form.image.vars.errors is not empty %}
+                {% for error in create_episode_form.image.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(create_episode_form.isFreeToWatch) }}
+            {{ form_widget(create_episode_form.isFreeToWatch) }}
+            {% if create_episode_form.isFreeToWatch.vars.errors is not empty %}
+                {% for error in create_episode_form.isFreeToWatch.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
     </div>
 
     <button    

@@ -1,16 +1,70 @@
-{{ form_start(edit_episode_form, { 'action': path('edit_episode'), 'attr': {'data-turbo': 'false'} }) }}
-
-    <input type="hidden" name="course_id" value="">
-    <input type="hidden" name="episode_id" value="">
-
-   <div class="alert alert-danger">
-        {{ form_errors(edit_episode_form) }}
-    </div>
-
+{{ form_start(edit_episode_form, {
+    action: path('edit_episode'),
+}) }}
+    {{ form_widget(edit_episode_form.episode_id) }}   
     <div class="edit-course-inputs">
-         {{ form_widget(edit_episode_form) }}
+        <div>
+            {{ form_label(edit_episode_form.name) }}
+            {{ form_widget(edit_episode_form.name) }}
+            {% if edit_episode_form.name.vars.errors is not empty %}
+                {% for error in edit_episode_form.name.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(edit_episode_form.description) }}
+            {{ form_widget(edit_episode_form.description) }}
+            {% if edit_episode_form.description.vars.errors is not empty %}
+                {% for error in edit_episode_form.description.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(edit_episode_form.video) }}
+            {{ form_widget(edit_episode_form.video) }}
+            {% if edit_episode_form.video.vars.errors is not empty %}
+                {% for error in edit_episode_form.video.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(edit_episode_form.image) }}
+            {{ form_widget(edit_episode_form.image) }}
+            {% if edit_episode_form.image.vars.errors is not empty %}
+                {% for error in edit_episode_form.image.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            {{ form_label(edit_episode_form.isFreeToWatch) }}
+            {{ form_widget(edit_episode_form.isFreeToWatch) }}
+            {% if edit_episode_form.isFreeToWatch.vars.errors is not empty %}
+                {% for error in edit_episode_form.isFreeToWatch.vars.errors %}
+                    <div class="validation-error">
+                        <p>{{ error.message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
     </div>
-   
+
     <button    
         type="submit"
         class="btn-default">
