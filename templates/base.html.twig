@@ -13,118 +13,191 @@
         {% endblock %}
     </head>
     <body>
+        <div class="navbar-empty-container"></div>
         <nav class="navbar">
 
-                <div class="navbar-container-left">
+            <div class="navbar-container-left">
+                <div class="navbar-item">
+                    <a href="{{ path('courses') }}" class="navbar-item"><img height=100 src="/images/logo.png" alt="logo"></a>
+                </div>
+                {% if app.request.getPathInfo() matches '(^/courses(?!/show).*)' %}
                     <div class="navbar-item">
-                        <a href="{{ path('courses') }}" class="navbar-item"><img height=100 src="/images/logo.png" alt="logo"></a>
-                    </div>
-                    {% if app.request.getPathInfo() matches '(^/courses(?!/show).*)' %}
-                        <div class="navbar-item">
-                            <div class="category-dropdown">
-                            <button class="navbar-item dropdown-button">Categories <img src="/icons/arrow-down.svg" alt="arrow-down"></button>
-                                <div class="dropdown-content">
-                                    <ul class="categories">
-                                        {% for parent in navBarCategories %}
-                                        <li class="category-item">
-                                            <a href="{{ path('courses', {categoryId: parent.id}) }}" class="category-link"><span>{{ parent.name }}</span> <img src="/icons/arrow-right.svg" alt="arrow-right"></a>
-                                            <ul class="subcategory">
-                                                {% for child in parent.getChildren %}
-                                                <li>
-                                                    <a href="{{ path('courses', {categoryId: child.id}) }}" class="subcategory-link">{{ child.name }}</a>
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                        <div class="category-dropdown">
+                        <button class="navbar-item dropdown-button">Categories <img src="/icons/arrow-down.svg" alt="arrow-down"></button>
+                            <div class="dropdown-content">
+                                <ul class="categories">
+                                    {% for parent in navBarCategories %}
+                                    <li class="category-item">
+                                        <a href="{{ path('courses', {categoryId: parent.id}) }}" class="category-link"><span>{{ parent.name }}</span> <img src="/icons/arrow-right.svg" alt="arrow-right"></a>
+                                        <ul class="subcategory">
+                                            {% for child in parent.getChildren %}
+                                            <li>
+                                                <a href="{{ path('courses', {categoryId: child.id}) }}" class="subcategory-link">{{ child.name }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="navbar-item">
-                            <form action="{{ path('courses') }}" method="get">
-                                <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
-                            </form>
-                        </div>
-                       
-                    {% endif %}
+                    <div class="navbar-item">
+                        <form action="{{ path('courses') }}" method="get">
+                            <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
+                        </form>
+                    </div>
                     
-                </div>
+                {% endif %}
                 
+            </div>
+            
 
 
-                <div class="navbar-container-right">
+            <div class="navbar-container-right">
+                {% if app.user %}
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{ path('userCoursesPanel') }}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/instructor.svg" alt="instructor"></div>
+                                <div class="sliding-button-text">Instructor</div>
+                        </button>
+                    </div>
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{path('myLearning')}}'">
+                                <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
+                                <div class="sliding-button-text">My&nbsp;learning</div>
+                        </button>
+                    </div>
+
+                    {% if 'ROLE_USER' in app.user.roles %}
+                        <div class="navbar-item">
+                            <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
+                                <div class="sliding-button-sign">
+                                {% if amountOfProducts > 0 %}
+                                    <img src="/icons/cart-full-2.svg" alt="cart">
+                                {% else %}
+                                    <img src="/icons/cart.svg" alt="cart">
+                                {% endif %}
+                                </div>
+                                <div class="sliding-button-text">Cart</div>
+                                <div class="cart-counter-container">
+                                    <turbo-frame id="cart">
+                                        <div id="cart-counter">
+                                            {{ amountOfProducts }}
+                                        </div>
+                                    </turbo-frame>
+                                </div>
+                            </button>
+                        </div>
+                    {% endif %}
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{ path('app_user_edit') }}'">
+                                <div class="sliding-button-sign"><img src="/icons/user.svg" alt="edit-profile"></div>
+                                <div class="sliding-button-text">{{app.user.userIdentifier}}</div>
+                        </button>
+                    </div>
+
+                    <div class="navbar-item">
+                        <button class="sliding-button" onclick="window.location.href='{{ path('app_logout') }}'">
+                            <div class="sliding-button-sign">
+                                <img src="/icons/logout.svg" alt="logout">
+                            </div>
+                            <div class="sliding-button-text">Logout</div>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="navbar-item">
+                        <a href="{{ path('app_login') }}" class="navbar-item">
+                            <button class="btn-default login-btn">
+                                <span>Login</span>
+                            </button>
+                        </a>
+                        <a href="{{ path('app_register') }}" class="navbar-item">
+                            <button class="btn-default register-btn">
+                                <span>Register</span>
+                            </button>
+                        </a>
+                    </div>
+                {% endif %} 
+            </div>
+
+            <div class="hamburger-menu-container" data-controller="nav-menu">
+
+                <div>
+                    <!-- Hamburger menu (ukryte na większych ekranach) -->
+                    <button class="hamburger-menu" data-action="click->nav-menu#toggleMenu" data-nav-menu-target="hamburger">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </button>
+                </div>
+
+                <!-- Right container - przenoszone do hamburgera na małych ekranach -->
+                <div data-nav-menu-target="menu" class="collapsible-menu">
                     {% if app.user %}
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="window.location.href='{{ path('userCoursesPanel') }}'">
-                                    <div class="sliding-button-sign"><img class="icon" src="/icons/instructor.svg" alt="instructor"></div>
-                                    <div class="sliding-button-text">Instructor</div>
+                            <button class="sliding-button-active" onclick="window.location.href='{{ path('userCoursesPanel') }}'">
+                                <div class="sliding-button-sign-active"><img class="icon" src="/icons/instructor.svg" alt="instructor"></div>
+                                <div class="sliding-button-text-active">Instructor</div>
                             </button>
                         </div>
-
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="window.location.href='{{path('myLearning')}}'">
-                                    <div class="sliding-button-sign"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
-                                    <div class="sliding-button-text">My&nbsp;learning</div>
+                            <button class="sliding-button-active" onclick="window.location.href='{{ path('myLearning') }}'">
+                                <div class="sliding-button-sign-active"><img class="icon" src="/icons/learning.svg" alt="learning"></div>
+                                <div class="sliding-button-text-active">My&nbsp;learning</div>
                             </button>
                         </div>
-
                         {% if 'ROLE_USER' in app.user.roles %}
                             <div class="navbar-item">
-                                <button class="sliding-button" onclick="window.location.href='{{path('cart_show')}}'">
-                                    <div class="sliding-button-sign">
-                                    {% if amountOfProducts > 0 %}
-                                        <img src="/icons/cart-full-2.svg" alt="cart">
-                                    {% else %}
-                                        <img src="/icons/cart.svg" alt="cart">
-                                    {% endif %}
+                                <button class="sliding-button-active" onclick="window.location.href='{{ path('cart_show') }}'">
+                                    <div class="sliding-button-sign-active">
+                                        {% if amountOfProducts > 0 %}
+                                            <img src="/icons/cart-full-2.svg" alt="cart">
+                                        {% else %}
+                                            <img src="/icons/cart.svg" alt="cart">
+                                        {% endif %}
                                     </div>
-                                    <div class="sliding-button-text">Cart</div>
+                                    <div class="sliding-button-text-active">Cart</div>
                                     <div class="cart-counter-container">
                                         <turbo-frame id="cart">
-                                            <div id="cart-counter">
-                                                {{ amountOfProducts }}
-                                            </div>
+                                            <div class="cart-counter-hamburger" id="cart-counter" >{{ amountOfProducts }}</div>
                                         </turbo-frame>
                                     </div>
                                 </button>
                             </div>
                         {% endif %}
-
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="window.location.href='{{ path('app_user_edit') }}'">
-                                    <div class="sliding-button-sign"><img src="/icons/user.svg" alt="edit-profile"></div>
-                                    <div class="sliding-button-text">{{app.user.userIdentifier}}</div>
+                            <button class="sliding-button-active" onclick="window.location.href='{{ path('app_user_edit') }}'">
+                                <div class="sliding-button-sign-active"><img src="/icons/user.svg" alt="edit-profile"></div>
+                                <div class="sliding-button-text-active">{{ app.user.userIdentifier }}</div>
                             </button>
                         </div>
-
                         <div class="navbar-item">
-                            <button class="sliding-button" onclick="window.location.href='{{ path('app_logout') }}'">
-                                <div class="sliding-button-sign">
+                            <button class="sliding-button-active" onclick="window.location.href='{{ path('app_logout') }}'">
+                                <div class="sliding-button-sign-active">
                                     <img src="/icons/logout.svg" alt="logout">
                                 </div>
-                                <div class="sliding-button-text">Logout</div>
+                                <div class="sliding-button-text-active">Logout</div>
                             </button>
                         </div>
                     {% else %}
                         <div class="navbar-item">
                             <a href="{{ path('app_login') }}" class="navbar-item">
-                                <button class="btn-default login-btn">
-                                    <span>Login</span>
-                                </button>
+                                <button class="btn-default login-btn"><span>Login</span></button>
                             </a>
                             <a href="{{ path('app_register') }}" class="navbar-item">
-                                <button class="btn-default register-btn">
-                                    <span>Register</span>
-                                </button>
+                                <button class="btn-default register-btn"><span>Register</span></button>
                             </a>
                         </div>
-                    {% endif %} 
+                    {% endif %}
                 </div>
+            </div>
         </nav>
 
         {% block body %}{% endblock %}
-
+    
     </body>
 </html>

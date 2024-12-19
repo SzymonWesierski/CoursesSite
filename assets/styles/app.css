@@ -22,10 +22,13 @@ body {
 
 .navbar {
     width: 100%;
-    height: 6em;
+    height: fit-content;
     background-color: var(--white);
     color: var(--navy);
     margin: 0px;
+    position: fixed;
+    top: 0;
+    z-index: 900;
     display: flex;
     flex-wrap: wrap;
     justify-content:space-between;
@@ -33,8 +36,17 @@ body {
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.199);
 }
 
+.navbar-empty-container{
+    height: 6.2em;
+    width: 100%;
+}
+
 .navbar-return{
     background-color: var(--navy);
+    height: 6em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
 }
 
 .background-container{
@@ -84,6 +96,105 @@ body {
     color: var(--navy);
 }
 
+/* Hamburger menu */
+.hamburger-menu {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    cursor: pointer;
+    border-radius: 0.5em;
+    border: 2px solid var(--navy);
+    background-color: var(--lightblue);
+}
+
+.hamburger-menu-container{
+    display: none;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    position: relative;
+}
+
+.hamburger-menu .bar {
+    width: 2em;
+    height: 3px;
+    background-color: var(--navy);
+}
+
+.sliding-button-active{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 200px;
+    height: 45px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition-duration: .3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+    background-color: var(--lightblue)
+}
+
+.sliding-button-sign-active {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sliding-button-sign-active img{
+    width: 30px;
+}
+
+.sliding-button-text-active {
+    color: var(--brightblue);
+    font-size: 1.2em;
+    font-weight: 600;
+    opacity: 1;
+    width: 70%;
+    transition-duration: .3s;
+    padding-right: 20px;
+}
+
+.collapsible-menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    width: 200px;
+    position: absolute;
+    top: 3.8em;
+    right: 0;
+    z-index: 1000;
+    background-color: var(--lightblue);
+    border-radius: 0.5em;
+    border: 2px solid var(--navy);
+}
+
+.collapsible-menu.active {
+    display: flex; 
+}
+
+@media (max-width: 1600px) {
+    .hamburger-menu-container {
+        display: flex;
+    }
+
+    .navbar-container-right {
+        display: none;
+    }
+
+    .collapsible-menu.active {
+        display: flex; 
+    }
+}
+
 #cart-counter {
     background-color: red;
     color: white;
@@ -97,6 +208,10 @@ body {
     position: absolute;
     top: 0px;
     right: 6px;
+}
+
+#cart-counter.cart-counter-hamburger {
+    right: 90px;
 }
 
 .cart-counter-container {
@@ -284,8 +399,7 @@ body {
 }
 
 .search-input{
-    width: 100%;
-    width: 400px;
+    width: 25vw;
     height: 20px;
     padding: 15px;
     border-radius: 12px;
@@ -540,3 +654,4 @@ body {
     margin: auto;
     text-align: center;
 }
+

@@ -1,14 +1,7 @@
-{% set layout = preview ? 'clear_base.html.twig' : 'base.html.twig' %}
-
-{% extends layout %}
+{% extends 'base.html.twig'  %}
 {% block title %}Course{% endblock %}
 
 {% block body %}
-
-    {% if preview %}
-        {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
-    {% endif %}
-
 
     {% set inCart = false %}
     {% if productsInCartIds and course.id in productsInCartIds %}

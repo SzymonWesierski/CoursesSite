@@ -157,11 +157,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 50vh;
   }
 
   .cart-empty img{
-    width: 200px;
-    height: 200px;
+    width: 75px;
+    height: 75px;
   }
 
   .cart-empty h2{
