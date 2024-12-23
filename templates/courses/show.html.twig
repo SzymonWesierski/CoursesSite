@@ -77,10 +77,10 @@
                             </p>
 
                             <p>
-                                Categories:
+                                Category:
                                 {{course.category.name}}
-
-                                <h4>Course created by {{course.user.username ? app.user.userIdentifier}}</h4>
+                                
+                                <h4>Course created by {{course.user.username ? course.user.username : "unknown"}}</h4>
                             </p>
                         </div>
                         
