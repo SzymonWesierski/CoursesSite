@@ -2,7 +2,8 @@
     --lightblue: #E9F1FA;
     --brightblue: #00ABE4;
     --navy: #05235f;
-    --white: #FFFFFF;
+    --white: rgb(235, 239, 247); 
+    --white-transparent: rgba(235, 239, 247, 0.95); 
 }
 
 
@@ -23,7 +24,7 @@ body {
 .navbar {
     width: 100%;
     height: fit-content;
-    background-color: var(--white);
+    background-color: var(--white-transparent);
     color: var(--navy);
     margin: 0px;
     position: fixed;
@@ -128,32 +129,36 @@ body {
 .sliding-button-active{
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     width: 200px;
     height: 45px;
     border: none;
-    border-radius: 40px;
+    border-bottom: 2px solid var(--navy);
+    border-radius: 10px 5%;
     cursor: pointer;
-    position: relative;
     overflow: hidden;
     transition-duration: .3s;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
     background-color: var(--lightblue)
 }
 
 .sliding-button-sign-active {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
+
+.sliding-button-active:hover{
+    background-color: var(--brightblue);
+}
+
 
 .sliding-button-sign-active img{
     width: 30px;
 }
 
 .sliding-button-text-active {
-    color: var(--brightblue);
+    color: var(--navy);
     font-size: 1.2em;
     font-weight: 600;
     opacity: 1;
@@ -172,7 +177,7 @@ body {
     top: 3.8em;
     right: 0;
     z-index: 1000;
-    background-color: var(--lightblue);
+    background-color: var(--white-transparent);
     border-radius: 0.5em;
     border: 2px solid var(--navy);
 }
@@ -211,7 +216,7 @@ body {
 }
 
 #cart-counter.cart-counter-hamburger {
-    right: 90px;
+    right: 115px;
 }
 
 .cart-counter-container {
@@ -224,7 +229,7 @@ body {
 }
 
 .dropdown-button {
-    background-color: var(--white);
+    background-color: transparent;
     border: none;
     cursor: pointer;
     transition: color 0.3s;

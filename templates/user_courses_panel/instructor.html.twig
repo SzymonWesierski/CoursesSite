@@ -64,30 +64,36 @@
                             </h2>
 
                             <div class="courses-list-element-manage">
-                                {% if course.status.value == statusValues['NOT_DONE_YET'] %}
-                                    Not done yet
-                                {% elseif course.status.value == statusValues['WAITING_FOR_APPROVAL'] %}
-                                    Waiting for approval
-                                {% elseif course.status.value == statusValues['APPROVED'] %}
-                                    Approved
-                                {% elseif course.status.value == statusValues['DRAFT'] %}
-                                    Draft
-                                {% elseif course.status.value == statusValues['APPROVED_AND_DRAFT'] %}
-                                    Approved and new version in draft
-                                {% elseif course.status.value == statusValues['BANNED'] %}
-                                    Banned
-                                {% else %}
-                                    Unknown status
-                                {% endif %}
-                                
-                                <a href="/courses/edit/{{ course.id }}">
-                                    Manage/Edit
-                                </a>
+                                <h4>Status: <br></h4>
+                                <h3>
+                                    {% if course.status.value == statusValues['NOT_DONE_YET'] %}
+                                        Not done yet
+                                    {% elseif course.status.value == statusValues['WAITING_FOR_APPROVAL'] %}
+                                        Waiting for approval
+                                    {% elseif course.status.value == statusValues['APPROVED'] %}
+                                        Approved
+                                    {% elseif course.status.value == statusValues['DRAFT'] %}
+                                        Draft
+                                    {% elseif course.status.value == statusValues['APPROVED_AND_DRAFT'] %}
+                                        Approved and new version in draft
+                                    {% elseif course.status.value == statusValues['BANNED'] %}
+                                        Banned
+                                    {% else %}
+                                        Unknown status
+                                    {% endif %}
+                                </h3>
                             </div>
+                            <div class="instructor-course-list-btn-section">
+                                <button class="sliding-button-active" onclick="window.location.href='{{ path('edit_course',{id: course.id}) }}'">
+                                    <div class="sliding-button-sign-active"><img src="/icons/pencil.svg" alt="edit-course"></div>
+                                    <div class="sliding-button-text-active">Manage/Edit</div>
+                                </button>
+                                <button class="sliding-button-active" onclick="window.location.href='{{ path('preview_course',{courseId: course.id}) }}'">
+                                    <div class="sliding-button-sign-active"><img src="/icons/preview.svg" alt="preview-course"></div>
+                                    <div class="sliding-button-text-active">Preview</div>
+                                </button>
 
-                            <a href="/courses/preview/{{ course.id }}">
-                                Preview
-                            </a>
+                            </div>
                         </div>
                     {% endfor %}
                 {% else %}
