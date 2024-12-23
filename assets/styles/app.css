@@ -431,7 +431,7 @@ body {
     list-style: none;
     display: inline-block;
     padding: 0;
-    margin-bottom: 40px;
+    margin-bottom: 2em;
 }
 
 .pagination li {
@@ -440,19 +440,17 @@ body {
 }
 
 .pagination a {
+    height: 1.5em;
     float: left;
     display: block;
-    font-size: 14px;
     text-decoration: none;
-    padding: 5px 12px;
-    color: #fff;
-    margin-left: -1px;
-    line-height: 1.5;
+    padding: 0.8em;
+    color: transparent;
 }
 
 .pagination img{
     width: 100%;
-    height: 20px;
+    height: 1.5em;
     object-fit: cover; 
 }
 
@@ -465,25 +463,22 @@ body {
 }
 
 .modal-1 li:first-child a {
-    -moz-border-radius: 6px 0 0 6px;
-    -webkit-border-radius: 6px;
     border-radius: 6px 0 0 6px;
 }
 
 .modal-1 li:last-child a {
-    -moz-border-radius: 0 6px 6px 0;
-    -webkit-border-radius: 0;
     border-radius: 0 6px 6px 0;
 }
 
 .modal-1 a {
     border-color: var(--navy);
     color: var(--brightblue);
-    background: #fff;
+    background: transparent;
 }
 
 .modal-1 a:hover {
-    background: #eee;
+    background:  var(--brightblue);
+    color: var(--white);
 }
 
 .modal-1 a.active, .modal-1 a:active {
@@ -493,7 +488,9 @@ body {
 
 .pagination-container{
     display: flex;
+    align-items: center;
     justify-content: center;
+    background-color: transparent;
 }
 
 
