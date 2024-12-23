@@ -7,12 +7,12 @@
     <div class="courses-container">
          
         {% if categoryId == 0 and titleParam == "" %}
-
-            {% if app.user %}
-                <div class="greeting">
+        
+            <div class="greeting">
+                {% if app.user %}
                     <h1>Hello, {{app.user.userIdentifier}} what do you want to learn today</h1>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
             
             
             <div class="best-courses-container">
