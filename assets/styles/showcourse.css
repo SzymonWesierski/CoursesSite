@@ -53,8 +53,10 @@
 }
 
 .cshow-course-img img{
-    height: 60vh;
+    height: auto;
+    object-fit: cover; 
     max-width: 100%;
+    max-height: 60vh;
 }
 
 
@@ -159,6 +161,27 @@
     height: 16px;
     vertical-align: middle;
     margin-left: 10px;
+}
+
+.preview-select-status-btn-container{
+    color: var(--white);
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 30%;
+    height: 6em;
+    top: 0;
+    left: 65vw;
+}
+
+.preview-select-status-btn-container button{
+    margin-left: 1em;
+}
+
+.btn-border{
+    border: 3px solid var(--white);
 }
 
 

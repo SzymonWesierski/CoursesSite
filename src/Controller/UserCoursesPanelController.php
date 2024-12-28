@@ -33,8 +33,8 @@ class UserCoursesPanelController extends AbstractController
     }
 
 
-    #[Route('/MyCoursesPanel/{page?}/{categoryId?}', name: 'userCoursesPanel',defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
-    public function index(Request $request,  $categoryId = null, int $page = 1): Response
+    #[Route('/MyCoursesPanel/{page?}/{categoryId?}/{titleParam?}', name: 'userCoursesPanel',defaults: ['page' => '1'], requirements: ['page' => Requirement::POSITIVE_INT, 'categoryId' => Requirement::POSITIVE_INT])]
+    public function index(Request $request,  $categoryId = null, int $page = 1, $titleParam): Response
     {
         $navBarCategories = $this->categoryRepository->findRootCategories();
         $categoryName = "";
@@ -46,7 +46,7 @@ class UserCoursesPanelController extends AbstractController
         }
 
         if (!$user instanceof User) {
-            throw new \LogicException('Zalogowany użytkownik nie jest instancją encji User.');
+            throw new \LogicException('Logged in user is not instance of User.');
         }
 
         $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
@@ -56,6 +56,8 @@ class UserCoursesPanelController extends AbstractController
         }
 
         $amountOfProducts = $cart->getAmountOfProducts(); 
+
+        if ($titleParam == null) $titleParam = $request->query->get('titleParam');
 
         if ($categoryId) {
             $category = $this->categoryRepository->find($categoryId);
@@ -67,6 +69,9 @@ class UserCoursesPanelController extends AbstractController
 
                 $courses = $this->courseDraftRepository->findUserDraftCoursesByCategoryAndHerChildren($categories, $user, $page);
             }
+        }
+        else if($titleParam){
+            $courses = $this->courseDraftRepository->findAllDraftsByTitlePaginated($page, $user, $titleParam);
         }
         else{
             $courses = $this->courseDraftRepository->findUserAllDraftCourses($user, $page);
@@ -86,6 +91,7 @@ class UserCoursesPanelController extends AbstractController
                 'BANNED' => CourseStatus::BANNED->value,
                 'APPROVED_AND_DRAFT' => CourseStatus::APPROVED_AND_DRAFT->value,
             ],
+            'titleParam' => $titleParam
         ]);
     }
 

@@ -173,39 +173,64 @@ class CoursesController extends AbstractController
         ]);
     }
 
-    #[Route('/courses/preview/{courseId}/{episodeId}', methods: ['GET'], name: 'preview_course')]
-    public function preview(string $courseId, int $episodeId = 0): Response
+    #[Route('/courses/preview/{status}/{courseId}/{episodeId}', methods: ['GET'], name: 'preview_course')]
+    public function preview(string $status, string $courseId, int $episodeId = 0): Response
     {
-        $course = $this->courseDraftRepository->find($courseId);
-
-        if (!$course) {
-            throw $this->createNotFoundException('CourseDraft not found.');
-        }
-
         $user = $this->getUser();
 
         $episode = new EpisodeDraft();
 
-        if ($episodeId > 0){
-            $episodeRepo = $this->em->getRepository(EpisodeDraft::class);
+        if($status == "DRAFT"){
+            $course = $this->courseDraftRepository->find($courseId);
 
-            if (!$episodeId || !is_numeric($episodeId)) {
-                throw $this->createNotFoundException('Episode ID is missing or invalid.');
+            if (!$course) {
+                throw $this->createNotFoundException('CourseDraft not found.');
             }
 
-            $episode = $episodeRepo->find($episodeId);
+            if ($episodeId > 0){
+                $episodeRepo = $this->em->getRepository(EpisodeDraft::class);
 
-            if (!$episode) {
-                throw $this->createNotFoundException('Episode not found.');
+                if (!$episodeId || !is_numeric($episodeId)) {
+                    throw $this->createNotFoundException('Episode ID is missing or invalid.');
+                }
+
+                $episode = $episodeRepo->find($episodeId);
+
+                if (!$episode) {
+                    throw $this->createNotFoundException('EpisodeDraft not found.');
+                }
             }
         }
+        elseif($status == "PUBLIC"){
+            $course = $this->courseRepository->find($courseId);
+
+            if (!$course) {
+                throw $this->createNotFoundException('Course not found.');
+            }
+
+            if ($episodeId > 0){
+                $episodeRepo = $this->em->getRepository(Episode::class);
+
+                if (!$episodeId || !is_numeric($episodeId)) {
+                    throw $this->createNotFoundException('Episode ID is missing or invalid.');
+                }
+
+                $episode = $episodeRepo->find($episodeId);
+
+                if (!$episode) {
+                    throw $this->createNotFoundException('Episode not found.');
+                }
+            }
+        }
+        
         
 
         return $this->render('courses/preview.html.twig', [
             'course' => $course,
             'episode' => $episode,
             'episodeId' => $episodeId,
-            'username' => $user->getUserIdentifier()
+            'username' => $user->getUserIdentifier(),
+            'status' => $status
         ]);
     }
 

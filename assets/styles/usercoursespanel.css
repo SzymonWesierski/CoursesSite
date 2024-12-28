@@ -1,8 +1,9 @@
 .course-list-title-divided{
     display: flex;
     justify-content:space-between;
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 17%;
+    padding-right: 17%;
+    margin-top: 2em;
 }
 
 .course-list-title-left-side{

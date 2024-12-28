@@ -5,13 +5,35 @@
 
    {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
 
-    <button>
-    draft
-    </button>
+    <div class="preview-select-status-btn-container">
+        <h2>
+        Course Version: 
+        </h2>
+        {% if status == "DRAFT" %}
+            <button class="btn-default btn-border" 
+                onclick="window.location.href='{{ path('preview_course',{status: "DRAFT", courseId: course.id}) }}'">
+                DRAFT
+            </button>
 
-    <button>
-    public
-    </button>
+            <button class="btn-default" 
+                onclick="window.location.href='{{ path('preview_course',{status: "PUBLIC", courseId: course.course.id}) }}'">
+                PUBLIC
+            </button>
+        {% elseif status == "PUBLIC" %}
+            <button class="btn-default" 
+                onclick="window.location.href='{{ path('preview_course',{status: "DRAFT", courseId: course.courseDraft.id}) }}'">
+                DRAFT
+            </button>
+
+            <button class="btn-default btn-border" 
+                onclick="window.location.href='{{ path('preview_course',{status: "PUBLIC", courseId: course.id}) }}'">
+                PUBLIC
+            </button>
+        {% endif %}
+
+        
+    </div>
+    
 
 
     <div class="cshow-container">
@@ -117,7 +139,7 @@
                                         
                                         <li>
                                             <div class="cshow-chapters-element-episode" 
-                                                onclick="window.location.href='{{ path('preview_course', {courseId: course.id, episodeId: episode.id}) }}';">
+                                                onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
                                                 <p>
                                                     {{episodeIndex}}. {{ episode.name }}
                                                 </p>

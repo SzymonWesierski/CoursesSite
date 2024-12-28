@@ -7,14 +7,15 @@
 .edit-course-nav {
     display: block;
     width: 10%;
-    height: 20vh;
     margin-top: 2em;
+    height: 17em;
 }
 .nav-button{
-    height: 20%;
+    height: 3em;
     border-style: none;
-    border-left: 1px solid var(--lightblue);
-    border-bottom: 1px solid var(--lightblue);
+    border-radius: 10px;
+    border-left: 2px solid var(--brightblue);
+    border-bottom: 2px solid var(--brightblue);
     color: var(--white);
     cursor: pointer;
     background-color: var(--navy);

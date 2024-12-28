@@ -67,5 +67,20 @@ class CourseDraftRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
+    public function findAllDraftsByTitlePaginated(int $page = 1, $user, string $titleParam = ""): Paginator
+    {
+        $qb = $this->createQueryBuilder('cd');
+
+        $qb = $qb
+            ->join('cd.course', 'c')
+            ->join('c.user', 'u')
+            ->where('u = :user')
+            ->andWhere($qb->expr()->like('LOWER(cd.name)', ':titleParam'))
+            ->setParameter('titleParam', '%' . strtolower($titleParam) . '%')
+            ->setParameter('user', $user);;
+
+        return (new Paginator($qb))->paginate($page); 
+    }
+
 
 }

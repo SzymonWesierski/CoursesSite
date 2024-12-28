@@ -40,6 +40,9 @@ class EpisodeDraftFormType extends AbstractType
                 'mapped' => false,
                 'label' => "Video (max 50MB): ",
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Video is required.',
+                    ]),
                     new File([
                         'maxSize' => '50M',
                         'mimeTypes' => [

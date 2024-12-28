@@ -25,9 +25,12 @@ class BaseEpisode
     private ?string $name = '';
     
     #[Assert\Length(
+        min:10,
         max: 1024,
         maxMessage: "The description cannot exceed {{ limit }} characters.",
+        minMessage: "The description must exceed {{ limit }} characters."
     )]
+    #[Assert\NotBlank(message: "The description is required.")]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = '';
 

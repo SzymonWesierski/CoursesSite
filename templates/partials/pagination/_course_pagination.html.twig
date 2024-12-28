@@ -17,7 +17,6 @@
             {% for i in (paginator.currentPage - 2)..lastPage %}
                 {% if i > 0 %}
 
-                    {# Use `merge` to create a new array with the updated `page` key #}
                     {% set updatedListedPathArg = listedPathArg|merge({ page: i }) %}
 
                     {% if i == paginator.currentPage %}

@@ -271,7 +271,7 @@ body {
 .category-item {
     position: relative;
     width: 100%;
-    margin: 0.5em 0em;
+    padding: 0.5em 0em;
 }
 
 .category-link {
@@ -590,6 +590,7 @@ body {
     padding: 0.8em 1.2em 0.8em 1em;
     transition: all ease-in-out 0.2s;
     font-size: 16px;
+    box-shadow: 0px 0px 10px 0px rgba(66, 68, 90, 1);
 }
   
 .btn-default span {
@@ -619,13 +620,13 @@ body {
     padding: 0.8em 1.2em 0.8em 1em;
     transition: all ease-in-out 0.2s;
     font-size: 16px;
+    box-shadow: 0px 0px 10px 0px rgba(66, 68, 90, 1);
 }
   
 .btn-default-red span {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--navy);
     font-weight: 600;
 }
 

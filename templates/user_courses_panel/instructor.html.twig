@@ -14,7 +14,7 @@
                 <button class="btn-default"  onclick="window.location.href='{{ path('create_course') }}';">
                     <span>
                         <img src="/icons/plus.svg" alt="plus">
-                        Create
+                        Create course
                     </span>
                 </button>
             </div>
@@ -45,20 +45,23 @@
                             </div>
                         </div>
 
-                        <div class="navbar-item">
-                            <form action="">
-                                <input class="search-input" placeholder="Searth for course" type="text" name="text" class="input">
-                            </form>
-                        </div>
+                    <div class="navbar-item">
+                        <form action="{{ path('userCoursesPanel') }}" method="get">
+                            <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
+                        </form>
+                    </div>
+                    
                 </div>
                 {% if paginator.results | length > 0 %}
                     {% for course in paginator.results %}
                         <div class="courses-list-element">
-                            <img
-                                width = 200px
+                            <div class="courses-list-element-image-section">
+                                 <img
                                 src="{{ course.ImagePath }}"
                                 alt=""
                             />
+                            </div>
+                           
                             <h2>
                                 {{ course.name }}
                             </h2>
@@ -88,7 +91,7 @@
                                     <div class="sliding-button-sign-active"><img src="/icons/pencil.svg" alt="edit-course"></div>
                                     <div class="sliding-button-text-active">Manage/Edit</div>
                                 </button>
-                                <button class="sliding-button-active" onclick="window.location.href='{{ path('preview_course',{courseId: course.id}) }}'">
+                                <button class="sliding-button-active" onclick="window.location.href='{{ path('preview_course',{courseId: course.id, status: "DRAFT"}) }}'">
                                     <div class="sliding-button-sign-active"><img src="/icons/preview.svg" alt="preview-course"></div>
                                     <div class="sliding-button-text-active">Preview</div>
                                 </button>
