@@ -108,8 +108,6 @@ class EpisodesController extends AbstractController
             throw $this->createNotFoundException('EpisodeDraft not found.');
         }
 
-        
-
         $form =$this->createForm(EpisodeDraftFormType::class, $episode);
         $form->handleRequest($request);
 

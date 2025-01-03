@@ -135,23 +135,44 @@
                             </div>
                             <div class="cshow-chapters-element-episode-container" id="chapter-{{ loop.index }}" data-index="{{ loop.index }}">
                                 <ul>
-                                    {% for episode in chapter.episodesDraft %}
-                                        
-                                        <li>
-                                            <div class="cshow-chapters-element-episode" 
-                                                onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
-                                                <p>
-                                                    {{episodeIndex}}. {{ episode.name }}
-                                                </p>
-                                                
-                                                {% if not ( episode.isFreeToWatch) %}
-                                                    <img class="lock-img" src="/icons/lock.svg" alt="locked">
-                                                {% endif %}
-                                            </div>
-                                        </li>
+                                    {% if status == "DRAFT" %}
+                                        {% for episode in chapter.episodesDraft %}
+                                            
+                                            <li>
+                                                <div class="cshow-chapters-element-episode" 
+                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
+                                                    <p>
+                                                        {{episodeIndex}}. {{ episode.name }}
+                                                    </p>
+                                                    
+                                                    {% if not ( episode.isFreeToWatch) %}
+                                                        <img class="lock-img" src="/icons/lock.svg" alt="locked">
+                                                    {% endif %}
+                                                </div>
+                                            </li>
 
-                                        {% set episodeIndex = episodeIndex + 1 %}
-                                    {% endfor %}
+                                            {% set episodeIndex = episodeIndex + 1 %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for episode in chapter.episodes %}
+                                            
+                                            <li>
+                                                <div class="cshow-chapters-element-episode" 
+                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
+                                                    <p>
+                                                        {{episodeIndex}}. {{ episode.name }}
+                                                    </p>
+                                                    
+                                                    {% if not ( episode.isFreeToWatch) %}
+                                                        <img class="lock-img" src="/icons/lock.svg" alt="locked">
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+
+                                            {% set episodeIndex = episodeIndex + 1 %}
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </ul>
                             </div>
                         </div>

@@ -20,7 +20,7 @@ class CoursesManagementController extends AbstractController
         $this->em = $em;
     }
 
-    #[Route('/courses/management/{page?}/{titleParam?}', defaults: ['page' => '1'], name: 'app_courses_management')]
+    #[Route('/courses/management/list/{page?}/{titleParam?}', defaults: ['page' => '1'], name: 'app_courses_management')]
     public function index(Request $request, $page, $titleParam): Response
     {   
         if ($titleParam == null) $titleParam = $request->query->get('titleParam');
@@ -35,6 +35,7 @@ class CoursesManagementController extends AbstractController
         return $this->render('courses_management/index.html.twig', [
             'paginator' => $courses,
             'statusValues' => [
+                'DRAFT' => CourseStatus::DRAFT->value,
                 'NOT_DONE_YET' => CourseStatus::NOT_DONE_YET->value,
                 'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,
                 'APPROVED' => CourseStatus::APPROVED->value,
@@ -45,7 +46,7 @@ class CoursesManagementController extends AbstractController
         ]);
     }
 
-    #[Route('/approve/courses/management/{courseId}', name: 'approve_course')]
+    #[Route('/courses/management/approve/{courseId}', name: 'approve_course')]
     public function approve($courseId): Response
     {
         $course = $this->courseRepository->find($courseId);
@@ -56,12 +57,18 @@ class CoursesManagementController extends AbstractController
 
         $course->setStatus(CourseStatus::APPROVED);
 
+        $courseDraft = $course->getCourseDraft();
+
+        $courseDraft->setStatus(CourseStatus::APPROVED);
+
+        $this->em->persist($course);
+        $this->em->persist($courseDraft);
         $this->em->flush();
 
         return $this->redirectToRoute('app_courses_management');
     }
 
-    #[Route('/ban/courses/management/{courseId}', name: 'ban_course')]
+    #[Route('/courses/management/ban/{courseId}', name: 'ban_course')]
     public function ban($courseId): Response
     {
         $course = $this->courseRepository->find($courseId);
@@ -71,6 +78,12 @@ class CoursesManagementController extends AbstractController
         }
 
         $course->setStatus(CourseStatus::BANNED);
+
+        $courseDraft = $course->getCourseDraft();
+
+        $courseDraft->setStatus(CourseStatus::BANNED);
+
+        $this->em->persist($course);
 
         $this->em->flush();
 

@@ -117,7 +117,7 @@ export default class extends Controller {
                 const approveCourseId = event.currentTarget.getAttribute('data-course-id');
                 document.getElementById('approveCourseButton')?.setAttribute(
                     'onclick',
-                    `window.location.href='/approve/courses/management/${approveCourseId}'`
+                    `window.location.href='/courses/management/approve/${approveCourseId}'`
                 );
                 break;
 
@@ -125,7 +125,7 @@ export default class extends Controller {
                 const banCourseId = event.currentTarget.getAttribute('data-course-id');
                 document.getElementById('banCourseButton')?.setAttribute(
                     'onclick',
-                    `window.location.href='/ban/courses/management/${banCourseId}'`
+                    `window.location.href='/courses/management/ban/${banCourseId}'`
                 );
                 break;
 

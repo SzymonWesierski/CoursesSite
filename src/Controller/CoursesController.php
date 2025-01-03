@@ -19,9 +19,11 @@ use App\Repository\CourseRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CourseDraftRepository;
+use App\Service\DraftToCourseMapperService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -32,16 +34,18 @@ class CoursesController extends AbstractController
     private $categoryRepository;
     private $courseDraftRepository;
     private $cloudinaryService;
+    private $draftToCourseMapperService;
 
     public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, 
         CourseDraftRepository $courseDraftRepository, CategoryRepository $categoryRepository,
-        CloudinaryService $cloudinaryService)
+        CloudinaryService $cloudinaryService,  DraftToCourseMapperService $draftToCourseMapperService)
     {
         $this->em = $em;
         $this->courseRepository = $courseRepository;
         $this->courseDraftRepository = $courseDraftRepository;
         $this->categoryRepository = $categoryRepository;
         $this->cloudinaryService = $cloudinaryService;
+        $this->draftToCourseMapperService = $draftToCourseMapperService;
     }
 
     #[Route('/', name: 'app_home_redirect')]
@@ -141,9 +145,6 @@ class CoursesController extends AbstractController
             if($this->courseRepository->isPurchasedCourse($courseId, $user->getId())) {
                 $isPurchased = true;
             }
-            // if ($user->getId() == $course->getUser()->getId()){
-            //     $isPurchased = true;
-            // }
         }
 
         $episode = new Episode();
@@ -222,8 +223,6 @@ class CoursesController extends AbstractController
                 }
             }
         }
-        
-        
 
         return $this->render('courses/preview.html.twig', [
             'course' => $course,
@@ -315,7 +314,7 @@ class CoursesController extends AbstractController
         $user = $this->getUser();
 
         if ($user instanceof User) {
-            if ($courseDraft->getCourse()->getUser()->getId() !=  $user->getId()){
+            if ($courseDraft->getCourse()->getUser()->getId() != $user->getId()){
                 throw $this->createAccessDeniedException();
             }
         }
@@ -358,8 +357,58 @@ class CoursesController extends AbstractController
             'create_episode_form' => $episode_form->createView(),
             'edit_episode_form' => $episode_form->createView(),
             'course' => $courseDraft,
+            'WAITING_FOR_APPROVAL' => CourseStatus::WAITING_FOR_APPROVAL->value,
             'initialSectionIndex' => $section
         ], new Response(null, $course_form->isSubmitted() && !$course_form->isValid() ? 422 : 200));
+    }
+
+    #[Route('/courses/publishing/{course_id}', name: 'publishing_course')]
+    public function publishing($course_id): JsonResponse
+    {
+        $courseDraft = $this->courseDraftRepository->find($course_id);
+
+        if (!$courseDraft) {
+            throw $this->createNotFoundException('Course draft not found.');
+        }
+
+        $validationMsg = "";
+
+        if (count($courseDraft->getChapters()) < 5) {
+            $validationMsg .= "<p>- Course must contain at least five chapters.</p> </br>";
+        }
+
+        foreach ($courseDraft->getChapters() as $chapter) {
+            $episodes = $chapter->getEpisodesDraft();
+            if ($episodes->isEmpty()) {
+                $validationMsg .= "<p>- Chapter \"{$chapter->getName()}\" has no episodes.</p> </br>";
+            }
+        }
+
+        if (!empty($validationMsg)) {
+            return new JsonResponse([
+                'status' => 'error',
+                'validationMsg' => $validationMsg
+            ], 400);
+        }
+        
+        $courseDraft->setStatus(CourseStatus::WAITING_FOR_APPROVAL);
+
+        $course = $courseDraft->getCourse();
+
+        foreach ($course->getChapters() as $chapter) {
+            $course->removeChapter($chapter);
+        }
+
+        $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraft);
+
+        $this->em->persist($courseDraft);
+        $this->em->persist($course);
+        $this->em->flush();
+        
+        return new JsonResponse([
+            'status' => 'success',
+        ], 200);
+
     }
 }
 

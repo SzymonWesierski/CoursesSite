@@ -230,27 +230,36 @@
                     <div class="edit-course-block-content-title">
                         <h2>Publishing a Course:</h2>
                     </div>
-                    <p>
-                        Once you have completed and reviewed your course content,
-                        you can submit it for final review by clicking the "Send for review"
-                        button below. Our team will carefully assess your course to ensure it meets 
-                        our standards and provide feedback if any adjustments are needed.
-                        Once the review process is complete, you will receive the results via email.
-                        This ensures your course is ready to be published and available on our website.
-                    </p>
 
-                    <button class="btn-default" 
-                            type="button" 
-                            data-controller="custom-modal" 
-                            data-action="click->custom-modal#open" 
-                            data-modal-id="publish-course">
+                    {% if course.status.value == WAITING_FOR_APPROVAL %}
+                        <p>
+                            Our team is working on verifying your course. In the meantime, 
+                            if you would like to add something else, that's no problem. 
+                            After verifying the previous version, you will be able to send a new one
+                        </p>
+                    {% else %}
+                    
+                        <p>
+                            Once you have completed and reviewed your course content,
+                            you can submit it for final review by clicking the "Send for review"
+                            button below. Our team will carefully assess your course to ensure it meets 
+                            our standards and provide feedback if any adjustments are needed.
+                            Once the review process is complete, you will receive the results via email.
+                            This ensures your course is ready to be published and available on our website.
+                        </p>
+
+                        <button class="btn-default" 
+                                type="button" 
+                                data-controller="custom-modal" 
+                                data-action="click->custom-modal#open" 
+                                data-modal-id="publish-course">
+                                
+                                <span>
+                                    Send for review
+                                </span>
                             
-                            <span>
-                                Send for review
-                            </span>
-                        
-                    </button>
-
+                        </button>
+                    {% endif %}
                     
                 </div>
             </div>
@@ -359,10 +368,17 @@
         </button>
     {% endblock %}
     {% block modal_body %}
-        <div class="delete-course-container">
+        <div class="delete-course-container" data-controller="publishing-course" data-publishing-course-target="publishingContainer">
              <h3>Are you ready to send your course for review ?</h3>
             <div class="delete-course-buttons-container">
-                <button type="button" class="btn-default"  onclick="">Yes</button>
+            
+                <button type="button" class="btn-default"   
+                        data-action="click->publishing-course#publishCourse"
+                        data-course-id="{{ course.id }}"
+                        data-publishing-course-target="button">
+                    Yes
+                </button>
+
                 <button type="button" class="btn-default-red"  data-action="click->custom-modal#hide" aria-label="Close">No</button>
             </div>
         </div> 

@@ -17,7 +17,7 @@ class ChapterDraft extends BaseChapter
     /**
      * @var Collection<int, EpisodeDraft>
      */
-    #[ORM\OneToMany(targetEntity: EpisodeDraft::class, mappedBy: 'chapterDraft')]
+    #[ORM\OneToMany(targetEntity: EpisodeDraft::class, mappedBy: 'chapterDraft', orphanRemoval: true)]
     private Collection $episodesDraft;
 
     public function __construct()
@@ -58,7 +58,6 @@ class ChapterDraft extends BaseChapter
     public function removeEpisodesDraft(EpisodeDraft $episodesDraft): static
     {
         if ($this->episodesDraft->removeElement($episodesDraft)) {
-            // set the owning side to null (unless already changed)
             if ($episodesDraft->getChapterDraft() === $this) {
                 $episodesDraft->setChapterDraft(null);
             }
