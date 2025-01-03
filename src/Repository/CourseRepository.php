@@ -155,6 +155,19 @@ class CourseRepository extends ServiceEntityRepository
             return array_column($coursesIds, 'id');
     }
 
+    public function findAllApprovedByTitlePaginated(int $page = 1, string $titleParam = ""): Paginator
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb = $qb
+            ->where($qb->expr()->like('LOWER(c.name)', ':titleParam'))
+            ->andWhere('c.status IN (:approved)')
+            ->setParameter('approved', CourseStatus::APPROVED )
+            ->setParameter('titleParam', '%' . strtolower($titleParam) . '%');
+
+        return (new Paginator($qb))->paginate($page); 
+    }
+
     public function findAllByTitlePaginated(int $page = 1, string $titleParam = ""): Paginator
     {
         $qb = $this->createQueryBuilder('c');

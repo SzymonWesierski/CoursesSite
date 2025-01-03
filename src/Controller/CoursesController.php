@@ -97,7 +97,7 @@ class CoursesController extends AbstractController
             }
         }
         else if($titleParam){
-            $courses = $this->courseRepository->findAllByTitlePaginated($page, $titleParam);
+            $courses = $this->courseRepository->findAllApprovedByTitlePaginated($page, $titleParam);
         }
         else{
             $courses = $this->courseRepository->findAllApproved($page);
