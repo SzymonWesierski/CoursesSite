@@ -71,7 +71,7 @@ class UserCoursesPanelController extends AbstractController
             }
         }
         else if($titleParam){
-            $courses = $this->courseDraftRepository->findAllDraftsByTitlePaginated($page, $user, $titleParam);
+            $courses = $this->courseDraftRepository->findAllDraftsByTitlePaginated($user, $page, $titleParam);
         }
         else{
             $courses = $this->courseDraftRepository->findUserAllDraftCourses($user, $page);

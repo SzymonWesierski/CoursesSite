@@ -7,6 +7,8 @@ import 'regenerator-runtime/runtime';
 import 'owl.carousel/dist/assets//owl.carousel.min.css';
 import 'owl.carousel/dist/assets//owl.theme.default.min.css';
 import 'owl.carousel/dist/owl.carousel.js';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 
 import './styles/app.css';

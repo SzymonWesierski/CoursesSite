@@ -40,4 +40,26 @@ class RatingRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findRatingByCourseIdUserId(int $userId, string $courseId){
+        return $this->createQueryBuilder('r')
+           ->join('r.user', 'ruser' )
+           ->join('r.course', 'rcourse')
+           ->andWhere('ruser.id = :userId')
+           ->andWhere('rcourse.id = :courseId')
+           ->setParameter('userId', $userId)
+           ->setParameter('courseId', $courseId)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+    }
+
+    public function findRatingsByCourseId(string $courseId){
+        return $this->createQueryBuilder('r')
+           ->join('r.course', 'rcourse')
+           ->andWhere('rcourse.id = :courseId')
+           ->setParameter('courseId', $courseId)
+           ->getQuery()
+           ->getResult();
+    }
 }

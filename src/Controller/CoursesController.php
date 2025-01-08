@@ -10,6 +10,7 @@ use App\Enum\CourseStatus;
 use App\Entity\CourseDraft;
 use App\Entity\ChapterDraft;
 use App\Entity\EpisodeDraft;
+use App\Entity\Rating;
 use App\Form\CourseFormType;
 use App\Form\CourseDraftFormType;
 use App\Form\ChapterDraftFormType;
@@ -132,8 +133,10 @@ class CoursesController extends AbstractController
         $isPurchased = false;
 
         $user = $this->getUser();
-
+        $userId = "";
         if ($user instanceof User) {
+            $userId = $user->getId();
+            
             $cart = $this->em->getRepository(Cart::class)->findNotPurchased($user->getId());
 
             if (!$cart) {
@@ -146,6 +149,15 @@ class CoursesController extends AbstractController
                 $isPurchased = true;
             }
         }
+
+        $rating = $this->em->getRepository(Rating::class)->findRatingByCourseIdUserId($userId, $courseId);
+        if($rating == null){
+            $userRatingValue = 0;
+        }
+        else{
+            $userRatingValue = $rating->getValue();
+        }
+
 
         $episode = new Episode();
 
@@ -170,7 +182,9 @@ class CoursesController extends AbstractController
             'episodeId' => $episodeId,
             'isPurchased' => $isPurchased,
             'productsInCartIds' => $productsInCartIds,
-            'amountOfProducts' => $amountOfProducts
+            'amountOfProducts' => $amountOfProducts,
+            'userId' => $userId,
+            'userRatingValue' => $userRatingValue
         ]);
     }
 

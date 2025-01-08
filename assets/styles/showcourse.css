@@ -29,17 +29,17 @@
 }
 
 .cshow-details{
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-top: 2em;
-    margin-left: 2em;
-    padding-right: 5em;
+    padding-left: 2em;
 }
 
 .cshow-details-content{
-    width: 70%;
+    width: 60%;
+    z-index: 2;
 }
 
 .cshow-course-img{
@@ -49,7 +49,8 @@
     height: 60vh;
     max-width: 100%;
     background-color: var(--navy);
-    border-bottom: 1px solid var(--brightblue);
+    border-bottom: 4px solid var(--navy);
+    border-top: 4px solid var(--navy);
 }
 
 .cshow-course-img img{
@@ -67,7 +68,8 @@
     height: 60vh;
     max-width: 100%;
     background-color: var(--navy);
-    border-bottom: 1px solid var(--brightblue);
+    border-bottom: 4px solid var(--navy);
+    border-top: 4px solid var(--navy);
 }
 
 .cshow-videoplayer-container video{
@@ -185,3 +187,141 @@
 }
 
 
+
+
+.cshow-rating { 
+    border: none;
+    float: left;
+  }
+  
+.cshow-rating > input { display: none; } 
+.cshow-rating > label:before { 
+    margin: 0.25em 0.15em 0.25em 0.15em ;
+    font-size: 1.5em;
+    font-family: FontAwesome;
+    display: flex;
+    flex-wrap: nowrap;
+    content: "\f005";
+}
+
+.cshow-rating > label { 
+    color: #ddd; 
+    float: right; 
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.cshow-rating > input:checked ~ label, /* show gold star when clicked */
+.cshow-rating:not(:checked) > label:hover, /* hover current star */
+.cshow-rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+.cshow-rating > input:checked + label:hover, /* hover current star when changing rating */
+.cshow-rating > input:checked ~ label:hover,
+.cshow-rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.cshow-rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+
+
+.btn-rate{
+    border: 2px solid  var(--brightblue);
+    background-color: var(--lightblue);
+    border-radius: 0.9em;
+    cursor: pointer;
+    padding: 0.6em 1.8em;
+    transition: all ease-in-out 0.2s;
+    font-size: 16px;
+    box-shadow: 0px 0px 5px 0px var(--navy);
+    transition: 0.3s;
+}
+
+.btn-rate:hover{
+    background-color: var(--brightblue);
+}
+
+.cshow-rating-section{
+    background-color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    border: none;
+    border-radius: 0 0 0 50%;
+    padding: 4em;
+    padding-top: 0.5em;
+}
+
+.cshow-rating-section::before{
+    background-color: var(--navy);
+    position: absolute;
+    top: 0%;
+    right: 100%;
+    border: none;
+    border-radius: 0 0 0 50%;
+    padding: 80px;
+    content: "";
+}
+
+.cshow-rating-section::after{
+    background-color: var(--lightblue);
+    position: absolute;
+    top: 0%;
+    right: 100%;
+    border: none;
+    border-radius: 0 100% 0 0;
+    padding: 80px;
+    content: "";
+}
+
+.cshow-course-rating-section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lightblue);  
+}
+
+.cshow-user-rating-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.cshow-rating-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.single-star{
+    font-size: 1em;
+    color: #FFD700; 
+    margin: 0.25em;
+}
+
+.cshow-price-section{
+    color: var(--white);
+}
+
+.cshow-btn-cart{
+    margin: 0 50px 30px 50px;
+}
+
+.cshow-price-header{
+    width: 200px;
+    text-align: center;
+}
+
+.cshow-myrating-header{
+    color:var(--white);
+    margin-bottom: 0.25em;
+}
+
+.cshow-rating-blank-space{
+    height: 22em;
+    content: "";
+    width: 40%;
+}

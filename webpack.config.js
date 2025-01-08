@@ -27,6 +27,11 @@ Encore
         to: 'images/[path][name].[hash:8].[ext]', 
     })
 
+    .copyFiles({
+        from: './node_modules/@fortawesome/fontawesome-free/webfonts',
+        to: 'webfonts/[path][name].[ext]',
+    })
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 

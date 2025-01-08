@@ -30,31 +30,79 @@
                                 {{ episode.Description }}
                             </p>
 
+                             <p>
+                                Category:
+                                {{course.category.name}}
+                                
+                                <h4>Course created by {{course.user.username ? course.user.username : "unknown"}}</h4>
+                            </p>
+
                         </div>
-                        {% if not isPurchased %}
-                            <div class="courses-list-element-price-section">
-                                <div class="courses-list-element-price-section-price">
-                                    {{course.price}} $
-                                </div>
-                                <div>
-                                    <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
-                                        <button type="submit"
-                                                class="add-to-cart sliding-button"
-                                                onclick="event.stopPropagation();" >
-                                            {% if inCart %}
-                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
-                                                <div class="sliding-button-text">In&nbsp;cart</div>
+
+                        <div class="cshow-rating-blank-space"></div>
+
+                        <div class="cshow-rating-section">
+                            <div class="cshow-course-rating-section">
+                                <h1 style="font-size:3em;"><i class="single-star fas fa-star"></i>{{course.ratingAverage}}</h1>
+                            </div>
+                            {% if isPurchased %}
+                                 <div class="cshow-user-rating-container">
+                                    {% if userRatingValue > 0 %}
+                                        <h4 class="cshow-myrating-header">My rating: {{userRatingValue}}<i class="single-star fas fa-star"></i></h4>
+                                    {% else %}
+                                        <h4 class="cshow-myrating-header">How do you like this course?:</h4>
+                                    {% endif %}
+                                    
+                                    <form class="cshow-rating-form" action="{{path("course_rating")}}" method="POST">
+                                        <fieldset class="cshow-rating">
+                                            <input type="hidden" name="userId" value={{userId}}>
+                                            <input type="hidden" name="courseId" value={{course.Id}}>
+                                            {% for i in range(5, 1, 1) %}
+                                                <input type="radio" 
+                                                    id="star{{i}}" 
+                                                    name="rating" 
+                                                    value="{{i}}" 
+                                                    {% if userRatingValue == i %}
+                                                        checked
+                                                    {% endif %}/>
+                                                <label class = "full" for="star{{i}}" title="{{i}} stars"></label>
+                                            {% endfor %}
+                                        </fieldset>
+                                        <button type="submit" class="btn-rate"> 
+                                            {% if userRatingValue > 0 %}
+                                                Change rating
                                             {% else %}
-                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
-                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                                Rate
                                             {% endif %}
                                         </button>
                                     </form>
                                 </div>
-                            </div>
-                        {% endif %}
-                        
+                            {% else %}
 
+                                <div class="courses-list-element-price-section cshow-price-section">
+                                    <div class="courses-list-element-price-section-price">
+                                        <h2 class="cshow-price-header">{{course.price}} $</h2>
+                                    </div>
+                                    <div>
+                                        <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
+                                            <button type="submit"
+                                                    class="add-to-cart sliding-button-active cshow-btn-cart"
+                                                    onclick="event.stopPropagation();" >
+                                                {% if inCart %}
+                                                    <div class="sliding-button-sign-active"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                    <div class="sliding-button-text-active">In&nbsp;cart</div>
+                                                {% else %}
+                                                    <div class="sliding-button-sign-active"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                    <div class="sliding-button-text-active">Add&nbsp;to&nbsp;cart</div>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                        
+                        </div>
                     </div>
                     
                 </div>
@@ -83,30 +131,73 @@
                                 <h4>Course created by {{course.user.username ? course.user.username : "unknown"}}</h4>
                             </p>
                         </div>
-                        
 
-                        {% if not isPurchased %} 
-                            <div class="courses-list-element-price-section">
-                                <div class="courses-list-element-price-section-price">
-                                    {{course.price}} $
-                                </div>
-                                <div>
-                                    <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
-                                        <button type="submit"
-                                                class="add-to-cart sliding-button"
-                                                onclick="event.stopPropagation();" >
-                                            {% if inCart %}
-                                                <div class="sliding-button-sign"><img src="/icons/cart-full.svg" alt="in-cart"></div>
-                                                <div class="sliding-button-text">In&nbsp;cart</div>
+                        <div class="cshow-rating-blank-space"></div>
+                        
+                        <div class="cshow-rating-section">
+                            <div class="cshow-course-rating-section">
+                                <h1 style="font-size:3em;"><i class="single-star fas fa-star"></i>{{course.ratingAverage}}</h1>
+                            </div>
+                            
+                             {% if isPurchased %} 
+                                <div class="cshow-user-rating-container">
+                                    {% if userRatingValue > 0 %}
+                                        <h4 class="cshow-myrating-header">My rating: {{userRatingValue}}<i class="single-star fas fa-star"></i></h4>
+                                    {% else %}
+                                        <h4 class="cshow-myrating-header">How do you like this course?:</h4>
+                                    {% endif %}
+                                    
+                                    <form class="cshow-rating-form" action="{{path("course_rating")}}" method="POST">
+                                        <fieldset class="cshow-rating">
+                                            <input type="hidden" name="userId" value={{userId}}>
+                                            <input type="hidden" name="courseId" value={{course.Id}}>
+                                            {% for i in range(5, 1, 1) %}
+                                                <input type="radio" 
+                                                    id="star{{i}}" 
+                                                    name="rating" 
+                                                    value="{{i}}" 
+                                                    {% if userRatingValue == i %}
+                                                        checked
+                                                    {% endif %}/>
+                                                <label class = "full" for="star{{i}}" title="{{i}} stars"></label>
+                                            {% endfor %}
+                                        </fieldset>
+                                        <button type="submit" class="btn-rate"> 
+                                            {% if userRatingValue > 0 %}
+                                                Change rating
                                             {% else %}
-                                                <div class="sliding-button-sign"><img src="/icons/cart.svg" alt="add-to-cart"></div>
-                                                <div class="sliding-button-text">Add&nbsp;to&nbsp;cart</div>
+                                                Rate
                                             {% endif %}
                                         </button>
                                     </form>
                                 </div>
-                            </div>
-                        {% endif %}
+
+                            {% else %}
+
+                                <div class="courses-list-element-price-section cshow-price-section">
+                                    <div class="courses-list-element-price-section-price">
+                                        <h2 class="cshow-price-header">{{course.price}} $</h2>
+                                    </div>
+                                    <div>
+                                        <form action="{{ path('add_to_cart', {courseId: course.id}) }}" method="POST"id="button-content-{{ course.id }}">
+                                            <button type="submit"
+                                                    class="add-to-cart sliding-button-active cshow-btn-cart"
+                                                    onclick="event.stopPropagation();" >
+                                                {% if inCart %}
+                                                    <div class="sliding-button-sign-active"><img src="/icons/cart-full.svg" alt="in-cart"></div>
+                                                    <div class="sliding-button-text-active">In&nbsp;cart</div>
+                                                {% else %}
+                                                    <div class="sliding-button-sign-active"><img src="/icons/cart.svg" alt="add-to-cart"></div>
+                                                    <div class="sliding-button-text-active">Add&nbsp;to&nbsp;cart</div>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                        </div>
+                       
                     </div>
                 </div>
             {% endif %}
