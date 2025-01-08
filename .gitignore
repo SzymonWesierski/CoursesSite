@@ -1,4 +1,5 @@
 
+/.vscode
 /.env
 ###> symfony/framework-bundle ###
 /.env.local
