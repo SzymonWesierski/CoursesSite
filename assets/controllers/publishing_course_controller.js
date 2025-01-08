@@ -28,7 +28,7 @@ export default class extends Controller {
                         via email</h3>
             
                     <div class="delete-course-buttons-container">
-                        <button type="button" class="btn-default-red" data-action="click->publishing-course#refreshPage" aria-label="Close">Cancel</button>
+                        <button type="button" class="btn-default-red" data-action="click->publishing-course#refreshPage" aria-label="Close">Close</button>
                     </div>
                 `;
                 

@@ -131,6 +131,7 @@ class CoursesController extends AbstractController
         $productsInCartIds = [];
         $amountOfProducts = 0;
         $isPurchased = false;
+        $userRatingValue = 0;
 
         $user = $this->getUser();
         $userId = "";
@@ -148,16 +149,11 @@ class CoursesController extends AbstractController
             if($this->courseRepository->isPurchasedCourse($courseId, $user->getId())) {
                 $isPurchased = true;
             }
+            $rating = $this->em->getRepository(Rating::class)->findRatingByCourseIdUserId($userId, $courseId);
+            if($rating != null){
+                $userRatingValue = $rating->getValue();
+            }
         }
-
-        $rating = $this->em->getRepository(Rating::class)->findRatingByCourseIdUserId($userId, $courseId);
-        if($rating == null){
-            $userRatingValue = 0;
-        }
-        else{
-            $userRatingValue = $rating->getValue();
-        }
-
 
         $episode = new Episode();
 
