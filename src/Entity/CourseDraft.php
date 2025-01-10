@@ -21,7 +21,7 @@ class CourseDraft extends BaseCourse
     /**
      * @var Collection<int, Chapter>
      */
-    #[ORM\OneToMany(targetEntity: ChapterDraft::class, mappedBy: 'courseDraft', orphanRemoval: true, cascade:["persist"])]
+    #[ORM\OneToMany(targetEntity: ChapterDraft::class, mappedBy: 'courseDraft', orphanRemoval: true, cascade:["persist", "remove"])]
     private Collection $chapters;
 
     #[ORM\OneToOne(targetEntity: CourseDraft::class, inversedBy: "relatedCourseDraftForApproval", cascade: ["persist", "remove"])]
@@ -90,12 +90,12 @@ class CourseDraft extends BaseCourse
         return $this;
     }
 
-    public function removeChapter(Chapter $chapters): static
+    public function removeChapter(ChapterDraft $chapters): static
     {
         if ($this->chapters->removeElement($chapters)) {
             // set the owning side to null (unless already changed)
-            if ($chapters->getCourse() === $this) {
-                $chapters->setCourse(null);
+            if ($chapters->getCourseDraft() === $this) {
+                $chapters->setCourseDraft(null);
             }
         }
 

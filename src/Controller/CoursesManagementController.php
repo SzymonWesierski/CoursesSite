@@ -68,8 +68,8 @@ class CoursesManagementController extends AbstractController
         foreach ($course->getChapters() as $chapter) {
             $course->removeChapter($chapter);
         }
-
-        $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraft);
+        $courseDraftToBeChecked = $courseDraft->getRelatedCourseDraftForApproval();
+        $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraftToBeChecked);
 
         $this->em->persist($course);
         $this->em->persist($courseDraft);

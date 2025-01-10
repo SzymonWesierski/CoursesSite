@@ -21,7 +21,7 @@ class Course extends BaseCourse
     /**
      * @var Collection<int, Chapter>
      */
-    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'course', orphanRemoval: true, cascade:["persist"])]
+    #[ORM\OneToMany(targetEntity: Chapter::class, mappedBy: 'course', orphanRemoval: true, cascade:["persist", "remove"])]
     private Collection $chapters;
 
     /**

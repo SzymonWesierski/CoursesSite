@@ -457,10 +457,6 @@ class CoursesController extends AbstractController
             ], 400);
         }
 
-
-        
-       
-
         if ($courseDraft->getRelatedCourseDraftForApproval() == null) {
             $courseDraftToBeChecked = new CourseDraft();
             $courseDraftToBeChecked = $this->courseMapper->mapCourseDraftToCourseDraft($courseDraftToBeChecked, $courseDraft);   
@@ -468,6 +464,9 @@ class CoursesController extends AbstractController
             $courseDraft->setRelatedCourseDraftForApproval($courseDraftToBeChecked);
         } else {
             $courseDraftToBeChecked = $courseDraft->getRelatedCourseDraftForApproval();
+            foreach ($courseDraftToBeChecked->getChapters() as $chapter) {
+                $courseDraftToBeChecked->removeChapter($chapter);
+            }
             $courseDraftToBeChecked = $this->courseMapper->mapCourseDraftToCourseDraft($courseDraftToBeChecked, $courseDraft);
         }
 

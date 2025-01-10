@@ -17,7 +17,7 @@ class ChapterDraft extends BaseChapter
     /**
      * @var Collection<int, EpisodeDraft>
      */
-    #[ORM\OneToMany(targetEntity: EpisodeDraft::class, mappedBy: 'chapterDraft', orphanRemoval: true, cascade:["persist"])]
+    #[ORM\OneToMany(targetEntity: EpisodeDraft::class, mappedBy: 'chapterDraft', orphanRemoval: true, cascade:["persist", "remove"])]
     private Collection $episodesDraft;
 
     public function __construct()
