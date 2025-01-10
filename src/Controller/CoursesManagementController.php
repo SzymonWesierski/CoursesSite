@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Enum\CourseStatus;
 use App\Repository\CourseRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\CourseMapperService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,10 +15,13 @@ class CoursesManagementController extends AbstractController
 {
     private $courseRepository;
     private $em;
+    private $draftToCourseMapperService;
 
-    public function __construct(CourseRepository $courseRepository, EntityManagerInterface $em) {
+    public function __construct(CourseRepository $courseRepository, EntityManagerInterface $em,
+              CourseMapperService $draftToCourseMapperService) {
         $this->courseRepository = $courseRepository;
         $this->em = $em;
+        $this->draftToCourseMapperService = $draftToCourseMapperService;
     }
 
     #[Route('/courses/management/list/{page?}/{titleParam?}', defaults: ['page' => '1'], name: 'app_courses_management')]
@@ -60,6 +64,12 @@ class CoursesManagementController extends AbstractController
         $courseDraft = $course->getCourseDraft();
 
         $courseDraft->setStatus(CourseStatus::APPROVED);
+
+        foreach ($course->getChapters() as $chapter) {
+            $course->removeChapter($chapter);
+        }
+
+        $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraft);
 
         $this->em->persist($course);
         $this->em->persist($courseDraft);

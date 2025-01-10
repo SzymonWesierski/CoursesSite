@@ -91,7 +91,7 @@
                                     <div class="sliding-button-sign-active"><img src="/icons/pencil.svg" alt="edit-course"></div>
                                     <div class="sliding-button-text-active">Manage/Edit</div>
                                 </button>
-                                <button class="sliding-button-active" onclick="window.location.href='{{ path('preview_course',{courseId: course.id, status: "DRAFT"}) }}'">
+                                <button class="sliding-button-active" onclick="window.location.href='{{ path('preview_course',{courseId: course.id, status: "DRAFT", returnPath: 'userCoursesPanel'}) }}'">
                                     <div class="sliding-button-sign-active"><img src="/icons/preview.svg" alt="preview-course"></div>
                                     <div class="sliding-button-text-active">Preview</div>
                                 </button>

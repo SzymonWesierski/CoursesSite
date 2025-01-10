@@ -3,35 +3,31 @@
 
 {% block body %}
 
-   {% include '/partials/_return_nav.html.twig' with { return_route: path('userCoursesPanel') } %}
+   {% include '/partials/_return_nav.html.twig' with { return_route: path(returnPath) } %}
 
     <div class="preview-select-status-btn-container">
         <h2>
         Course Version: 
         </h2>
-        {% if status == "DRAFT" %}
-            <button class="btn-default btn-border" 
-                onclick="window.location.href='{{ path('preview_course',{status: "DRAFT", courseId: course.id}) }}'">
-                DRAFT
-            </button>
+        {% set currentStatus = app.request.get('status') %}
 
-            <button class="btn-default" 
-                onclick="window.location.href='{{ path('preview_course',{status: "PUBLIC", courseId: course.course.id}) }}'">
-                PUBLIC
-            </button>
-        {% elseif status == "PUBLIC" %}
-            <button class="btn-default" 
-                onclick="window.location.href='{{ path('preview_course',{status: "DRAFT", courseId: course.courseDraft.id}) }}'">
-                DRAFT
-            </button>
+        <button class="btn-default {% if currentStatus == 'DRAFT' %}btn-border{% endif %}" 
+                onclick="window.location.href='{{ path('preview_course',{status: 'DRAFT', courseId: draftCourseId, returnPath: returnPath}) }}'">
+            DRAFT
+        </button>
 
-            <button class="btn-default btn-border" 
-                onclick="window.location.href='{{ path('preview_course',{status: "PUBLIC", courseId: course.id}) }}'">
-                PUBLIC
+        {% if isCourseToBeChecked %}
+            <button class="btn-default {% if currentStatus == 'TO_BE_CHECKED' %}btn-border{% endif %}" 
+                    onclick="window.location.href='{{ path('preview_course',{status: 'TO_BE_CHECKED', courseId: toBeCheckedCourseId, returnPath: returnPath}) }}'">
+                FOR APPROVAL
             </button>
         {% endif %}
 
-        
+        <button class="btn-default {% if currentStatus == 'PUBLIC' %}btn-border{% endif %}" 
+                onclick="window.location.href='{{ path('preview_course',{status: 'PUBLIC', courseId: publicCourseId, returnPath: returnPath}) }}'">
+            PUBLIC
+        </button>
+
     </div>
     
 
@@ -135,12 +131,12 @@
                             </div>
                             <div class="cshow-chapters-element-episode-container" id="chapter-{{ loop.index }}" data-index="{{ loop.index }}">
                                 <ul>
-                                    {% if status == "DRAFT" %}
-                                        {% for episode in chapter.episodesDraft %}
+                                    {% if status == "PUBLIC" %}
+                                        {% for episode in chapter.episodes %}
                                             
                                             <li>
                                                 <div class="cshow-chapters-element-episode" 
-                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
+                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id, returnPath: returnPath}) }}';">
                                                     <p>
                                                         {{episodeIndex}}. {{ episode.name }}
                                                     </p>
@@ -153,12 +149,13 @@
 
                                             {% set episodeIndex = episodeIndex + 1 %}
                                         {% endfor %}
+                                        
                                     {% else %}
-                                        {% for episode in chapter.episodes %}
+                                        {% for episode in chapter.episodesDraft %}
                                             
                                             <li>
                                                 <div class="cshow-chapters-element-episode" 
-                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id}) }}';">
+                                                    onclick="window.location.href='{{ path('preview_course', {status: status, courseId: course.id, episodeId: episode.id, returnPath: returnPath}) }}';">
                                                     <p>
                                                         {{episodeIndex}}. {{ episode.name }}
                                                     </p>

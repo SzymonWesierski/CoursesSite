@@ -4,23 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Cart;
 use App\Entity\User;
+use Ramsey\Uuid\Uuid;
 use App\Entity\Course;
+use App\Entity\Rating;
 use App\Entity\Episode;
 use App\Enum\CourseStatus;
 use App\Entity\CourseDraft;
 use App\Entity\ChapterDraft;
 use App\Entity\EpisodeDraft;
-use App\Entity\Rating;
 use App\Form\CourseFormType;
 use App\Form\CourseDraftFormType;
 use App\Form\ChapterDraftFormType;
 use App\Form\EpisodeDraftFormType;
 use App\Service\CloudinaryService;
 use App\Repository\CourseRepository;
+use App\Service\CourseMapperService;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CourseDraftRepository;
-use App\Service\DraftToCourseMapperService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,18 +36,18 @@ class CoursesController extends AbstractController
     private $categoryRepository;
     private $courseDraftRepository;
     private $cloudinaryService;
-    private $draftToCourseMapperService;
+    private $courseMapper;
 
     public function __construct(EntityManagerInterface $em, CourseRepository $courseRepository, 
         CourseDraftRepository $courseDraftRepository, CategoryRepository $categoryRepository,
-        CloudinaryService $cloudinaryService,  DraftToCourseMapperService $draftToCourseMapperService)
+        CloudinaryService $cloudinaryService, CourseMapperService $courseMapper)
     {
         $this->em = $em;
         $this->courseRepository = $courseRepository;
         $this->courseDraftRepository = $courseDraftRepository;
         $this->categoryRepository = $categoryRepository;
         $this->cloudinaryService = $cloudinaryService;
-        $this->draftToCourseMapperService = $draftToCourseMapperService;
+        $this->courseMapper = $courseMapper;
     }
 
     #[Route('/', name: 'app_home_redirect')]
@@ -184,9 +185,14 @@ class CoursesController extends AbstractController
         ]);
     }
 
-    #[Route('/courses/preview/{status}/{courseId}/{episodeId}', methods: ['GET'], name: 'preview_course')]
-    public function preview(string $status, string $courseId, int $episodeId = 0): Response
-    {
+    #[Route('/courses/preview/{returnPath}/{status}/{courseId}/{episodeId}', methods: ['GET'], name: 'preview_course')]
+    public function preview($returnPath, string $status, string $courseId, int $episodeId = 0): Response
+    {   
+        $publicCourseId = "";
+        $draftCourseId = "";
+        $toBeCheckedCourseId = "";
+        $isCourseToBeChecked = false;
+
         $user = $this->getUser();
 
         $episode = new EpisodeDraft();
@@ -211,6 +217,41 @@ class CoursesController extends AbstractController
                     throw $this->createNotFoundException('EpisodeDraft not found.');
                 }
             }
+
+            $publicCourseId = $course->getCourse()->getId();
+            $draftCourseId = $course->getId();
+            
+            if($course->getCourse()->getStatus() == CourseStatus::WAITING_FOR_APPROVAL){
+                $toBeCheckedCourseId = $course->getRelatedCourseDraftForApproval()->getId();
+                $isCourseToBeChecked = true;
+            }
+        }
+        elseif($status == "TO_BE_CHECKED"){
+            $course = $this->courseDraftRepository->find($courseId);
+
+            if (!$course) {
+                throw $this->createNotFoundException('CourseDraftToBeChecked not found.');
+            }
+
+            if ($episodeId > 0){
+                $episodeRepo = $this->em->getRepository(EpisodeDraft::class);
+
+                if (!$episodeId || !is_numeric($episodeId)) {
+                    throw $this->createNotFoundException('Episode ID is missing or invalid.');
+                }
+
+                $episode = $episodeRepo->find($episodeId);
+
+                if (!$episode) {
+                    throw $this->createNotFoundException('EpisodeDraft not found.');
+                }
+            }
+
+            $publicCourseId = $course->getInversedCourseDraftForApproval()->getCourse()->getId();
+            $draftCourseId = $course->getInversedCourseDraftForApproval()->getId();
+            $toBeCheckedCourseId = $course->getId();
+            $isCourseToBeChecked = true;
+            
         }
         elseif($status == "PUBLIC"){
             $course = $this->courseRepository->find($courseId);
@@ -232,25 +273,40 @@ class CoursesController extends AbstractController
                     throw $this->createNotFoundException('Episode not found.');
                 }
             }
+
+            $publicCourseId = $course->getId();
+            $draftCourseId = $course->getCourseDraft()->getId();
+
+            if($course->getStatus() == CourseStatus::WAITING_FOR_APPROVAL){
+                $toBeCheckedCourseId = $course->getCourseDraft()->getRelatedCourseDraftForApproval()->getId();
+                $isCourseToBeChecked = true;
+            }
         }
 
         return $this->render('courses/preview.html.twig', [
+            'publicCourseId' => $publicCourseId,
+            'draftCourseId' => $draftCourseId,
+            'toBeCheckedCourseId' => $toBeCheckedCourseId,
+            'isCourseToBeChecked' => $isCourseToBeChecked,
             'course' => $course,
             'episode' => $episode,
             'episodeId' => $episodeId,
             'username' => $user->getUserIdentifier(),
-            'status' => $status
+            'status' => $status,
+            'returnPath' => $returnPath
         ]);
     }
 
     #[Route('/courses/delete/{id}', methods: ['GET','DELETE'], name: 'delete_course')]
     public function delete($id): Response
     {
-        $course = $this->courseRepository->find($id);
+        $courseDraft = $this->courseDraftRepository->find($id);
 
-        if (!$course) {
+        if (!$courseDraft) {
             throw $this->createNotFoundException('Course not found.');
         }
+
+        $course = $courseDraft->getCourse();
 
         $user = $this->getUser();
 
@@ -400,20 +456,29 @@ class CoursesController extends AbstractController
                 'validationMsg' => $validationMsg
             ], 400);
         }
+
+
         
-        $courseDraft->setStatus(CourseStatus::WAITING_FOR_APPROVAL);
+       
 
-        $course = $courseDraft->getCourse();
-
-        foreach ($course->getChapters() as $chapter) {
-            $course->removeChapter($chapter);
+        if ($courseDraft->getRelatedCourseDraftForApproval() == null) {
+            $courseDraftToBeChecked = new CourseDraft();
+            $courseDraftToBeChecked = $this->courseMapper->mapCourseDraftToCourseDraft($courseDraftToBeChecked, $courseDraft);   
+            $courseDraftToBeChecked->setInversedCourseDraftForApproval($courseDraft);
+            $courseDraft->setRelatedCourseDraftForApproval($courseDraftToBeChecked);
+        } else {
+            $courseDraftToBeChecked = $courseDraft->getRelatedCourseDraftForApproval();
+            $courseDraftToBeChecked = $this->courseMapper->mapCourseDraftToCourseDraft($courseDraftToBeChecked, $courseDraft);
         }
 
-        $course = $this->draftToCourseMapperService->mapCourseDraftToCourse($course, $courseDraft);
-
+        $courseDraft->setStatus(CourseStatus::WAITING_FOR_APPROVAL);
+        $courseDraft->getCourse()->setStatus(CourseStatus::WAITING_FOR_APPROVAL);
+        $courseDraftToBeChecked->setStatus(CourseStatus::TO_BE_CHECKED);
+        
         $this->em->persist($courseDraft);
-        $this->em->persist($course);
+        $this->em->persist($courseDraftToBeChecked);
         $this->em->flush();
+        
         
         return new JsonResponse([
             'status' => 'success',

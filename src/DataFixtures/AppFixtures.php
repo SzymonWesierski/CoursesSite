@@ -13,7 +13,7 @@ use App\Entity\ChapterDraft;
 use App\Entity\EpisodeDraft;
 use App\Repository\CategoryRepository;
 use Doctrine\Persistence\ObjectManager;
-use App\Service\DraftToCourseMapperService;
+use App\Service\CourseMapperService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -21,11 +21,11 @@ class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private CategoryRepository $categoryRepository;
-    private DraftToCourseMapperService $draftToCourseMapperService;
+    private CourseMapperService $draftToCourseMapperService;
 
     public function __construct(UserPasswordHasherInterface $userPasswordHasher, 
         CategoryRepository $categoryRepository,
-        DraftToCourseMapperService $draftToCourseMapperService)
+        CourseMapperService $draftToCourseMapperService)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->categoryRepository = $categoryRepository;

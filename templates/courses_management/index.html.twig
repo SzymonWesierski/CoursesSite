@@ -54,7 +54,7 @@
                             <td>
                                 <button class="btn-default edit-course-edit-delete-btn" 
                                         type="button"
-                                        onclick="window.location.href='{{ path('show_course', {courseId: course.id}) }}';"> 
+                                        onclick="window.location.href='{{ path('preview_course', {courseId: course.id, status: "PUBLIC", returnPath: 'app_courses_management'}) }}';"> 
                                     <span>
                                         Preview
                                     </span>

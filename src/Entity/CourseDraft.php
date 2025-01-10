@@ -21,8 +21,15 @@ class CourseDraft extends BaseCourse
     /**
      * @var Collection<int, Chapter>
      */
-    #[ORM\OneToMany(targetEntity: ChapterDraft::class, mappedBy: 'courseDraft', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ChapterDraft::class, mappedBy: 'courseDraft', orphanRemoval: true, cascade:["persist"])]
     private Collection $chapters;
+
+    #[ORM\OneToOne(targetEntity: CourseDraft::class, inversedBy: "relatedCourseDraftForApproval", cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?CourseDraft $relatedCourseDraftForApproval = null;
+
+    #[ORM\OneToOne(targetEntity: CourseDraft::class, mappedBy: "relatedCourseDraftForApproval")]
+    private ?CourseDraft $inversedCourseDraftForApproval = null;
 
     public function __construct()
     {
@@ -94,5 +101,30 @@ class CourseDraft extends BaseCourse
 
         return $this;
     }
+
+
+     public function getRelatedCourseDraftForApproval(): ?self
+     {
+         return $this->relatedCourseDraftForApproval;
+     }
+ 
+     public function setRelatedCourseDraftForApproval(?self $relatedCourseDraftForApproval): self
+     {
+         $this->relatedCourseDraftForApproval = $relatedCourseDraftForApproval;
+         return $this;
+     }
+ 
+     public function getInversedCourseDraftForApproval(): ?self
+     {
+         return $this->inversedCourseDraftForApproval;
+     }
+ 
+     public function setInversedCourseDraftForApproval(?self $inversedCourseDraftForApproval): self
+     {
+         $this->inversedCourseDraftForApproval = $inversedCourseDraftForApproval;
+         return $this;
+     }
+
     
+
 }

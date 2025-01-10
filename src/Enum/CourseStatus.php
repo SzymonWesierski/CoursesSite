@@ -10,4 +10,6 @@ enum CourseStatus: string
     case APPROVED_AND_DRAFT = 'approved_and_new_version_in_draft';
     case BANNED = 'banned';
     case DRAFT = 'draft';
+    case TEMP = 'temp';
+    case TO_BE_CHECKED = 'to_be_checked';
 }
