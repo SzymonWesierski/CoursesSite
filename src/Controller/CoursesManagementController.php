@@ -4,8 +4,9 @@ namespace App\Controller;
 
 use App\Enum\CourseStatus;
 use App\Repository\CourseRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Service\CourseMapperService;
+use App\Models\CoursesManagementParams;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,17 +25,15 @@ class CoursesManagementController extends AbstractController
         $this->draftToCourseMapperService = $draftToCourseMapperService;
     }
 
-    #[Route('/courses/management/list/{page?}/{titleParam?}', defaults: ['page' => '1'], name: 'app_courses_management')]
-    public function index(Request $request, $page, $titleParam): Response
-    {   
-        if ($titleParam == null) $titleParam = $request->query->get('titleParam');
-
-        if($titleParam){
-            $courses = $this->courseRepository->findAllByTitlePaginated($page, $titleParam);
-        }else{
-            $courses = $this->courseRepository->findAllPaginated($page);
-        }
-        
+    #[Route('/courses/management/list', name: 'app_courses_management')]
+    public function index(Request $request): Response
+    { 
+        $params = new CoursesManagementParams();
+        $params->setPage($request->query->getInt('page', 1))
+               ->setTitleParam($request->query->get('titleParam'))
+               ->setSort($request->query->get('sort', "to_approved"));
+    
+        $courses = $this->courseRepository->findCoursesManagementByParams($params);
         
         return $this->render('courses_management/index.html.twig', [
             'paginator' => $courses,
@@ -46,7 +45,9 @@ class CoursesManagementController extends AbstractController
                 'APPROVED_AND_DRAFT' => CourseStatus::APPROVED_AND_DRAFT->value,
                 'BANNED' => CourseStatus::BANNED->value,
             ],
-            'titleParam' => $titleParam
+            'titleParam' => $params->getTitleParam(),
+            'sort' => $params->getSort()
+
         ]);
     }
 

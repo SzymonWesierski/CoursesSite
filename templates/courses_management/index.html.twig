@@ -7,9 +7,24 @@
 <div class="user-management-container">
     <div class="user-management-list">
         <h1 class="user-management-title">Courses management</h1>
-         <form action="{{ path('app_courses_management') }}" method="get">
+         <form action="{{ path('app_courses_management')}}" method="get">
+            <input type="hidden" name="sort" value="all" >
             <input class="search-input" placeholder="Search for course" type="text" name="titleParam" class="input" value="{{ titleParam }}">
         </form>
+        <div class="courses-management-sort-btn-section">
+            <button 
+                class="btn-default {% if sort == "to_approved" %} btn-border {% endif %}"
+                onclick="window.location.href='{{ path('app_courses_management', {sort: 'to_approved'}) }}';"
+                >
+                To approved
+            </button>
+            <button 
+                class="btn-default {% if sort == "all" %} btn-border {% endif %}"
+                onclick="window.location.href='{{ path('app_courses_management', {sort: 'all'}) }}';"
+                >
+                All
+            </button>
+        </div>
         {% if paginator.results | length > 0 %}
             <table class="user-table">
                 <thead>

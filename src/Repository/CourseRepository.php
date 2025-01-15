@@ -2,11 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Course;
 use App\Enum\CourseStatus;
 use App\Pagination\Paginator;
-use App\Entity\Course;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Models\CoursesManagementParams;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Course>
@@ -177,6 +178,24 @@ class CourseRepository extends ServiceEntityRepository
             ->setParameter('titleParam', '%' . strtolower($titleParam) . '%');
 
         return (new Paginator($qb))->paginate($page); 
+    }
+
+    public function findCoursesManagementByParams(CoursesManagementParams $params)
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($params->getTitleParam()) {
+            $qb ->where($qb->expr()->like('LOWER(c.name)', ':titleParam'))
+                ->setParameter('titleParam', '%' . strtolower($params->getTitleParam()) . '%');
+               
+        }
+
+        if ($params->getSort() === 'to_approved') {
+            $qb->andWhere('c.status = :status')
+               ->setParameter('status', CourseStatus::WAITING_FOR_APPROVAL->value);
+        }
+
+        return (new Paginator($qb))->paginate($params->getPage()); 
     }
 
 }
